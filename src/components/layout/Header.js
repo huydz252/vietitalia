@@ -4,7 +4,7 @@ import { getLocale, toggleLocale } from "../../i18n/i18n.js";
 export function renderHeader(container) {
   const bar = document.createElement("div");
   bar.className =
-    "sticky top-0 z-50 bg-surface/95 backdrop-blur border-b border-outline-variant institutional-shadow";
+    "fixed inset-x-0 top-0 z-50 bg-surface/95 backdrop-blur border-b border-outline-variant institutional-shadow";
   const row = document.createElement("div");
   row.className =
     "max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop min-h-[72px] flex items-center justify-between gap-3";

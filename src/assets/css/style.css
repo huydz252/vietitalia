@@ -1,6 +1,9 @@
 .institutional-shadow {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
+#app-root {
+  padding-top: 72px;
+}
 .bridge-gradient {
   background: linear-gradient(
     to right,

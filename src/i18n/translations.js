@@ -12,7 +12,7 @@ export const translations = {
       contact: "Liên hệ",
     },
     home: {
-      heroTitle: "Cầu Việt Nam - Ý",
+      heroTitle: "Cầu Nối Việt Nam - Ý",
       heroSubtitle:
         "Một không gian văn hóa, giáo dục và khởi nghiệp giữa Việt Nam và Ý",
       tagline: "Kết nối Văn hóa – Tạo cơ hội – Xây dựng tương lai",
@@ -20,6 +20,21 @@ export const translations = {
       vietnamCercaTitle: "Việt Nam đang cần điều gì?",
       ctaViewDemand: "Xem nhu cầu từ Ý",
       ctaViewDemandVn: "Xem nhu cầu từ Việt Nam",
+    },
+    about: {
+      eyebrow: "Về chúng tôi",
+      title: "VietItalia là ai?",
+      subtitle: "Una comunità tra Vietnam e Italia",
+      introTitle: "Hiệp hội kết nối giá trị chung",
+      intro:
+        "VietItalia là không gian hợp tác dành cho những con người, tổ chức và doanh nghiệp tin vào sức mạnh của đối thoại. Chúng tôi tạo điều kiện để văn hóa được chia sẻ, tri thức được trao đổi và các cơ hội kinh doanh được gặp gỡ một cách bền vững.",
+      advisorsTitle: "Hội đồng cố vấn",
+      advisorRole: "Đại sứ Văn hóa tại Ý",
+      advisorDescription:
+        "Đồng hành cùng các chương trình trao đổi và phát triển cộng đồng VietItalia.",
+      ctaTitle: "Cùng xây nhịp cầu mới",
+      ctaAmbassador: "Trở thành Đại sứ",
+      ctaContact: "Liên hệ",
     },
   },
   it: {
@@ -43,6 +58,21 @@ export const translations = {
       vietnamCercaTitle: "Di cosa ha bisogno il Vietnam?",
       ctaViewDemand: "Vedi le richieste dall'Italia",
       ctaViewDemandVn: "Vedi le richieste dal Vietnam",
+    },
+    about: {
+      eyebrow: "Chi siamo",
+      title: "Chi è VietItalia?",
+      subtitle: "Una comunità tra Vietnam e Italia",
+      introTitle: "Un'associazione che unisce valori condivisi",
+      intro:
+        "VietItalia è uno spazio di collaborazione per persone, organizzazioni e imprese che credono nella forza del dialogo. Favoriamo la condivisione della cultura, lo scambio di conoscenze e l'incontro sostenibile tra opportunità di business.",
+      advisorsTitle: "Consiglio consultivo",
+      advisorRole: "Ambasciatore culturale in Italia",
+      advisorDescription:
+        "Affianca i programmi di scambio e lo sviluppo della comunità VietItalia.",
+      ctaTitle: "Costruiamo insieme un nuovo ponte",
+      ctaAmbassador: "Diventa Ambasciatore",
+      ctaContact: "Contattaci",
     },
   },
 };
