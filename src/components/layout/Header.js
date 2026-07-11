@@ -5,11 +5,16 @@ import logoUrl from "../../assets/images/logoVNIT.png";
 export function renderHeader(container) {
   const bar = document.createElement("div");
 <<<<<<< HEAD
+<<<<<<< HEAD
   bar.className =
     "fixed inset-x-0 top-0 z-50 bg-surface/95 backdrop-blur border-b border-outline-variant institutional-shadow";
 =======
   bar.className = "sticky top-0 z-50 bg-surface/95 backdrop-blur border-b border-outline-variant institutional-shadow";
 >>>>>>> 2d66cf30fbdf95981a5e8a3a329c1eab8653745d
+=======
+  bar.className =
+    "fixed inset-x-0 top-0 z-50 bg-surface/95 backdrop-blur border-b border-outline-variant institutional-shadow";
+>>>>>>> 79ade99547f953ad2dc0a1fc1bbb34c9fd1d87b6
   const row = document.createElement("div");
   row.className = "max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop min-h-[72px] flex items-center justify-between gap-3";
 
