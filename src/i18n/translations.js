@@ -12,7 +12,11 @@ export const translations = {
       contact: "Liên hệ",
     },
     home: {
+<<<<<<< HEAD
       heroTitle: "Cầu Nối Việt Nam - Ý",
+=======
+      heroTitle: "Cầu nối Việt Nam - Ý",
+>>>>>>> 2d66cf30fbdf95981a5e8a3a329c1eab8653745d
       heroSubtitle:
         "Một không gian văn hóa, giáo dục và khởi nghiệp giữa Việt Nam và Ý",
       tagline: "Kết nối Văn hóa – Tạo cơ hội – Xây dựng tương lai",
