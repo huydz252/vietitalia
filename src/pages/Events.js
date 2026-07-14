@@ -1,4 +1,5 @@
 import { renderMedia } from "../components/sections/Media.js";
+
 import event1 from "../assets/images/events/event1.jpg";
 import event2 from "../assets/images/events/event2.jpg";
 import event3 from "../assets/images/events/event3.jpg";
@@ -32,92 +33,167 @@ const calendar = [
   [
     "Tháng 11",
     "Week of Italian Cuisine in the World",
-    "Tuần lễ Ẩm thực Ý giới thiệu tinh hoa ẩm thực và văn hóa Ý tại Việt Nam.",
+    "Tuần lễ Ẩm thực Ý giới thiệu tinh hoa ẩm thực Ý tại Việt Nam.",
   ],
   [
     "Theo từng kỳ",
     "Italy – Vietnam Business Forum",
-    "Diễn đàn kết nối doanh nghiệp, thúc đẩy hợp tác thương mại và đầu tư giữa hai nước.",
+    "Diễn đàn kết nối doanh nghiệp, thúc đẩy hợp tác thương mại và đầu tư.",
   ],
+];
+
+const gallery = [
+  {
+    image: event1,
+    title: "Vietnam Day Abroad",
+    caption: "Chương trình quảng bá văn hóa, du lịch và hình ảnh Việt Nam tại Ý.",
+  },
+  {
+    image: event2,
+    title: "Italian Design Day",
+    caption: "Sự kiện kết nối thiết kế, sáng tạo và đổi mới giữa hai quốc gia.",
+  },
+  {
+    image: event3,
+    title: "Made in Italy Day",
+    caption: "Giới thiệu các sản phẩm, công nghệ và thương hiệu Made in Italy.",
+  },
+  {
+    image: event4,
+    title: "Festa della Repubblica Italiana",
+    caption: "Lễ Quốc khánh Ý với nhiều hoạt động ngoại giao và giao lưu văn hóa.",
+  },
+  {
+    image: event5,
+    title: "Week of Italian Cuisine",
+    caption: "Tuần lễ quảng bá ẩm thực Ý cùng các đầu bếp và nhà hàng nổi tiếng.",
+  },
+  {
+    image: event6,
+    title: "Italy – Vietnam Business Forum",
+    caption: "Diễn đàn kết nối doanh nghiệp và mở rộng cơ hội đầu tư song phương.",
+  },
+  {
+    image: event7,
+    title: "Giao lưu văn hóa Việt Nam – Ý",
+    caption: "Biểu diễn nghệ thuật và giao lưu cộng đồng giữa hai nền văn hóa.",
+  },
+  {
+    image: event8,
+    title: "Hội nghị hợp tác Việt Nam – Ý",
+    caption: "Các địa phương và doanh nghiệp thúc đẩy hợp tác trong nhiều lĩnh vực.",
+  },
 ];
 
 export default function Events(container) {
   container.innerHTML = `
-    <section class="banner-image bg-cover text-white py-20"
-      style="
-        height: 400px;
-        background-position: center;
-        background-image:
-          linear-gradient(
-              rgba(240, 93, 132, 0.65),
-              rgba(51, 141, 112, 0.55)
-            ),
-          url('src/assets/images/italy/Florence-Duomo.jpg');
-      "
-    >
-      <div class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop">
-        <p class="text-label-sm uppercase tracking-widest">Lịch kết nối</p>
-        <h1 class="font-display-lg text-display-lg mt-3">Sự kiện Việt Ý</h1>
-        <p class="italic">Eventi Vietnam – Italia</p>
-      </div>
-    </section>
+<section class="banner-image bg-cover text-white py-20"
+style="
+height:400px;
+background-position:center;
+background-image:
+linear-gradient(
+rgba(240,93,132,.65),
+rgba(51,141,112,.55)
+),
+url('src/assets/images/italy/Florence-Duomo.jpg');
+">
 
-    <section class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop py-16">
-      <h2 class="font-headline-md text-headline-md">Lịch sự kiện</h2>
+<div class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop">
 
-      <div class="mt-7 border-l-2 border-outline-variant">
-        ${calendar
-      .map(
-        ([date, name, status]) => `
-              <article class="relative pl-8 py-5 border-b border-outline-variant">
-                <span
-                  class="absolute -left-[9px] top-7 w-4 h-4 bg-${status === "Đã qua" ? "outline" : "secondary"
-          }">
-                </span>
+<p class="text-label-sm uppercase tracking-widest">
+Lịch kết nối
+</p>
 
-                <p class="text-primary font-semibold">${date}</p>
-                <h3 class="font-headline-sm text-headline-sm">${name}</h3>
-                <p class="text-sm text-on-surface-variant">${status}</p>
-              </article>
-            `,
-      )
-      .join("")}
-      </div>
+<h1 class="font-display-lg text-display-lg mt-3">
+Sự kiện Việt Ý
+</h1>
 
-      <h2 class="font-headline-sm text-headline-sm mt-14">
-        Khoảnh khắc sự kiện
-      </h2>
-
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5">
-
-${[
-      event1,
-      event2,
-      event3,
-      event4,
-      event5,
-      event6,
-      event7,
-      event8,
-    ]
-      .map(
-        (img, index) => `
-    <div class="overflow-hidden rounded-xl border border-outline-variant institutional-shadow group">
-
-        <img
-            src="${img}"
-            alt="Event ${index + 1}"
-            class="w-full h-44 object-cover transition duration-300 group-hover:scale-105"
-        />
-
-    </div> 
-    `,
-      )
-      .join("")}
+<p class="italic">
+Eventi Vietnam – Italia
+</p>
 
 </div>
-    </section>
-  `;
+
+</section>
+
+<section class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop py-16">
+
+<h2 class="font-headline-md text-headline-md">
+Lịch sự kiện
+</h2>
+
+<div class="mt-8 border-l-2 border-outline-variant">
+
+${calendar
+  .map(
+    ([date, title, description]) => `
+<article class="relative pl-8 py-6 border-b border-outline-variant">
+
+<span class="absolute -left-[9px] top-8 w-4 h-4 rounded-full bg-secondary"></span>
+
+<p class="text-primary font-semibold">
+${date}
+</p>
+
+<h3 class="font-headline-sm text-headline-sm mt-2">
+${title}
+</h3>
+
+<p class="text-sm text-on-surface-variant mt-2 leading-6">
+${description}
+</p>
+
+</article>
+`,
+  )
+  .join("")}
+
+</div>
+
+<h2 class="font-headline-sm text-headline-sm mt-16">
+Khoảnh khắc sự kiện
+</h2>
+
+<p class="text-on-surface-variant mt-2">
+Những hình ảnh tiêu biểu ghi lại các hoạt động giao lưu văn hóa, ngoại giao,
+kinh tế và hợp tác giữa Việt Nam và Ý.
+</p>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+
+${gallery
+  .map(
+    (item) => `
+<article class="bg-white rounded-xl overflow-hidden border border-outline-variant institutional-shadow group">
+
+<img
+src="${item.image}"
+alt="${item.title}"
+class="w-full h-52 object-cover transition duration-300 group-hover:scale-105"
+/>
+
+<div class="p-4">
+
+<h3 class="font-semibold text-base">
+${item.title}
+</h3>
+
+<p class="text-sm text-on-surface-variant mt-2 leading-6">
+${item.caption}
+</p>
+
+</div>
+
+</article>
+`,
+  )
+  .join("")}
+
+</div>
+
+</section>
+`;
 
   renderMedia(container);
 
@@ -127,30 +203,52 @@ ${[
     "max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop pb-16";
 
   press.innerHTML = `
-    <h2 class="font-headline-sm text-headline-sm">
-      Báo chí đưa tin
-    </h2>
+<h2 class="font-headline-sm text-headline-sm">
+Báo chí đưa tin
+</h2>
 
-    <div class="grid md:grid-cols-3 gap-4 mt-5">
-      ${[
-      ["economic-forum-2024", "Diễn đàn kinh tế"],
-      ["verdi-vong-co", "Âm nhạc không biên giới"],
-      ["vietnam-day", "Vietnam Day tại Ý"],
-    ]
-      .map(
-        ([slug, title]) => `
-            <a
-              data-link
-              href="/news#${slug}"
-              class="border border-outline-variant p-5 hover:border-primary">
-              ${title}
-              <span class="text-primary">→</span>
-            </a>
-          `,
-      )
-      .join("")}
-    </div>
-  `;
+<p class="text-on-surface-variant mt-2">
+Các bài viết nổi bật phản ánh sự phát triển trong quan hệ hợp tác Việt Nam – Ý.
+</p>
+
+<div class="grid md:grid-cols-3 gap-5 mt-6">
+
+${[
+  [
+    "trade-2026",
+    "Việt Nam đẩy mạnh hợp tác công nghệ và tăng trưởng xanh với Ý",
+  ],
+  [
+    "genoa-danang-2026",
+    "Hội nghị Genoa – Đà Nẵng thúc đẩy hợp tác địa phương",
+  ],
+  [
+    "parliamentary-2026",
+    "Quan hệ nghị viện Việt Nam – Ý được củng cố",
+  ],
+]
+  .map(
+    ([slug, title]) => `
+<a
+data-link
+href="/news#${slug}"
+class="border border-outline-variant rounded-xl p-6 hover:border-primary hover:shadow-md transition">
+
+<h3 class="font-semibold leading-7">
+${title}
+</h3>
+
+<span class="inline-block mt-4 text-primary font-semibold">
+Đọc bài viết →
+</span>
+
+</a>
+`,
+  )
+  .join("")}
+
+</div>
+`;
 
   container.append(press);
 }
