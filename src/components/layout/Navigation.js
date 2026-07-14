@@ -18,7 +18,7 @@ export function getNavigationLinks() {
 
 export function renderNavigation(container) {
   const nav = document.createElement("nav");
-  nav.className = "hidden xl:flex items-center gap-5";
+  nav.className = "hidden xl:flex items-center gap-1 min-w-0";
   nav.dataset.locale = getLocale();
   getNavigationLinks().forEach(([path, label]) => {
     const a = document.createElement("a");
@@ -26,7 +26,7 @@ export function renderNavigation(container) {
     a.dataset.link = "";
     a.dataset.route = path;
     a.className =
-      "nav-link py-7 text-[11px] font-semibold uppercase tracking-wide whitespace-nowrap hover:text-primary";
+      "nav-link px-3 py-1.5 rounded-full bg-primary/10 text-primary text-[10.5px] font-semibold uppercase tracking-wide whitespace-nowrap shrink-0 transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-md hover:-translate-y-0.5";
     a.textContent = label;
     nav.append(a);
   });
