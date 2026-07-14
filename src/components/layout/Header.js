@@ -1,6 +1,6 @@
 import { getNavigationLinks, renderNavigation } from "./Navigation.js";
 import { getLocale, toggleLocale } from "../../i18n/i18n.js";
-import logoUrl from "../../assets/images/logoVNIT.png";
+import logoUrl from "../../assets/images/logo/logoVNIT.png";
 
 export function renderHeader(container) {
   const bar = document.createElement("div");
