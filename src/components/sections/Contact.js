@@ -11,7 +11,7 @@ export function renderContact(container) {
               rgba(199, 110, 134, 0.65),
               rgba(51, 141, 112, 0.55)
             ),
-          url('src/assets/images/italy/Rome.jpg');
+          url('/images/italy/Rome.jpg');
       "
     >
       <div class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop">
