@@ -17,7 +17,7 @@ export function renderHeader(container) {
   brand.className = "flex items-center gap-3 shrink-0";
 
   const logoImage = document.createElement("img");
-  logoImage.src = "/images/logo/logoVNIT.png";
+  logoImage.src = "/images/logos/logoVNIT.png";
   logoImage.alt = "VietItalia logo";
   logoImage.className = "w-12 h-12 object-contain";
 
