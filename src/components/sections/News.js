@@ -14,7 +14,7 @@ export const articles = [
     "19.06.2026",
     "Hội nghị Genoa – Đà Nẵng thúc đẩy hợp tác địa phương",
     "Hội nghị tại Genoa (Ý) đánh dấu bước cụ thể hóa hợp tác giữa hai thành phố; Đại sứ Việt Nam tại Ý nhấn mạnh quan hệ song phương không chỉ dừng ở thương mại mà còn sâu rộng về văn hóa.",
-    "src/assets/images/news/genova-va-da-nang-thuc-day-hop-tac-dau-tu-du-lich-va-doi-moi-sang-tao2.jpg",
+    "/images/news/genova-va-da-nang-thuc-day-hop-tac-dau-tu-du-lich-va-doi-moi-sang-tao2.jpg",
     null,
   ], // [TIN THẬT]
   [
@@ -23,7 +23,7 @@ export const articles = [
     "30.06.2026",
     "Cộng đồng người Việt tham gia Lễ hội Các dân tộc tại Ý",
     "Câu lạc bộ người Việt ở Milano biểu diễn múa nón lá tại Lễ hội Các dân tộc ở Borgomanero, sự kiện văn hóa thường niên tôn vinh sự đa dạng và hòa nhập của các cộng đồng nhập cư tại Ý.",
-    "src/assets/images/news/cong-dong-nguoi-viet-o-italy-huong-ung-le-hoi-cac-dan-toc-1.jpg",
+    "/images/news/cong-dong-nguoi-viet-o-italy-huong-ung-le-hoi-cac-dan-toc-1.jpg",
     null,
   ], // [TIN THẬT]
 
@@ -35,7 +35,7 @@ export const articles = [
     "20.01.2026",
     "Chính phủ Ý cấp học bổng cho sinh viên quốc tế năm học 2026–2027",
     "Đại sứ quán Ý tại Hà Nội thông báo học bổng trị giá 1.200 EUR/tháng cho các chương trình đào tạo và nghiên cứu tại Ý, hồ sơ nộp trực tuyến qua cổng Du học Ý trước 26/3/2026.",
-    "src/assets/images/news/Hoc-bong-Chinh-phu-Italia.jpg",
+    "/images/news/Hoc-bong-Chinh-phu-Italia.jpg",
     null,
   ], // [TIN THẬT]
 
@@ -50,7 +50,7 @@ export const articles = [
     "22.05.2026",
     "Việt Nam đẩy mạnh hợp tác công nghệ và tăng trưởng xanh với Ý",
     "Đại sứ Việt Nam tại Ý cho biết hai nước đang mở rộng hợp tác về chuyển giao công nghệ, AI, hạ tầng xanh và đào tạo nghề; thương mại song phương đạt gần 8 tỷ USD, Ý là đối tác thương mại lớn thứ 3 của Việt Nam trong EU.",
-    "src/assets/images/news/anh-toan-canh.jpg",
+    "/images/news/anh-toan-canh.jpg",
     null,
   ], // [TIN THẬT]
   [
@@ -59,7 +59,7 @@ export const articles = [
     "02.06.2026",
     "TP.HCM mở rộng hợp tác với các đối tác Ý",
     "Nhân kỷ niệm 80 năm Quốc khánh Ý, lãnh đạo TP.HCM khẳng định quan hệ hợp tác ngày càng thực chất; thương mại giữa thành phố và Ý vượt 800 triệu USD năm 2025, Ý hiện có 92 dự án FDI tại TP.HCM.",
-    "src/assets/images/news/z789400264650225e52e30d3a398e5d460b3e6324900bc-1780409169056261727729.jpg",
+    "/images/news/z789400264650225e52e30d3a398e5d460b3e6324900bc-1780409169056261727729.jpg",
     null,
   ], // [TIN THẬT]
 
@@ -70,7 +70,7 @@ export const articles = [
     "29.06.2026",
     "Chương trình Visa Nhà đầu tư Ý mở thêm lựa chọn định cư châu Âu",
     "Chương trình Thị thực Nhà đầu tư Ý cho phép nhận quyền cư trú khi đầu tư từ 250.000 EUR vào một startup đổi mới sáng tạo được Chính phủ Ý công nhận, áp dụng cho cả gia đình.",
-    "src/assets/images/news/Quyen-loi-dieu-kien-va-cap-nhat-moi-nhat-ve-chuong-trinh-dinh-cu-Italia.jpg",
+    "/images/news/Quyen-loi-dieu-kien-va-cap-nhat-moi-nhat-ve-chuong-trinh-dinh-cu-Italia.jpg",
     null,
   ], // [TIN THẬT]
 
@@ -81,7 +81,7 @@ export const articles = [
     "11.05.2026",
     "Việt Nam – Ý mở rộng hợp tác khoa học công nghệ và đổi mới sáng tạo",
     "Bộ Khoa học và Công nghệ cùng Đại sứ quán Ý trao đổi định hướng hợp tác về AI, công nghệ vũ trụ; hai nước hiện có hơn 150 thỏa thuận hợp tác giữa các trường đại học và viện nghiên cứu.",
-    "src/assets/images/news/img-2017-2307.jpg",
+    "/images/news/img-2017-2307.jpg",
     null,
   ], // [TIN THẬT]
   [
@@ -90,7 +90,7 @@ export const articles = [
     "14.04.2026",
     "Quan hệ nghị viện Việt Nam – Ý được củng cố",
     "Chủ tịch Quốc hội Trần Thanh Mẫn thăm Rome nhân 50 năm quan hệ ngoại giao hai nước; thương mại hai chiều đạt khoảng 7,3 tỷ USD năm 2025, đầu tư đăng ký từ Ý vượt 633 triệu USD.",
-    "src/assets/images/news/z7695925363957-362496630a3a5ea4bc8d1201ba4e06de.jpg",
+    "/images/news/z7695925363957-362496630a3a5ea4bc8d1201ba4e06de.jpg",
     null,
   ], // [TIN THẬT]
   [
@@ -99,7 +99,7 @@ export const articles = [
     "16.09.2025",
     "Việt Nam – Ý chuẩn bị vòng Tham vấn Chính trị năm 2026",
     "Hai nước dự kiến tổ chức Tham vấn Chính trị tại Rome vào tháng 3/2026, tập trung vào thương mại, an ninh và hợp tác công nghiệp trong khuôn khổ kế hoạch hành động 2025-2027.",
-    "src/assets/images/news/img_1479.jpg",
+    "/images/news/img_1479.jpg",
     null,
   ], // [TIN THẬT]
 ];

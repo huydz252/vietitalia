@@ -1,13 +1,6 @@
 import { renderMedia } from "../components/sections/Media.js";
 
-import event1 from "../assets/images/events/event1.jpg";
-import event2 from "../assets/images/events/event2.jpg";
-import event3 from "../assets/images/events/event3.jpg";
-import event4 from "../assets/images/events/event4.jpg";
-import event5 from "../assets/images/events/event5.jpg";
-import event6 from "../assets/images/events/event6.jpg";
-import event7 from "../assets/images/events/event7.jpg";
-import event8 from "../assets/images/events/event8.jpg";
+// Đã xóa các dòng import event1 đến event8
 
 const calendar = [
   [
@@ -44,42 +37,42 @@ const calendar = [
 
 const gallery = [
   {
-    image: event1,
+    image: "/images/events/event1.jpg",
     title: "Vietnam Day Abroad",
     caption: "Chương trình quảng bá văn hóa, du lịch và hình ảnh Việt Nam tại Ý.",
   },
   {
-    image: event2,
+    image: "/images/events/event2.jpg",
     title: "Italian Design Day",
     caption: "Sự kiện kết nối thiết kế, sáng tạo và đổi mới giữa hai quốc gia.",
   },
   {
-    image: event3,
+    image: "/images/events/event3.jpg",
     title: "Made in Italy Day",
     caption: "Giới thiệu các sản phẩm, công nghệ và thương hiệu Made in Italy.",
   },
   {
-    image: event4,
+    image: "/images/events/event4.jpg",
     title: "Festa della Repubblica Italiana",
     caption: "Lễ Quốc khánh Ý với nhiều hoạt động ngoại giao và giao lưu văn hóa.",
   },
   {
-    image: event5,
+    image: "/images/events/event5.jpg",
     title: "Week of Italian Cuisine",
     caption: "Tuần lễ quảng bá ẩm thực Ý cùng các đầu bếp và nhà hàng nổi tiếng.",
   },
   {
-    image: event6,
+    image: "/images/events/event6.jpg",
     title: "Italy – Vietnam Business Forum",
     caption: "Diễn đàn kết nối doanh nghiệp và mở rộng cơ hội đầu tư song phương.",
   },
   {
-    image: event7,
+    image: "/images/events/event7.jpg",
     title: "Giao lưu văn hóa Việt Nam – Ý",
     caption: "Biểu diễn nghệ thuật và giao lưu cộng đồng giữa hai nền văn hóa.",
   },
   {
-    image: event8,
+    image: "/images/events/event8.jpg",
     title: "Hội nghị hợp tác Việt Nam – Ý",
     caption: "Các địa phương và doanh nghiệp thúc đẩy hợp tác trong nhiều lĩnh vực.",
   },
@@ -96,7 +89,7 @@ linear-gradient(
 rgba(240,93,132,.65),
 rgba(51,141,112,.55)
 ),
-url('src/assets/images/italy/Florence-Duomo.jpg');
+url('/images/italy/Florence-Duomo.jpg');
 ">
 
 <div class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop">

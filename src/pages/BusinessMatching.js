@@ -1,24 +1,4 @@
-export function parseQueryParam(name) {
-  return new URLSearchParams(location.search).get(name) || "";
-}
-
-const italy = [
-  "Nhà cung cấp",
-  "Đại lý",
-  "Đầu tư",
-  "Sinh viên thực tập",
-];
-
-const vietnam = [
-  "Đối tác Ý",
-  "Học công nghệ",
-  "Thị trường xuất khẩu",
-];
-
 export default function BusinessMatching(container) {
-  const from = parseQueryParam("from");
-  const country = from.startsWith("italy") ? "it" : "vn";
-
   container.innerHTML = `
     <section class="banner-image bg-cover text-white py-20"
       style="
@@ -47,162 +27,47 @@ export default function BusinessMatching(container) {
       </div>
     </section>
 
+    <!-- Phần nội dung bài viết (MOU) -->
     <section class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop py-16">
-      <div class="grid md:grid-cols-2 gap-7">
-
-        <article class="italy-accent bg-surface-container-low p-7">
-          <p class="text-secondary text-label-sm uppercase">
-            Italy cerca
-          </p>
-
-          <h2 class="font-headline-md text-headline-md mt-2">
-            Doanh nghiệp Ý tìm
+      <article class="max-w-5xl mx-auto">
+        
+        <!-- Tiêu đề văn bản -->
+        <div class="text-center mb-12 border-b border-outline-variant pb-8">
+          <h2 class="font-headline-lg text-headline-lg text-primary uppercase mb-4">
+            Biên bản ghi nhớ (MOU)
           </h2>
-
-          <ul class="mt-5 space-y-3">
-            ${italy
-              .map(
-                (item) => `
-                  <li class="bg-white p-3 border-l-2 border-secondary">
-                    ${item}
-                  </li>
-                `,
-              )
-              .join("")}
-          </ul>
-        </article>
-
-
-        <article class="vietnam-accent bg-surface-container-low p-7">
-          <p class="text-primary text-label-sm uppercase">
-            Vietnam cerca
+          <p class="font-headline-sm text-headline-sm text-on-surface">
+            Về việc hợp tác phát triển nền tảng văn hóa, giáo dục, y tế và kết nối Việt Nam – Ý
           </p>
+          <div class="text-on-surface-variant text-sm mt-6 flex flex-col items-center gap-1">
+            <p>Số: 07/MOUVN/2026</p>
+            <p class="italic">Thành phố Đà Nẵng, ngày 15 tháng 07 năm 2026</p>
+          </div>
+        </div>
 
-          <h2 class="font-headline-md text-headline-md mt-2">
-            Doanh nghiệp Việt tìm
-          </h2>
-
-          <ul class="mt-5 space-y-3">
-            ${vietnam
-              .map(
-                (item) => `
-                  <li class="bg-white p-3 border-l-2 border-primary">
-                    ${item}
-                  </li>
-                `,
-              )
-              .join("")}
-          </ul>
-        </article>
-
-      </div>
-
-
-      <form
-        class="mt-12 bg-surface-container-low p-7 grid md:grid-cols-2 gap-4"
-        novalidate>
-
-        <h2 class="font-headline-md text-headline-md md:col-span-2">
-          Đăng nhu cầu
-        </h2>
-
-        <input
-          required
-          name="company"
-          placeholder="Tên doanh nghiệp">
-
-        <select required name="country">
-          <option value="vn">
-            Việt Nam
-          </option>
-
-          <option value="it">
-            Ý
-          </option>
-        </select>
-
-        <select required name="need"></select>
-
-        <textarea
-          required
-          name="description"
-          rows="4"
-          class="md:col-span-2"
-          placeholder="Mô tả nhu cầu">
-        </textarea>
-
-        <input
-          required
-          name="contact"
-          class="md:col-span-2"
-          placeholder="Email hoặc số điện thoại">
-
-        <button
-          class="bg-primary text-white py-3 md:col-span-2 uppercase text-label-sm">
-          Gửi nhu cầu
-        </button>
-
-        <p class="form-message text-sm md:col-span-2"></p>
-
-      </form>
+        <!-- Nội dung chi tiết -->
+        <div class="space-y-6 text-on-surface leading-relaxed text-justify md:text-lg">
+          <p>
+            Trong bối cảnh quan hệ hợp tác giữa Việt Nam và Cộng hòa Ý ngày càng được mở rộng trên các lĩnh vực văn hóa, giáo dục, khoa học, công nghệ và giao lưu nhân dân, việc xây dựng các chương trình hợp tác có tính bền vững, ứng dụng công nghệ số và kết nối nguồn lực quốc tế trở thành nhu cầu thiết thực của cả hai quốc gia.
+          </p>
+          <p>
+            Trên tinh thần hữu nghị, bình đẳng, tôn trọng lẫn nhau và cùng hướng đến mục tiêu phát triển lâu dài, Hiệp hội Văn hóa VietItalia (Italy) và Công ty TNHH MTV Vinabook – Trung tâm Đào tạo Kỹ năng mềm Quốc tế IKIGAI (Việt Nam) thống nhất ký kết Biên bản ghi nhớ (Memorandum of Understanding – MOU) nhằm thiết lập khuôn khổ hợp tác chiến lược trong việc phát triển các chương trình giáo dục, văn hóa, y tế, chuyển đổi số và kết nối cộng đồng giữa Việt Nam và Ý.
+          </p>
+          <p>
+            Thông qua Biên bản ghi nhớ này, hai bên mong muốn phát huy thế mạnh của mỗi đơn vị để cùng xây dựng hệ sinh thái giáo dục hiện đại; phát triển nền tảng công nghệ Kiwi Medias phục vụ học tập đa ngôn ngữ; kết nối các trường học, tổ chức giáo dục, doanh nghiệp, chuyên gia và cộng đồng người Việt tại Ý cũng như người Ý quan tâm đến văn hóa, ngôn ngữ và cơ hội hợp tác với Việt Nam.
+          </p>
+          <p>
+            Bên cạnh đó, hai bên sẽ phối hợp triển khai các chương trình đào tạo trực tuyến, giao lưu văn hóa, quảng bá du lịch, xúc tiến đầu tư, hỗ trợ du học, trao đổi học thuật, phát triển các dự án ứng dụng trí tuệ nhân tạo (AI) trong giáo dục và truyền thông, đồng thời xây dựng cộng đồng học tập xuyên biên giới, góp phần tăng cường sự hiểu biết, kết nối và hợp tác giữa nhân dân hai nước.
+          </p>
+          <p>
+            Biên bản ghi nhớ này là cơ sở để hai bên triển khai các hoạt động hợp tác theo từng giai đoạn, đồng thời là nền tảng để xây dựng các phụ lục, hợp đồng hoặc thỏa thuận chuyên đề khi cần thiết. Trừ các điều khoản liên quan đến bảo mật thông tin, quyền sở hữu trí tuệ, sử dụng thương hiệu, truyền thông và giải quyết tranh chấp, các nội dung còn lại trong MOU này được hiểu là định hướng hợp tác và không làm phát sinh nghĩa vụ tài chính hoặc trách nhiệm pháp lý bắt buộc nếu chưa có văn bản thỏa thuận chi tiết được ký kết giữa hai bên.
+          </p>
+          <p>
+            Hai bên cam kết thực hiện Biên bản ghi nhớ trên nguyên tắc thiện chí, minh bạch, tuân thủ pháp luật của mỗi quốc gia, tôn trọng quyền và lợi ích hợp pháp của nhau, đồng thời cùng chia sẻ nguồn lực, kinh nghiệm và cơ hội phát triển nhằm xây dựng một hệ sinh thái giáo dục – văn hóa – công nghệ mang tầm quốc tế, góp phần thúc đẩy quan hệ hợp tác hữu nghị giữa Việt Nam và Cộng hòa Ý trong giai đoạn mới.
+          </p>
+        </div>
+        
+      </article>
     </section>
   `;
-
-
-  const form = container.querySelector("form");
-  const select = form.elements.country;
-  const need = form.elements.need;
-
-  select.value = country;
-
-
-  const fill = () => {
-    need.replaceChildren(
-      ...(select.value === "it" ? italy : vietnam).map((item) => {
-        const option = document.createElement("option");
-
-        option.value = item;
-        option.textContent = item;
-
-        return option;
-      }),
-    );
-  };
-
-
-  fill();
-
-  select.addEventListener("change", fill);
-
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const message = form.querySelector(".form-message");
-
-    if (!form.checkValidity()) {
-      message.textContent =
-        "Vui lòng hoàn thiện các trường bắt buộc.";
-
-      message.className =
-        "form-message text-sm text-primary md:col-span-2";
-
-      return;
-    }
-
-
-    const data = Object.fromEntries(new FormData(form));
-
-    console.log(
-      "VietItalia business matching request",
-      data,
-    );
-
-
-    message.textContent =
-      "Nhu cầu của bạn đã được ghi nhận.";
-
-    message.className =
-      "form-message text-sm text-secondary md:col-span-2";
-  });
 }
