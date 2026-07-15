@@ -54,7 +54,7 @@ export default function About(container) {
           </div>
 
           <!-- Ô THỨ 2 (Trên - Phải): GIỚI THIỆU CHUNG -->
-          <div class="flex flex-col justify-center bg-gray-50 p-8 rounded-xl border border-outline-variant shadow-sm h-full">
+          <div class="flex flex-col justify-start bg-gray-50 p-8 rounded-xl border border-outline-variant shadow-sm h-full">
             <h2 class="font-headline-md text-3xl font-bold text-primary uppercase">
               Hiệp hội Văn hóa VietItalia
             </h2>
