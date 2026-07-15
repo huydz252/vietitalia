@@ -8,6 +8,8 @@ export default function Home(container) {
   renderHero(container, t);
   renderMarketMatch(container, t);
   renderAboutUs(container);
+
+  // renderVideoIntro(container);
   renderNews(container);
   renderPartners(container, { compact: true });
 }

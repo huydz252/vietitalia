@@ -1,4 +1,4 @@
-import { renderNavigation } from "./Navigation.js";
+import { renderNavigation, updateActiveNavigation } from "./Navigation.js";
 import { getLocale, toggleLocale } from "../../i18n/i18n.js";
 
 export function renderHeader(container) {
@@ -17,7 +17,7 @@ export function renderHeader(container) {
   brand.className = "flex items-center gap-3 shrink-0";
 
   const logoImage = document.createElement("img");
-  logoImage.src = "/images/logos/logoVNIT.png";
+  logoImage.src = "/images/logos/logo2.png";
   logoImage.alt = "VietItalia logo";
   logoImage.className = "w-12 h-12 object-contain";
 

@@ -26,15 +26,27 @@ export function renderNavigation(container) {
 
   // Menu chính
   getNavigationLinks().forEach(([path, label]) => {
-    const a = document.createElement("a");
-    a.href = path;
-    a.dataset.link = "";
-    a.dataset.route = path;
-    a.className =
-      "nav-link px-3 py-1.5 rounded-full bg-primary/10 text-primary text-[10.5px] font-semibold uppercase tracking-wide whitespace-nowrap shrink-0 transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-md hover:-translate-y-0.5";
-    a.textContent = label;
-    nav.append(a);
-  });
+  const a = document.createElement("a");
+
+  a.href = path;
+  a.dataset.link = "";
+  a.dataset.route = path;
+
+  a.className = [
+    "nav-link",
+    "px-3 py-1.5 rounded-full",
+    "bg-primary/10 text-primary",
+    "text-[10.5px] font-semibold uppercase tracking-wide",
+    "whitespace-nowrap shrink-0",
+    "transition-all duration-200",
+    "hover:bg-primary hover:text-white",
+    "hover:shadow-md hover:-translate-y-0.5",
+  ].join(" ");
+
+  a.textContent = label;
+
+  nav.append(a);
+});
 
   // Dropdown Tin tức
   const wrapper = document.createElement("div");
