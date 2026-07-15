@@ -12,9 +12,9 @@ export default function About(container) {
     `
       <!-- Banner chính của trang -->
       <section
-        class="bg-cover bg-center bg-no-repeat text-white py-20 flex flex-col justify-center"
+        class="bg-cover bg-center bg-no-repeat text-white py-10 flex flex-col "
         style="
-          height: 450px;
+          height: 300px;
           background-image:
             linear-gradient(
               rgba(240, 93, 132, 0.75),
