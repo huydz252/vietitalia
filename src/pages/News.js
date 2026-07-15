@@ -11,7 +11,7 @@ export default function News(container) {
               rgba(240, 93, 132, 0.65),
               rgba(51, 141, 112, 0.55)
             ),
-          url('src/assets/images/vietnam/Golden_Bridge.jpg');
+          url('/images/vietnam/Golden_Bridge.jpg');
       "
     >
       <div class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop">
