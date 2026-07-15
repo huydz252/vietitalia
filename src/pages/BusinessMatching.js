@@ -9,7 +9,7 @@ export default function BusinessMatching(container) {
               rgba(159, 106, 106, 0.65),
               rgba(51, 141, 112, 0.55)
             ),
-          url('src/assets/images/italy/image132431.jpg');
+          url('/images/italy/image132431.jpg');
       "
     >
       <div class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop">

@@ -63,7 +63,7 @@ export default function ItalyMarket(container) {
               rgba(240, 93, 132, 0.65),
               rgba(51, 141, 112, 0.55)
             ),
-          url('src/assets/images/italy/riomaggiore-shutterstock_1195849822_1118a4b73d.jpg');
+          url('/images/italy/riomaggiore-shutterstock_1195849822_1118a4b73d.jpg');
       "
     >
       <div class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop">
