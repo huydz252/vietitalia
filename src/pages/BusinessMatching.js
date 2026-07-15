@@ -56,6 +56,21 @@ export default function BusinessMatching(container) {
           <p>
             Thông qua Biên bản ghi nhớ này, hai bên mong muốn phát huy thế mạnh của mỗi đơn vị để cùng xây dựng hệ sinh thái giáo dục hiện đại; phát triển nền tảng công nghệ Kiwi Medias phục vụ học tập đa ngôn ngữ; kết nối các trường học, tổ chức giáo dục, doanh nghiệp, chuyên gia và cộng đồng người Việt tại Ý cũng như người Ý quan tâm đến văn hóa, ngôn ngữ và cơ hội hợp tác với Việt Nam.
           </p>
+
+          <!-- KHỐI ẢNH ĐƯỢC CHÈN THÊM -->
+          <div class="w-full flex flex-col items-center py-2">
+            <img 
+              src="/images/banner/banner1.png" 
+              alt="Hợp tác VietItalia và IKIGAI" 
+              class="w-full h-auto rounded-xl shadow-md border border-gray-200 object-cover"
+            />
+            <!-- Dòng chú thích ảnh (Có thể xóa nếu không cần) -->
+            <p class="text-center text-sm text-gray-500 italic mt-3">
+              Hình ảnh Hợp tác giữa VietItalia và IKIGAI
+            </p>
+          </div>
+          <!-- KẾT THÚC KHỐI ẢNH -->
+
           <p>
             Bên cạnh đó, hai bên sẽ phối hợp triển khai các chương trình đào tạo trực tuyến, giao lưu văn hóa, quảng bá du lịch, xúc tiến đầu tư, hỗ trợ du học, trao đổi học thuật, phát triển các dự án ứng dụng trí tuệ nhân tạo (AI) trong giáo dục và truyền thông, đồng thời xây dựng cộng đồng học tập xuyên biên giới, góp phần tăng cường sự hiểu biết, kết nối và hợp tác giữa nhân dân hai nước.
           </p>
