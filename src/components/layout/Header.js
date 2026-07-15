@@ -14,12 +14,12 @@ export function renderHeader(container) {
   const brand = document.createElement("a");
   brand.href = "/";
   brand.dataset.link = "";
-  brand.className = "flex items-center gap-3 shrink-0";
+  brand.className = "flex items-center gap-3 shrink-0 ";
 
   const logoImage = document.createElement("img");
-  logoImage.src = "/images/logos/logo2.png";
+  logoImage.src = "/images/logos/logoVNIT.png";
   logoImage.alt = "VietItalia logo";
-  logoImage.className = "w-12 h-12 object-contain";
+  logoImage.className = "w-14 h-14 object-contain";
 
   const logoText = document.createElement("span");
   logoText.className =

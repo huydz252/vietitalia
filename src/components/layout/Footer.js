@@ -18,10 +18,29 @@ export function renderFooter(container) {
       <div class="w-full flex flex-row justify-center items-center gap-10 bg-white">
         <!-- Logo Công ty 0 -->
         <!-- target="_blank" giúp mở liên kết ở một tab mới -->
+
+        <a href="https://vinabook.edu.vn/" target="_blank" rel="noopener noreferrer" 
+          class="transition-transform duration-300 hover:scale-110">
+          <img 
+            src="/images/logos/vina.png" 
+            alt="Tên công ty 1" 
+            class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+          />
+        </a>
+
         <a href="https://ai.vinabook.edu.vn/" target="_blank" rel="noopener noreferrer" 
           class="transition-transform duration-300 hover:scale-110">
           <img 
             src="/images/logos/ikigai.png" 
+            alt="Tên công ty 1" 
+            class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+          />
+        </a>
+
+        <a href="https://kiwimedias-webapp.vercel.app/" target="_blank" rel="noopener noreferrer" 
+          class="transition-transform duration-300 hover:scale-110">
+          <img 
+            src="/images/logos/WIKI_MEDIA.png" 
             alt="Tên công ty 1" 
             class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
           />
@@ -53,6 +72,16 @@ export function renderFooter(container) {
           class="transition-transform duration-300 hover:scale-110">
           <img 
             src="/images/logos/logo_Villa_2.jpg" 
+            alt="Tên công ty 3" 
+            class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+          />
+        </a>
+
+        <!-- Logo Công ty 4 -->
+        <a href="https://link-cong-ty-3.com" target="_blank" rel="noopener noreferrer" 
+          class="transition-transform duration-300 hover:scale-110">
+          <img 
+            src="/images/logos/Logo_Centro_Consorzi.png" 
             alt="Tên công ty 3" 
             class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
           />
