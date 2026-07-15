@@ -20,7 +20,7 @@ export default function About(container) {
               rgba(240, 93, 132, 0.75),
               rgba(51, 141, 112, 0.65)
             ),
-            url('src/assets/images/italy/Rome.jpg');
+            url('/images/italy/Rome.jpg');
         "
       >
         <div class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop w-full mt-10">
@@ -93,7 +93,7 @@ export default function About(container) {
           <!-- Cột Phải: Ảnh (Mở rộng ra chiếm 7/12 không gian, hiển thị đủ 100% tỷ lệ gốc) -->
           <div class="lg:col-span-7 w-full flex justify-center items-center">
             <img 
-                src="src/assets/images/about/hiephoi.jpg" 
+                src="/images/about/hiephoi.jpg" 
                 alt="Hiệp hội Văn hóa VietItalia" 
                 class="w-full h-auto object-contain rounded-xl shadow-lg border border-outline-variant"
             />
