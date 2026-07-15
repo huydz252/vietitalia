@@ -1,13 +1,8 @@
 export function renderPartners(container, { compact = false } = {}) {
   const s = document.createElement("section");
   s.className = `bg-surface-container-low border-y border-outline-variant ${compact ? "py-12" : "py-20"}`;
-  const groups = [
-    ["Chính quyền", ["EMBASSY VN/IT", "MINISTRY OF TRADE", "REGIONE VENETO"]],
-    ["Giáo dục", ["HANOI UNIVERSITY", "POLITECNICO MILANO", "ROME ACADEMY"]],
-    ["Doanh nghiệp", ["ITALCHAM", "VN CHAMBER", "VIETITALIA NETWORK"]],
-  ];
+ 
   s.innerHTML =
-    '<div class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop"><h2 class="text-center font-headline-sm text-headline-sm">Đối tác & tổ chức đồng hành</h2><div class="grid md:grid-cols-3 gap-6 mt-8">' +
     groups
       .map(
         ([t, ls]) =>
