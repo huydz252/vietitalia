@@ -1,5 +1,5 @@
-import { renderNavigation, updateActiveNavigation } from "./Navigation.js";
-import { getLocale, toggleLocale } from "../../i18n/i18n.js";
+import { renderNavigation, updateNavigationLanguage } from "./Navigation.js"; // THÊM updateNavigationLanguage
+import { getLocale, toggleLocale, t } from "../../i18n/i18n.js"; // THÊM hàm t()
 
 export function renderHeader(container) {
   const bar = document.createElement("div");
@@ -10,7 +10,7 @@ export function renderHeader(container) {
   row.className =
     "max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop min-h-[72px] flex items-center justify-between gap-3";
 
-  // Logo
+  // --- L O G O ---
   const brand = document.createElement("a");
   brand.href = "/";
   brand.dataset.link = "";
@@ -35,84 +35,110 @@ export function renderHeader(container) {
   brand.append(logoImage, logoText);
   row.append(brand);
 
-  // Desktop Navigation
+  // --- N A V I G A T I O N (Desktop) ---
   renderNavigation(row);
 
-  // Language Button
+  // --- L A N G U A G E   B U T T O N ---
   const langButton = document.createElement("button");
   langButton.type = "button";
+  // Đã điều chỉnh lại padding (p-2) và thêm flex để chứa ảnh cho cân đối
   langButton.className =
-    "px-3 py-2 border border-outline text-label-sm font-semibold text-primary";
+    "p-2 border border-outline rounded-md transition hover:bg-gray-100 flex items-center justify-center min-w-[40px]";
   langButton.setAttribute("aria-label", "Đổi ngôn ngữ");
-  langButton.textContent = getLocale() === "vi" ? "IT" : "VN";
-  langButton.addEventListener("click", () => toggleLocale());
+
+  const renderFlag = () => {
+    const imgSrc = getLocale() === "vi" 
+      ?  "/images/logos/flag-vn.jpg"
+      : "/images/logos/flag-it.jpg" ;
+       
+    const altText = getLocale() === "vi" ? "IT" : "VN";
+    
+    return `<img src="${imgSrc}" alt="${altText}" class="w-6 h-4 object-cover rounded-sm shadow-sm" />`;
+  };
+
+  langButton.innerHTML = renderFlag();
+  
+  langButton.addEventListener("click", () => {
+    toggleLocale();
+    langButton.innerHTML = renderFlag();
+    updateNavigationLanguage();
+    window.location.reload();
+  });
 
   row.append(langButton);
 
-  // Mobile Button
+  // --- M O B I L E   M E N U   B U T T O N ---
   const menuButton = document.createElement("button");
   menuButton.type = "button";
   menuButton.className = "xl:hidden p-2 text-primary";
   menuButton.innerHTML =
     '<span class="material-symbols-outlined">menu</span>';
 
-  // Mobile Menu
+  // --- M O B I L E   M E N U   C O N T E N T ---
   const mobile = document.createElement("div");
   mobile.className =
     "hidden absolute top-full inset-x-0 bg-surface border-b border-outline-variant p-5 xl:hidden";
 
-  const menus = [
-    ["/", "Trang chủ"],
-    ["/about", "Giới thiệu"],
-    ["/ambassador", "Đại sứ"],
-    ["/events", "Sự kiện"],
+  // ĐÃ SỬA: Dùng khóa (key) thay vì chữ cứng để dịch được
+  const mobileMenus = [
+    ["/", "nav.home"],
+    ["/about", "nav.about"],
+    ["/ambassador", "nav.ambassador"],
+    ["/events", "nav.events"],
   ];
 
-  menus.forEach(([path, label]) => {
+  mobileMenus.forEach(([path, key]) => {
     const a = document.createElement("a");
     a.href = path;
     a.dataset.link = "";
     a.dataset.route = path;
+    a.dataset.i18n = key; // Đánh dấu để hàm updateNavigationLanguage quét tới
     a.className = "nav-link block py-3 uppercase text-label-sm";
-    a.textContent = label;
+    a.textContent = t(key);
     mobile.append(a);
   });
 
-  // Dropdown Tin tức
+  // Dropdown Tin tức (Mobile)
   const details = document.createElement("details");
   details.className = "border-t border-outline-variant py-2";
 
   const summary = document.createElement("summary");
   summary.className =
     "cursor-pointer uppercase text-label-sm font-semibold py-2";
-  summary.textContent = "Tin tức";
-
+  
+  // Bọc vào span có thẻ data-i18n
+  summary.innerHTML = `<span data-i18n="nav.news">${t("nav.news")}</span>`;
   details.append(summary);
 
-  [
-    ["/italy-market", "Thị trường Ý"],
-    ["/vietnam-market", "Thị trường Việt Nam"],
-    ["/business-matching", "Kết nối doanh nghiệp"],
-  ].forEach(([path, label]) => {
+  // ĐÃ SỬA: Dùng khóa dịch
+  const mobileSubmenus = [
+    ["/italy-market", "nav.italyMarket"],
+    ["/vietnam-market", "nav.vietnamMarket"],
+    ["/business-matching", "nav.businessMatching"],
+  ];
+
+  mobileSubmenus.forEach(([path, key]) => {
     const a = document.createElement("a");
     a.href = path;
     a.dataset.link = "";
     a.dataset.route = path;
+    a.dataset.i18n = key; // Đánh dấu
     a.className =
       "block py-2 pl-5 text-sm text-on-surface-variant hover:text-primary";
-    a.textContent = label;
+    a.textContent = t(key);
     details.append(a);
   });
 
   mobile.append(details);
 
-  // Contact
+  // Contact (Mobile)
   const contact = document.createElement("a");
   contact.href = "/contact";
   contact.dataset.link = "";
   contact.dataset.route = "/contact";
+  contact.dataset.i18n = "nav.contact"; // Đánh dấu
   contact.className = "nav-link block py-3 uppercase text-label-sm";
-  contact.textContent = "Liên hệ";
+  contact.textContent = t("nav.contact");
 
   mobile.append(contact);
 

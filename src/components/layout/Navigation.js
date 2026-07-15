@@ -93,3 +93,10 @@ export function updateActiveNavigation(path) {
     .querySelectorAll("[data-route]")
     .forEach((a) => a.classList.toggle("active", a.dataset.route === path));
 }
+
+export function updateNavigationLanguage() {
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    const key = element.dataset.i18n;
+    element.textContent = t(key);
+  });
+}

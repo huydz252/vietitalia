@@ -18,7 +18,7 @@ export function renderFooter(container) {
       <div class="w-full flex flex-row justify-center items-center gap-10 bg-white">
         <!-- Logo Công ty 0 -->
         <!-- target="_blank" giúp mở liên kết ở một tab mới -->
-        <a href="https://vinabook.edu.vn/" target="_blank" rel="noopener noreferrer" 
+        <a href="https://ai.vinabook.edu.vn/" target="_blank" rel="noopener noreferrer" 
           class="transition-transform duration-300 hover:scale-110">
           <img 
             src="/images/logos/ikigai.png" 
