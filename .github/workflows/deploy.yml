@@ -7,7 +7,7 @@ on:
 
 jobs:
   web-deploy:
-    name: 🎉 Deploy
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
     - name: Lấy source code mới nhất
@@ -24,7 +24,7 @@ jobs:
     - name: Build Project bằng Vite
       run: npm run build
 
-    - name: 📂 Đồng bộ file lên cPanel
+    - name: Đồng bộ file lên cPanel
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ${{ secrets.FTP_SERVER }}
@@ -32,3 +32,5 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./dist/
         server-dir: /public_html/
+        protocol: ftp
+        port: 21

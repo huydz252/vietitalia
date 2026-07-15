@@ -1,8 +1,3 @@
-// ==========================================================================
-// TRANG ĐẠI SỨ VĂN HÓA VIETITALIA 2026 — dựng lại toàn bộ theo nội dung mới
-// ==========================================================================
-// Ảnh lấy từ public/images/ — Vite serve public/ ở root nên gọi bằng /images/...
-// ==========================================================================
 
 import { getLocale } from "../i18n/i18n.js";
 
@@ -27,7 +22,7 @@ const audiences = [
 const itinerary = [
   {
     day: 1,
-    icon: "👋",
+    icon: "",
     title: "Chào mừng đến Feltre",
     items: [
       "Đón đoàn và nhận phòng.",
@@ -38,7 +33,7 @@ const itinerary = [
   },
   {
     day: 2,
-    icon: "🏛️",
+    icon: "",
     title: "Khám phá Feltre lịch sử",
     items: [
       "Tham quan trung tâm lịch sử Feltre.",
@@ -49,7 +44,7 @@ const itinerary = [
   },
   {
     day: 3,
-    icon: "🏔️",
+    icon: "",
     title: "Thiên nhiên và phát triển bền vững",
     items: [
       "Tham quan khu vực Dolomiti UNESCO hoặc công viên tự nhiên.",
@@ -59,7 +54,7 @@ const itinerary = [
   },
   {
     day: 4,
-    icon: "🎓",
+    icon: "",
     title: "Giáo dục và Doanh nghiệp Ý",
     items: [
       "Tham quan trường đào tạo nghề hoặc đại học tại Belluno.",
@@ -70,7 +65,7 @@ const itinerary = [
   },
   {
     day: 5,
-    icon: "🤝",
+    icon: "",
     title: "Đại Sứ Văn Hóa VietItalia",
     items: [
       "Workshop về văn hóa Ý và kỹ năng giao tiếp quốc tế.",
@@ -81,7 +76,7 @@ const itinerary = [
   },
   {
     day: 6,
-    icon: "🚂",
+    icon: "",
     title: "Trải nghiệm Venice",
     items: [
       "Di chuyển bằng tàu hỏa đến Venice.",
@@ -92,7 +87,7 @@ const itinerary = [
   },
   {
     day: 7,
-    icon: "🎤",
+    icon: "",
     title: "Kết nối và tốt nghiệp",
     items: [
       "Tổng kết chương trình.",
