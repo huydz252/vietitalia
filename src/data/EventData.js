@@ -1,5 +1,7 @@
 export const eventsData = {
   vi: [
+
+    // bài 1
     {
       id: "01",
       title: "Chuyển giao công nghệ sản xuất Gelato Ý tại Belluno",
@@ -25,6 +27,8 @@ export const eventsData = {
         </ul>
       `
     },
+
+    // bài 2
     {
       id: "02",
       title: "Chương trình Đại Sứ Văn Hóa VietItalia 2026",
@@ -73,6 +77,8 @@ export const eventsData = {
         </a>
       `
     },
+
+    // bài 3
     {
       id: "03",
       title: "Khám phá Việt Nam tại Feltre – Cầu nối văn hóa Việt Nam & Ý",
@@ -124,6 +130,8 @@ export const eventsData = {
         </p>
       `
     },
+
+    // bài 4
     {
       id: "04",
       title: "Thư mời tài trợ: Cùng VietItalia xây dựng những nhịp cầu giữa Việt Nam và Ý",
@@ -172,6 +180,8 @@ export const eventsData = {
         </div>
       `
     },
+
+    // bài 5
     {
       id: "05",
       title: "Talkshow Đặc biệt: Chương trình Đại Sứ Văn Hóa 4.0",
@@ -221,7 +231,11 @@ export const eventsData = {
       `
     },
   ],
+
+
   it: [
+
+    // bài 1
     {
       id: "01",
       title: "Trasferimento tecnologico per la produzione di Gelato italiano a Belluno",
@@ -244,6 +258,8 @@ export const eventsData = {
         </ul>
       `
     },
+
+    // bài 2
     {
       id: "02",
       title: "Programma Ambasciatore Culturale VietItalia 2026",
@@ -292,6 +308,8 @@ export const eventsData = {
         </a>
       `
     },
+
+    // bài 3
     {
       id: "03",
       title: "Scoprire il Vietnam a Feltre – Ponte culturale tra Vietnam e Italia",
@@ -343,6 +361,8 @@ export const eventsData = {
         </p>
       `
     },
+
+    // bài 4
     {
       id: "04",
       title: "Invito di sponsorizzazione: Costruiamo insieme ponti tra Vietnam e Italia con VietItalia",
@@ -391,6 +411,8 @@ export const eventsData = {
         </div>
       `
     },
+
+    // bài 5
     {
       id: "05",
       title: "Talkshow Speciale: Programma Ambasciatore Culturale 4.0",
