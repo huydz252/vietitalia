@@ -10,7 +10,7 @@ export const translations = {
       vietnamMarket: "Thị trường Việt Nam",
       businessMatching: "Kết nối doanh nghiệp",
       contact: "Liên hệ",
-      italyTravel: "Du lịch Sống Như Ý",
+      italyTravel: "Du lịch sống như Ý",
     },
     home: {
       heroTitle: "Cầu Nối Việt Nam - Ý",
