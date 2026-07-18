@@ -189,20 +189,30 @@ export default function Ambassador(container) {
       </div>
     </section>` +
 
-    // ---------------- LỊCH TRÌNH 7 NGÀY ----------------
+    // ---------------- LỊCH TRÌNH 7 NGÀY (dạng ô lưới, chia đều 2 cột, ngày cuối trải rộng + căn giữa) ----------------
     `<section id="lich-trinh" class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop py-16">
       <p class="text-primary text-label-sm uppercase tracking-widest">Lịch trình</p>
       <h2 class="font-headline-md text-headline-md mt-2">7 ngày 6 đêm tại Belluno</h2>
-      <div class="mt-10 border-l-2 border-outline-variant">
+      <div class="grid md:grid-cols-2 gap-6 mt-10">
         ${itinerary
-          .map(
-            (d) =>
-              `<article class="relative pl-10 pb-10 last:pb-0">
-                <span class="absolute -left-6 top-0 w-12 h-12 rounded-full bg-primary text-white grid place-items-center font-headline-sm text-headline-sm">${d.day}</span>
-                <h3 class="font-headline-sm text-headline-sm">${d.icon} Ngày ${d.day} – ${d.title}</h3>
-                <ul class="mt-3 space-y-1.5 text-sm text-on-surface-variant">${d.items.map((i) => `<li>• ${i}</li>`).join("")}</ul>
-              </article>`,
-          )
+          .map((d, i) => {
+            const isLast = i === itinerary.length - 1 && itinerary.length % 2 !== 0;
+            return isLast
+              ? `<article class="md:col-span-2 vietnam-accent bg-surface-container-low institutional-shadow p-8 text-center">
+                  <div class="flex flex-col items-center gap-3">
+                    <span class="w-12 h-12 rounded-full bg-primary text-white grid place-items-center font-headline-sm text-headline-sm">${d.day}</span>
+                    <h3 class="font-headline-sm text-headline-sm">${d.icon} Ngày ${d.day} – ${d.title}</h3>
+                  </div>
+                  <ul class="mt-4 grid sm:grid-cols-2 gap-x-8 gap-y-1.5 text-sm text-on-surface-variant max-w-3xl mx-auto text-left">${d.items.map((item) => `<li>• ${item}</li>`).join("")}</ul>
+                </article>`
+              : `<article class="${i % 2 === 0 ? "vietnam-accent" : "italy-accent"} bg-surface-container-low institutional-shadow p-7">
+                  <div class="flex items-center gap-4">
+                    <span class="shrink-0 w-12 h-12 rounded-full bg-primary text-white grid place-items-center font-headline-sm text-headline-sm">${d.day}</span>
+                    <h3 class="font-headline-sm text-headline-sm">${d.icon} Ngày ${d.day} – ${d.title}</h3>
+                  </div>
+                  <ul class="mt-4 space-y-1.5 text-sm text-on-surface-variant">${d.items.map((item) => `<li>• ${item}</li>`).join("")}</ul>
+                </article>`;
+          })
           .join("")}
       </div>
     </section>` +
