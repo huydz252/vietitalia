@@ -11,6 +11,7 @@ import JobMarket from "./pages/JobMarket.js";
 import VietnamMarket from "./pages/VietnamMarket.js";
 import BusinessMatching from "./pages/BusinessMatching.js";
 import { renderContact } from "./components/sections/Contact.js";
+import ItalyTravel from "./pages/ItalyTravel.js"; 
 const routes = {
   "/": Home,
   "/about": About,
@@ -22,6 +23,7 @@ const routes = {
   "/vietnam-market": VietnamMarket,
   "/business-matching": BusinessMatching,
   "/contact": (container) => renderContact(container),
+  "/italy-travel": ItalyTravel,
 };
 const root = document.querySelector("#app-root");
 const headerRoot = document.querySelector("#app-header");
