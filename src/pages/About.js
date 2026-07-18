@@ -39,29 +39,19 @@ export default function About(container) {
       </section>
 
       <section class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop py-16">
-        
-        <!-- BỐ CỤC LƯỚI 4 Ô VUÔNG (2x2 Grid) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-7xl mx-auto items-stretch">
-          
-          <!-- Ô THỨ 1 (Trên - Trái): ẢNH -->
-          <div class="w-full flex justify-center items-center h-full">
-            <img 
-                src="/images/about/hiephoi.jpg" 
-                alt="Hiệp hội Văn hóa VietItalia" 
-                class="w-full h-full object-cover rounded-xl shadow-lg border border-outline-variant"
-                style="min-height: 400px;"
-            />
-          </div>
 
-          <!-- Ô THỨ 2 (Trên - Phải): GIỚI THIỆU CHUNG -->
-          <div class="flex flex-col justify-start bg-gray-50 p-8 rounded-xl border border-outline-variant shadow-sm h-full">
+        <!-- KHỐI GIỚI THIỆU: chữ trái - ảnh phải, cân bằng theo tỉ lệ 3:2 -->
+        <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+
+          <!-- CHỮ (trái, có khung/ô riêng) -->
+          <div class="flex flex-col justify-center bg-gray-50 p-8 rounded-xl border border-outline-variant shadow-sm h-full">
             <h2 class="font-headline-md text-3xl font-bold text-primary uppercase">
               Hiệp hội Văn hóa VietItalia
             </h2>
             <p class="mt-3 text-lg font-semibold text-secondary">
               Cầu nối văn hóa – giáo dục – doanh nghiệp giữa Việt Nam và Ý
             </p>
-            
+
             <div class="mt-6 text-on-surface-variant leading-relaxed text-justify space-y-4 text-base">
               <p>
                 Hiệp hội Văn hóa VietItalia là tổ chức văn hóa được thành lập tại Cộng hòa Ý với sứ mệnh thúc đẩy giao lưu văn hóa, giáo dục, ngôn ngữ và hợp tác quốc tế giữa Việt Nam và Ý. Hiệp hội hướng tới xây dựng một cộng đồng kết nối bền vững, nơi người Việt Nam tại Ý, người Ý yêu mến Việt Nam cùng các tổ chức, trường học và doanh nghiệp có thể gặp gỡ, học tập, chia sẻ và cùng phát triển.
@@ -72,7 +62,20 @@ export default function About(container) {
             </div>
           </div>
 
-          <!-- Ô THỨ 3 (Dưới - Trái): SỨ MỆNH - TẦM NHÌN - TRIẾT LÝ -->
+          <!-- ẢNH (phải, khung cố định — ảnh bên trong tự co giãn vừa khung, không crop mất nội dung) -->
+          <div class="h-full flex items-center justify-center bg-white rounded-xl shadow-lg border border-outline-variant overflow-hidden p-3">
+            <img
+                src="/images/about/hiephoi.jpg"
+                alt="Hiệp hội Văn hóa VietItalia"
+                class="max-w-full max-h-full w-auto h-auto object-contain"
+            />
+          </div>
+        </div>
+
+        <!-- BỐ CỤC LƯỚI 2 Ô (Sứ mệnh/Tầm nhìn/Triết lý — Chức năng/Nhiệm vụ/Thông điệp) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-7xl mx-auto items-stretch mt-8 lg:mt-12">
+
+          <!-- SỨ MỆNH - TẦM NHÌN - TRIẾT LÝ -->
           <div class="space-y-6 flex flex-col justify-center bg-white p-8 rounded-xl border border-outline-variant shadow-sm h-full">
             <div class="border-l-4 border-primary pl-5 py-1">
               <h3 class="font-headline-sm text-primary text-lg uppercase font-bold">Sứ mệnh</h3>
@@ -80,7 +83,7 @@ export default function About(container) {
                 Kết nối con người, tri thức và văn hóa giữa Việt Nam và Ý thông qua giáo dục, công nghệ và các hoạt động hợp tác quốc tế; góp phần xây dựng một cộng đồng hội nhập, sáng tạo và phát triển bền vững.
               </p>
             </div>
-            
+
             <div class="border-l-4 border-secondary pl-5 py-1">
               <h3 class="font-headline-sm text-secondary text-lg uppercase font-bold">Tầm nhìn</h3>
               <p class="mt-2 text-sm text-on-surface-variant text-justify leading-relaxed">
@@ -99,7 +102,7 @@ export default function About(container) {
             </div>
           </div>
 
-          <!-- Ô THỨ 4 (Dưới - Phải): CHỨC NĂNG - NHIỆM VỤ - THÔNG ĐIỆP -->
+          <!-- CHỨC NĂNG - NHIỆM VỤ - THÔNG ĐIỆP -->
           <div class="flex flex-col justify-between bg-gray-50 p-8 rounded-xl border border-outline-variant shadow-sm h-full">
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
               <!-- Chức năng -->
@@ -124,7 +127,7 @@ export default function About(container) {
               </div>
             </div>
 
-            <!-- Thông điệp (Gắn liền vào đáy của Ô 4) -->
+            <!-- Thông điệp -->
             <div class="mt-8 bg-white p-4 rounded-lg border border-outline-variant text-center">
               <h3 class="text-primary font-bold uppercase mb-2 tracking-widest text-xs">Thông điệp</h3>
               <p class="italic text-sm text-gray-700 leading-relaxed">
@@ -133,7 +136,7 @@ export default function About(container) {
             </div>
           </div>
 
-        </div> <!-- Kết thúc Lưới 4 ô -->
+        </div>
 
       </section>
     `;
