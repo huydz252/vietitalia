@@ -1,19 +1,24 @@
-const groups = [
-  [
-    "Đối tác giáo dục",
-    ["Vinabook", "Unidolomiti", "Ikigai AI"]
-  ],
-  [
-    "Đối tác doanh nghiệp & Tổ chức",
-    ["Dolomiti Hub", "Centro Consorzi", "Villa San Liberale"]
-  ],
-  [
-    "Đối tác truyền thông",
-    ["Kiwi Media", "Gimmy"]
-  ]
-];
+import { getLocale } from "../../i18n/i18n";
 
 export function renderPartners(container, { compact = false } = {}) {
+  const isVi = getLocale() === "vi";
+
+  // Mang dữ liệu vào trong hàm để nhận biến isVi
+  const groups = [
+    [
+      isVi ? "Đối tác giáo dục" : "Partner educativi",
+      ["Vinabook", "Unidolomiti", "Ikigai AI"]
+    ],
+    [
+      isVi ? "Đối tác doanh nghiệp & Tổ chức" : "Partner aziendali e organizzazioni",
+      ["Dolomiti Hub", "Centro Consorzi", "Villa San Liberale"]
+    ],
+    [
+      isVi ? "Đối tác truyền thông" : "Partner media",
+      ["Kiwi Media", "Gimmy"]
+    ]
+  ];
+
   const section = document.createElement("section");
   
   // Điều chỉnh padding theo biến compact

@@ -1,4 +1,27 @@
+import { getLocale } from "../../i18n/i18n.js"; // Bổ sung import hàm getLocale
+
 export function renderContact(container) {
+  const isVi = getLocale() === "vi";
+
+  // --- DỮ LIỆU ĐA NGÔN NGỮ ---
+  const text = {
+    title: isVi ? "Liên hệ" : "Contatti",
+    subtitle: isVi ? "Kết nối với chúng tôi" : "Mettiti in contatto con noi",
+    placeholderName: isVi ? "Họ và tên" : "Nome e Cognome",
+    placeholderTopic: isVi ? "Chọn chủ đề" : "Seleziona un argomento",
+    optCulture: isVi ? "Văn hóa" : "Cultura",
+    optEdu: isVi ? "Giáo dục" : "Istruzione",
+    optBiz: isVi ? "Kinh doanh" : "Business",
+    placeholderMsg: isVi ? "Nội dung" : "Messaggio",
+    btnSubmit: isVi ? "Gửi liên hệ" : "Invia messaggio",
+    msgSuccess: isVi 
+      ? "Cảm ơn bạn. Chúng tôi sẽ phản hồi sớm." 
+      : "Grazie. Ti risponderemo al più presto.",
+    msgError: isVi 
+      ? "Vui lòng điền đầy đủ thông tin hợp lệ." 
+      : "Per favore, inserisci informazioni valide in tutti i campi."
+  };
+
   const section = document.createElement("section");
 
   section.innerHTML = `
@@ -19,10 +42,10 @@ export function renderContact(container) {
           VietItalia Bridge
         </p>
         <h1 class="font-display-lg text-display-lg mt-3">
-          Liên hệ
+          ${text.title}
         </h1>
-        <p class="italic">
-          Contattaci
+        <p class="italic mt-2">
+          ${text.subtitle}
         </p>
       </div>
     </section>
@@ -34,7 +57,7 @@ export function renderContact(container) {
             Associazione Culturale VietItalia
           </h2>
 
-          <p class="mt-4 text-on-surface-variant">
+          <p class="mt-4 text-on-surface-variant leading-relaxed">
             Feltre (BL) – Italia<br>
             kimleitalia@gmail.com<br>
             vietitalia.bridge@pec.it<br>
@@ -45,53 +68,50 @@ export function renderContact(container) {
         <form class="grid gap-4" novalidate>
           <input
             required
-            class="border-outline-variant"
-            placeholder="Họ và tên">
+            class="border-outline-variant p-3 rounded-md"
+            placeholder="${text.placeholderName}">
 
           <input
             required
             type="email"
-            class="border-outline-variant"
+            class="border-outline-variant p-3 rounded-md"
             placeholder="Email">
 
-          <select required class="border-outline-variant">
-            <option value="">Chọn chủ đề</option>
-            <option>Văn hóa</option>
-            <option>Giáo dục</option>
-            <option>Kinh doanh</option>
+          <select required class="border-outline-variant p-3 rounded-md">
+            <option value="">${text.placeholderTopic}</option>
+            <option>${text.optCulture}</option>
+            <option>${text.optEdu}</option>
+            <option>${text.optBiz}</option>
           </select>
 
           <textarea
             required
             rows="4"
-            class="border-outline-variant"
-            placeholder="Nội dung">
+            class="border-outline-variant p-3 rounded-md"
+            placeholder="${text.placeholderMsg}">
           </textarea>
 
           <button
-            class="bg-primary text-white py-3 uppercase text-label-sm">
-            Gửi liên hệ
+            class="bg-primary text-white py-3 rounded-md uppercase font-semibold text-label-sm hover:bg-primary/90 transition">
+            ${text.btnSubmit}
           </button>
 
-          <p class="form-message text-sm"></p>
+          <p class="form-message text-sm font-medium mt-2"></p>
         </form>
       </div>
     </div>
   `;
 
-  // Xử lý logic submit form
   const form = section.querySelector("form");
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const message = section.querySelector(".form-message");
     const valid = event.currentTarget.checkValidity();
 
-    message.textContent = valid
-      ? "Cảm ơn bạn. Chúng tôi sẽ phản hồi sớm."
-      : "Vui lòng điền đầy đủ thông tin hợp lệ.";
+    message.textContent = valid ? text.msgSuccess : text.msgError;
 
     message.className =
-      "form-message text-sm " +
+      "form-message text-sm font-medium mt-2 " +
       (valid ? "text-secondary" : "text-primary");
   });
 
