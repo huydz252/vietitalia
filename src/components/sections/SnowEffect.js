@@ -1,5 +1,5 @@
 export function initFlagEffect() {
-  const flags = ['/images/icons/vn_small.png', '/images/icons/it_small.png'];
+  const flags = ['/images/icons/snowflake.png', '/images/icons/snowflake2.png'];
   
   // 1. Tạo hiệu ứng rơi
   const intervalId = setInterval(() => {
