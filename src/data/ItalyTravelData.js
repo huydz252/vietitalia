@@ -53,7 +53,6 @@ export const travelData = {
 
         <blockquote class="bg-surface-container-low p-6 mt-8 border-l-4 border-primary text-on-surface-variant italic rounded-r-lg">
           "Mỗi bước chân là một phát hiện mới." <br>
-          <span class="font-bold text-sm not-italic mt-2 block">— Khả Tú Lệ Italia (kimleitalia@gmail.com)</span>
         </blockquote>
       `
     },
@@ -105,7 +104,6 @@ export const travelData = {
 
         <blockquote class="bg-surface-container-low p-6 mt-8 border-l-4 border-primary text-on-surface-variant italic rounded-r-lg">
           "Người dân đây gắn kết và tôn trọng thiên nhiên, hòa mình vào hệ sinh thái phục vụ du lịch một cách tinh tế và bền vững." <br>
-          <span class="font-bold text-sm not-italic mt-2 block">— Khả Tú Lệ (kimleitalia@gmail.com)</span>
         </blockquote>
       `
     },

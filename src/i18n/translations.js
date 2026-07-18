@@ -10,7 +10,7 @@ export const translations = {
       vietnamMarket: "Thị trường Việt Nam",
       businessMatching: "Kết nối doanh nghiệp",
       contact: "Liên hệ",
-      italyTravel: "Du lịch & Trải nghiệm Ý",
+      italyTravel: "Du lịch Sống Như Ý",
     },
     home: {
       heroTitle: "Cầu Nối Việt Nam - Ý",
@@ -72,7 +72,7 @@ export const translations = {
       vietnamMarket: "Mercato vietnamita",
       businessMatching: "Business matching",
       contact: "Contatti",
-      italyTravel: "Viaggi ed Esperienze in Italia",
+      italyTravel: "Viaggio: Vivere all'Italiana",
     },
     home: {
       heroTitle: "Vietnam – Italy Bridge",
