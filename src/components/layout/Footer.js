@@ -10,12 +10,12 @@ export function renderFooter(container) {
     
     <div class="w-full flex flex-col justify-center items-center py-8 my-10 bg-white">
       <div class="w-full flex justify-center items-center bg-white py-4">
-        <h3 class="text-xl font-bold text-[#8B0022] uppercase">
+        <h3 class="text-xl font-bold text-[#8B0022] uppercase border-b-2 border-[#8B0022] pb-2">
           Đối tác hợp tác
         </h3>
       </div> 
       
-      <div class="w-full flex flex-row justify-center items-center gap-10 bg-white">
+      <div class="w-full flex flex-wrap justify-center items-center gap-6 md:gap-10 bg-white px-4"">
         <!-- Logo Công ty 0 -->
         <!-- target="_blank" giúp mở liên kết ở một tab mới -->
 
@@ -46,7 +46,6 @@ export function renderFooter(container) {
           />
         </a>
 
-        <!-- Logo Công ty 1 -->
         <!-- target="_blank" giúp mở liên kết ở một tab mới -->
         <a href="https://link-cong-ty-1.com" target="_blank" rel="noopener noreferrer" 
           class="transition-transform duration-300 hover:scale-110">
@@ -57,7 +56,6 @@ export function renderFooter(container) {
           />
         </a>
 
-        <!-- Logo Công ty 2 -->
         <a href="https://dolomitihub.it/" target="_blank" rel="noopener noreferrer" 
           class="transition-transform duration-300 hover:scale-110">
           <img 
@@ -67,7 +65,6 @@ export function renderFooter(container) {
           />
         </a>
 
-        <!-- Logo Công ty 3 -->
         <a href="https://link-cong-ty-3.com" target="_blank" rel="noopener noreferrer" 
           class="transition-transform duration-300 hover:scale-110">
           <img 
@@ -77,7 +74,6 @@ export function renderFooter(container) {
           />
         </a>
 
-        <!-- Logo Công ty 4 -->
         <a href="https://link-cong-ty-3.com" target="_blank" rel="noopener noreferrer" 
           class="transition-transform duration-300 hover:scale-110">
           <img 
@@ -87,6 +83,16 @@ export function renderFooter(container) {
           />
         </a>
 
+        <a href="https://link-cong-ty-3.com" target="_blank" rel="noopener noreferrer" 
+          class="transition-transform duration-300 hover:scale-110">
+          <img 
+            src="/images/logos/LOGO_TELEBELLUNO.png" 
+            alt="Tên công ty 3" 
+            class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300"
+          />
+        </a>
+
+        
       </div>
     </div>
 
