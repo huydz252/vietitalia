@@ -144,12 +144,16 @@ export function renderHeader(container) {
   mobile.append(contact);
 
   // Toggle Mobile Menu
+  menuButton.addEventListener("click", () => {
+    mobile.classList.toggle("hidden");
+  });
+
   mobile.addEventListener("click", (e) => {
     if (e.target.closest("a")) {
       mobile.classList.add("hidden");
     }
   });
-
+  
   row.append(menuButton);
 
   bar.append(row, mobile);
