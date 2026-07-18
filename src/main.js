@@ -12,6 +12,9 @@ import VietnamMarket from "./pages/VietnamMarket.js";
 import BusinessMatching from "./pages/BusinessMatching.js";
 import { renderContact } from "./components/sections/Contact.js";
 import ItalyTravel from "./pages/ItalyTravel.js"; 
+
+import { initFlagEffect } from "./components/sections/SnowEffect.js";
+
 const routes = {
   "/": Home,
   "/about": About,
@@ -76,3 +79,5 @@ window.addEventListener("localechange", () => {
   renderAppHeader();
   renderRoute();
 });
+
+initFlagEffect();

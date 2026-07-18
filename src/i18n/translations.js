@@ -72,7 +72,7 @@ export const translations = {
       vietnamMarket: "Mercato vietnamita",
       businessMatching: "Business matching",
       contact: "Contatti",
-      italyTravel: "Viaggi ed Esperienze in Italia",
+      italyTravel: "Viaggio: Vivere all'Italiana",
     },
     home: {
       heroTitle: "Vietnam – Italy Bridge",

@@ -39,3 +39,19 @@
 .media-cover {
   background: linear-gradient(135deg, #81001d, #006d34);
 }
+
+
+/*  */
+.flag-falling {
+  position: fixed;
+  top: -50px;
+  z-index: 9999;
+  pointer-events: none; /* Không cản trở việc click chuột vào web */
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+  }
+}
