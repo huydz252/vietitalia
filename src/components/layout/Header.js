@@ -115,6 +115,7 @@ export function renderHeader(container) {
     ["/italy-market", "nav.italyMarket"],
     ["/vietnam-market", "nav.vietnamMarket"],
     ["/business-matching", "nav.businessMatching"],
+    ["/italy-travel", "nav.italyTravel"],
   ];
 
   mobileSubmenus.forEach(([path, key]) => {

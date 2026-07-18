@@ -13,6 +13,7 @@ const newsLinks = [
   ["/italy-market", "nav.italyMarket"],
   ["/vietnam-market", "nav.vietnamMarket"],
   ["/business-matching", "nav.businessMatching"],
+  ["/italy-travel", "nav.italyTravel"],
 ];
 
 export function getNavigationLinks() {
