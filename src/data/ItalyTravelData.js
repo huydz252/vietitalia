@@ -53,7 +53,7 @@ export const travelData = {
 
         <blockquote class="bg-surface-container-low p-6 mt-8 border-l-4 border-primary text-on-surface-variant italic rounded-r-lg">
           "Mỗi bước chân là một phát hiện mới." <br>
-          <span class="font-bold text-sm not-italic mt-2 block">— Khả Tú Lệ Italia (kimleitalia@gmail.com)</span>
+          <span class="font-bold text-sm not-italic mt-2 block"></span>
         </blockquote>
       `
     },
