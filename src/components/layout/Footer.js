@@ -6,8 +6,8 @@ export function renderFooter(container) {
   // --- DỮ LIỆU ĐA NGÔN NGỮ ---
   const text = {
     partners: isVi ? "Đối tác hợp tác" : "Partner di cooperazione",
-    slogan: isVi 
-      ? "Cầu nối văn hóa, giáo dục và kinh doanh giữa Việt Nam và Ý." 
+    slogan: isVi
+      ? "Cầu nối văn hóa, giáo dục và kinh doanh giữa Việt Nam và Ý."
       : "Ponte culturale, educativo e commerciale tra Vietnam e Italia.",
     contact: isVi ? "Liên hệ" : "Contatti"
   };
@@ -61,25 +61,33 @@ export function renderFooter(container) {
         </a>
 
         <!-- Logo Villa -->
-        <a href="https://link-cong-ty-3.com" target="_blank" rel="noopener noreferrer" 
+        <a href="https://www.villasanliberale.it" target="_blank" rel="noopener noreferrer" 
           class="transition-transform duration-300 hover:scale-110">
           <img src="/images/logos/logo_Villa_2.jpg" alt="Villa San Liberale" 
             class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
         </a>
 
         <!-- Logo Centro Consorzi -->
-        <a href="https://link-cong-ty-3.com" target="_blank" rel="noopener noreferrer" 
+        <a href="https://www.centroconsorzi.it" target="_blank" rel="noopener noreferrer" 
           class="transition-transform duration-300 hover:scale-110">
           <img src="/images/logos/Logo_Centro_Consorzi.png" alt="Centro Consorzi" 
             class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
         </a>
 
-        <!-- Logo Telebelluno -->
+        <!-- Logo Telebelluno
         <a href="https://link-cong-ty-3.com" target="_blank" rel="noopener noreferrer" 
           class="transition-transform duration-300 hover:scale-110">
           <img src="/images/logos/LOGO_TELEBELLUNO.png" alt="Telebelluno" 
             class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
+        </a>  -->
+
+        <!-- Logo Vietnam Airlines -->
+        <a href="https://www.vietnamairlines.com" target="_blank" rel="noopener noreferrer" 
+          class="transition-transform duration-300 hover:scale-110">
+          <img src="/images/logos/LOGO_VIETNAMAIRLINES.png" alt="Vietnam Airlines" 
+           class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
         </a>
+
       </div>
     </div>
 
