@@ -230,6 +230,58 @@ export const eventsData = {
         </div>
       `
     },
+
+    // bài 6
+    {
+      id: "06",
+      title: "Mùa Hè 2026: “Mọi Nẻo Đường Đều Dẫn Đến Roma” Với Festival Thanh Niên Sinh Viên Việt Nam Tại Châu Âu Lần Thứ XII",
+      date: "01.07.2026",
+      content: `
+        <img src="/images/events/event06.jpg" alt="Festival Thanh niên Sinh viên Việt Nam tại châu Âu" class="w-full h-auto mb-6 rounded-lg">
+        
+        <h2 class="font-headline-md text-primary mb-4">Lần đầu tiên sức trẻ Việt hội tụ tại đất nước hình chiếc ủng xinh đẹp</h2>
+        
+        <p class="mb-4 text-on-surface-variant leading-relaxed">
+          Từ ngày 28/08 đến ngày 30/08/2026, thủ đô Roma của nước Ý sẽ chính thức trở thành tâm điểm hội tụ của thế hệ trẻ Việt Nam khắp lục địa già. Lần đầu tiên trong lịch sử, <strong>Festival Thanh niên Sinh viên Việt Nam tại châu Âu lần thứ XII</strong> được đăng cai tổ chức tại Italia với chủ đề đầy ấn tượng: <strong>“NEXUS CAMP - ALL ROADS LEAD TO ROME”</strong>. Sự kiện mở ra một không gian giao lưu học thuật, văn hóa đa chiều và lan tỏa khát vọng cống hiến mãnh liệt của trí thức trẻ trong kỷ nguyên phát triển mới của dân tộc.
+        </p>
+        <p class="mb-4 text-on-surface-variant leading-relaxed">
+          Sự kiện quy mô này được đăng cai tổ chức bởi <strong>Hội Sinh viên Việt Nam tại Italia (ASVI)</strong> – tổ chức đại diện chính thức của cộng đồng du học sinh và trí thức trẻ Việt Nam tại Ý từ năm 2007, dưới sự bảo trợ sát sao của <strong>Đại sứ quán Việt Nam tại Italia</strong>, cùng sự chỉ đạo của Trung ương Hội Sinh viên Việt Nam và sự phối hợp từ Liên hiệp Hội Thanh niên Sinh viên Việt Nam tại châu Âu (VYSEF).
+        </p>
+  
+        <h3 class="font-headline-sm mt-6 mb-2">Điểm hẹn của Đổi mới sáng tạo và Bản sắc dân tộc</h3>
+        <p class="mb-4 text-on-surface-variant leading-relaxed">
+          Với quy mô quy tụ từ 100 đến 120 trại sinh từ 18 tuổi trở lên đang sinh sống, học tập và làm việc trên khắp các quốc gia châu Âu, hành trình kết nối 03 ngày 02 đêm tại Roma hứa hẹn mang đến chuỗi hoạt động trải nghiệm mang tính tiên phong, xoay quanh hệ giá trị <em>“Vững bản sắc - Giàu khát vọng - Kiến tạo tương lai - Dựng xây đất nước”</em>:
+        </p>
+        <ul class="list-disc pl-5 mb-4 text-on-surface-variant space-y-2">
+          <li><strong>Học thuật & Công nghệ:</strong> Các diễn đàn chuyên môn và hội thảo khoa học - công nghệ giúp nâng cao nhận thức của sinh viên về tinh thần khởi nghiệp, đổi mới sáng tạo và vai trò của chuyển đổi số.</li>
+          <li><strong>Phát triển kỹ năng:</strong> Các thử thách team building sôi nổi bồi dưỡng lý tưởng sống, tinh thần trách nhiệm cộng đồng và củng cố tinh thần đoàn kết.</li>
+          <li><strong>Gìn giữ bản sắc & Đối ngoại:</strong> Hoạt động giao lưu văn hóa nghệ thuật và chương trình walking tour khám phá nét đẹp lịch sử của Roma, khẳng định hình ảnh cộng đồng người Việt trẻ năng động, giàu bản sắc và thúc đẩy giao lưu quốc tế, củng cố quan hệ Đối tác Chiến lược Việt Nam - Italia.</li>
+        </ul>
+  
+        <h3 class="font-headline-sm mt-6 mb-2">Cơ hội đồng hành chiến lược cho các doanh nghiệp</h3>
+        <p class="mb-4 text-on-surface-variant leading-relaxed">
+          Hiện nay, Ban Tổ chức đang tích cực triển khai công tác chuẩn bị và mở rộng lời mời hợp tác đến các cơ quan, tổ chức cũng như các doanh nghiệp quan tâm đến khả năng tài trợ. Việc đồng hành cùng sự kiện quy mô toàn châu Âu này không chỉ mang ý nghĩa hỗ trợ cộng đồng, mà còn mở ra cơ hội chiến lược giúp Quý Đối tác tiếp cận trực tiếp mạng lưới trí thức trẻ chất lượng cao, gia tăng nhận diện thương hiệu và khẳng định trách nhiệm xã hội ở phạm vi quốc tế thông qua các gói tài trợ hiện kim và hiện vật linh hoạt.
+        </p>
+
+        <a href="https://drive.google.com/drive/u/1/folders/10AT0UyVyduUkMehcKLS63fTbE7sfx7CB" 
+           target="_blank" 
+           class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition shadow-md mt-6">
+          <span>Xem chi tiết sự kiện tại đây</span>
+          <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </a>
+  
+        <div class="mt-8 p-6 bg-primary/5 rounded-lg border-l-4 border-primary">
+          <h4 class="font-bold text-primary">Thông tin liên hệ hợp tác và tài trợ:</h4>
+          <p class="mt-2"><strong>Bộ phận thường trực - Ban Tổ chức Festival:</strong></p>
+          <p class="mt-1">👤 Ms. Vũ Thị Bích Diệp - Chủ tịch ASVI, Trưởng Ban Tổ chức</p>
+          <p>📞 Điện thoại: +39 349 693 4157 (Whatsapp)</p>
+          <p>📧 Email: sinhvienitalia@gmail.com | bandoingoai.nexuscampasvi@gmail.com</p>
+          <p>🌐 Kênh truyền thông: <a href="https://www.facebook.com/sinhvienitalia" class="text-secondary underline">www.facebook.com/sinhvienitalia</a></p>
+        </div>
+      `
+    },
   ],
 
 
@@ -458,6 +510,58 @@ export const eventsData = {
           <p class="text-sm text-on-surface-variant">
             <em>* I dati personali e le immagini dei partecipanti sono protetti e trattati in conformità con il Regolamento Generale sulla Protezione dei Dati dell'Unione Europea (GDPR – Regolamento UE 2016/679).</em>
           </p>
+        </div>
+      `
+    },
+    
+    //bài 6
+    {
+      id: "06",
+      title: "Estate 2026: “All Roads Lead to Rome” Con il XII Festival dei Giovani e degli Studenti Vietnamiti in Europa",
+      date: "01.07.2026",
+      content: `
+        <img src="/images/events/event06.jpg" alt="Festival dei Giovani e degli Studenti Vietnamiti in Europa" class="w-full h-auto mb-6 rounded-lg">
+        
+        <h2 class="font-headline-md text-primary mb-4">Per la prima volta l'energia dei giovani vietnamiti si unisce nello splendido scenario storico di Roma</h2>
+        
+        <p class="mb-4 text-on-surface-variant leading-relaxed">
+          Dal 28 al 30 agosto 2026, la capitale d'Italia diventerà ufficialmente il punto di incontro per le nuove generazioni vietnamite provenienti da tutto il continente europeo. Per la prima volta nella storia, il <strong>XII Festival dei Giovani e degli Studenti Vietnamiti in Europa</strong> si terrà in Italia sotto il suggestivo tema: <strong>“NEXUS CAMP - ALL ROADS LEAD TO ROME”</strong>. L'evento aprirà uno spazio di scambio accademico e culturale multidimensionale, diffondendo lo spirito pionieristico e il desiderio di contribuire dei giovani intellettuali nel nuovo percorso di sviluppo del Paese.
+        </p>
+        <p class="mb-4 text-on-surface-variant leading-relaxed">
+          Questo prestigioso evento è ospitato e organizzato dall'<strong>Associazione degli Studenti Vietnamiti in Italia (ASVI)</strong> – l'organizzazione di rappresentanza ufficiale della comunità degli studenti e dei giovani intellettuali vietnamiti in Italia dal 2007. L'iniziativa si svolge sotto il patrocinio dell'<strong>Ambasciata del Vietnam in Italia</strong>, con la guida dell'Unione Centrale degli Studenti Vietnamiti e il coordinamento della Federazione dei Giovani e degli Studenti Vietnamiti in Europa (VYSEF).
+        </p>
+  
+        <h3 class="font-headline-sm mt-6 mb-2">Un punto di incontro tra Innovazione e Identità Culturale</h3>
+        <p class="mb-4 text-on-surface-variant leading-relaxed">
+          Con una partecipazione prevista di 100-120 giovani e studenti dai 18 anni in su che vivono, studiano e lavorano in Europa, l'itinerario di 3 giorni e 2 notti a Roma promette una serie di attività esperienziali uniche, guidate dai valori fondamentali: <em>“Saldi nella propria identità - Ricchi di ambizione - Costruttori del futuro - Al servizio della nazione”</em>:
+        </p>
+        <ul class="list-disc pl-5 mb-4 text-on-surface-variant space-y-2">
+          <li><strong>Accademia & Tecnologia:</strong> Forum professionali e seminari scientifico-tecnologici mirati a sensibilizzare gli studenti sull'imprenditorialità, l'innovazione e sul ruolo cruciale della tecnologia e della trasformazione digitale nello sviluppo personale.</li>
+          <li><strong>Sviluppo delle competenze:</strong> Attività di team building e sfide interattive volte a rafforzare lo spirito di solidarietà, il senso civico e la responsabilità verso la comunità.</li>
+          <li><strong>Tutela dell'identità e Diplomazia culturale:</strong> Scambi culturali e artistici e un walking tour alla scoperta del patrimonio storico di Roma per promuovere l'immagine di una comunità giovane, dinamica e responsabile, consolidando il Partenariato Strategico Vietnam-Italia.</li>
+        </ul>
+  
+        <h3 class="font-headline-sm mt-6 mb-2">Un'opportunità di partnership strategica per le imprese</h3>
+        <p class="mb-4 text-on-surface-variant leading-relaxed">
+          Attualmente, il Comitato Organizzatore sta portando avanti i preparativi ed estende l'invito a valutare opportunità di collaborazione e sponsorizzazione a imprese ed enti interessati. Sostenere un evento di portata europea rappresenta non solo un concreto impegno sociale a favore dei giovani, ma offre ai partner un'occasione strategica per entrare in contatto diretto con un ecosistema di talenti altamente qualificati, accrescere la visibilità internazionale del brand e consolidare il proprio posizionamento aziendale attraverso formule di sponsorizzazione flessibili in denaro o in natura.
+        </p>
+
+        <a href="https://drive.google.com/drive/u/1/folders/10AT0UyVyduUkMehcKLS63fTbE7sfx7CB" 
+           target="_blank" 
+           class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition shadow-md mt-6">
+          <span>Vedi i dettagli dell'evento qui</span>
+          <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </a>
+  
+        <div class="mt-8 p-6 bg-primary/5 rounded-lg border-l-4 border-primary">
+          <h4 class="font-bold text-primary">Informazioni di contatto per partnership e sponsorizzazioni:</h4>
+          <p class="mt-2"><strong>Segreteria Organizzativa - Comitato Organizzatore del Festival:</strong></p>
+          <p class="mt-1">👤 Sig.ra Vũ Thị Bích Diệp - Presidente di ASVI, Presidente del Comitato Organizzatore</p>
+          <p>📞 Telefono: +39 349 693 4157 (Whatsapp)</p>
+          <p>📧 Email: sinhvienitalia@gmail.com | bandoingoai.nexuscampasvi@gmail.com</p>
+          <p>🌐 Pagina Facebook Ufficiale: <a href="https://www.facebook.com/sinhvienitalia" class="text-secondary underline">www.facebook.com/sinhvienitalia</a></p>
         </div>
       `
     },
