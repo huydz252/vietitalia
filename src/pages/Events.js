@@ -58,16 +58,20 @@ export default function Events(container) {
         <!-- Sidebar 20% -->
         <aside class="lg:col-span-3 border-l border-outline-variant pl-8 sticky top-24 self-start">
           <h3 class="font-headline-sm mb-6 pb-2 border-b">${uiText.otherEvents}</h3>
-          <ul class="space-y-6">
-            ${currentData.map(post => `
-              <li>
-                <a href="#${post.id}" class="block group">
-                  <span class="text-xs text-primary font-bold">${post.date}</span>
-                  <h4 class="font-semibold text-on-surface-variant group-hover:text-primary transition">${post.title}</h4>
-                </a>
-              </li>
-            `).join("")}
-          </ul>
+          
+          <!-- Bọc danh sách bằng div giới hạn chiều cao và cho phép cuộn -->
+          <div class="max-h-[500px] overflow-y-auto pr-2 scrollbar-thin">
+            <ul class="space-y-6">
+              ${currentData.map(post => `
+                <li>
+                  <a href="#${post.id}" class="block group">
+                    <span class="text-xs text-primary font-bold">${post.date}</span>
+                    <h4 class="font-semibold text-on-surface-variant group-hover:text-primary transition">${post.title}</h4>
+                  </a>
+                </li>
+              `).join("")}
+            </ul>
+          </div>
         </aside>
       </section>
     `;
