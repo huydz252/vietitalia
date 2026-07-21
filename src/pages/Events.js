@@ -1,11 +1,19 @@
-// File: Events.js
 import { eventsData } from '../data/EventData.js';
 import { getLocale } from '../i18n/i18n.js'; 
+
+// Hàm bổ trợ: Chuyển đổi chuỗi "DD.MM.YYYY" thành đối tượng Date để so sánh
+function parseDate(dateStr) {
+  const [day, month, year] = dateStr.split('.').map(Number);
+  return new Date(year, month - 1, day);
+}
 
 export default function Events(container) {
   function render() {
     const lang = getLocale();
-    const currentData = eventsData[lang] || eventsData["vi"]; 
+    const rawData = eventsData[lang] || eventsData["vi"]; 
+
+    // Sao chép mảng dữ liệu và sắp xếp theo ngày mới nhất lên đầu
+    const currentData = [...rawData].sort((a, b) => parseDate(b.date) - parseDate(a.date));
 
     const uiText = {
       tag: lang === "vi" ? "Sự kiện" : "Eventi",
@@ -14,8 +22,11 @@ export default function Events(container) {
       otherEvents: lang === "vi" ? "Sự kiện khác" : "Altri eventi"
     };
 
-    const hash = window.location.hash.substring(1) || "01";
-    const currentPost = currentData.find(p => p.id === hash) || currentData[0];
+    // Nếu không có hash, mặc định lấy bài có ngày mới nhất đầu tiên trong danh sách đã sắp xếp
+    const hash = window.location.hash.substring(1);
+    const currentPost = hash 
+      ? (currentData.find(p => p.id === hash) || currentData[0])
+      : currentData[0];
 
     container.innerHTML = `
       <!-- Hero Banner -->
@@ -62,7 +73,6 @@ export default function Events(container) {
     `;
   }
 
-  // Khởi tạo render và lắng nghe thay đổi hash
   render();
   window.addEventListener("hashchange", render);
 }
