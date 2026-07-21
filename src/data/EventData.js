@@ -265,21 +265,43 @@ export const eventsData = {
 
         <a href="https://drive.google.com/drive/u/1/folders/10AT0UyVyduUkMehcKLS63fTbE7sfx7CB" 
            target="_blank" 
-           class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition shadow-md mt-6">
+           class="inline-flex items-center bg-primary text-white px-6 py-3 my-10 rounded-lg font-semibold hover:bg-primary/90 transition shadow-md mt-6">
           <span>Xem chi tiết sự kiện tại đây</span>
           <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
           </svg>
         </a>
   
-        <div class="mt-8 p-6 bg-primary/5 rounded-lg border-l-4 border-primary">
-          <h4 class="font-bold text-primary">Thông tin liên hệ hợp tác và tài trợ:</h4>
-          <p class="mt-2"><strong>Bộ phận thường trực - Ban Tổ chức Festival:</strong></p>
-          <p class="mt-1">👤 Ms. Vũ Thị Bích Diệp - Chủ tịch ASVI, Trưởng Ban Tổ chức</p>
-          <p>📞 Điện thoại: +39 349 693 4157 (Whatsapp)</p>
-          <p>📧 Email: sinhvienitalia@gmail.com | bandoingoai.nexuscampasvi@gmail.com</p>
-          <p>🌐 Kênh truyền thông: <a href="https://www.facebook.com/sinhvienitalia" class="text-secondary underline">www.facebook.com/sinhvienitalia</a></p>
+        <h4 class="font-bold text-primary mb-3 text-lg">Thông tin liên hệ hợp tác và tài trợ:</h4>
+  
+        <div class="space-y-3 text-on-surface-variant text-sm md:text-base break-words">
+          <p class="font-semibold text-base">Bộ phận thường trực - Ban Tổ chức Festival:</p>
+          
+          <p class="flex items-start gap-2">
+            <span>👤</span>
+            <span>Ms. Vũ Thị Bích Diệp - Chủ tịch ASVI, Trưởng Ban Tổ chức</span>
+          </p>
+          
+          <p class="flex items-start gap-2">
+            <span>📞</span>
+            <span>Điện thoại: +39 349 693 4157 (Whatsapp)</span>
+          </p>
+          
+          <p class="flex items-start gap-2">
+            <span>📧</span>
+            <span class="break-all">Email: sinhvienitalia@gmail.com | bandoingoai.nexuscampasvi@gmail.com</span>
+          </p>
+          
+          <p class="flex items-start gap-2">
+            <span>🌐</span>
+            <span>Kênh truyền thông: 
+              <a href="https://www.facebook.com/sinhvienitalia" target="_blank" class="text-secondary underline break-all">
+                www.facebook.com/sinhvienitalia
+              </a>
+            </span>
+          </p>
         </div>
+      </div>
       `
     },
   ],
@@ -548,20 +570,43 @@ export const eventsData = {
 
         <a href="https://drive.google.com/drive/u/1/folders/10AT0UyVyduUkMehcKLS63fTbE7sfx7CB" 
            target="_blank" 
-           class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition shadow-md mt-6">
+           class="inline-flex items-center bg-primary text-white px-6 py-3 my-10 rounded-lg font-semibold hover:bg-primary/90 transition shadow-md mt-6">
           <span>Vedi i dettagli dell'evento qui</span>
           <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
           </svg>
         </a>
   
-        <div class="mt-8 p-6 bg-primary/5 rounded-lg border-l-4 border-primary">
-          <h4 class="font-bold text-primary">Informazioni di contatto per partnership e sponsorizzazioni:</h4>
-          <p class="mt-2"><strong>Segreteria Organizzativa - Comitato Organizzatore del Festival:</strong></p>
-          <p class="mt-1">👤 Sig.ra Vũ Thị Bích Diệp - Presidente di ASVI, Presidente del Comitato Organizzatore</p>
-          <p>📞 Telefono: +39 349 693 4157 (Whatsapp)</p>
-          <p>📧 Email: sinhvienitalia@gmail.com | bandoingoai.nexuscampasvi@gmail.com</p>
-          <p>🌐 Pagina Facebook Ufficiale: <a href="https://www.facebook.com/sinhvienitalia" class="text-secondary underline">www.facebook.com/sinhvienitalia</a></p>
+        <div class="mt-10 p-5 md:p-6 bg-primary/5 rounded-lg border-l-4 border-primary mx-margin-mobile md:mx-0">
+          <h4 class="font-bold text-primary mb-3 text-lg">Informazioni di contatto per collaborazione e sponsorizzazioni:</h4>
+          
+          <div class="space-y-3 text-on-surface-variant text-sm md:text-base break-words">
+            <p class="font-semibold text-base">Segreteria Permanente - Comitato Organizzatore del Festival:</p>
+            
+            <p class="flex items-start gap-2">
+              <span>👤</span>
+              <span>Ms. Vu Thi Bich Diep - Presidente ASVI, Direttore del Comitato Organizzatore</span>
+            </p>
+            
+            <p class="flex items-start gap-2">
+              <span>📞</span>
+              <span>Telefono: +39 349 693 4157 (Whatsapp)</span>
+            </p>
+            
+            <p class="flex items-start gap-2">
+              <span>📧</span>
+              <span class="break-all">Email: sinhvienitalia@gmail.com | bandoingoai.nexuscampasvi@gmail.com</span>
+            </p>
+            
+            <p class="flex items-start gap-2">
+              <span>🌐</span>
+              <span>Canale di comunicazione: 
+                <a href="https://www.facebook.com/sinhvienitalia" target="_blank" class="text-secondary underline break-all">
+                  www.facebook.com/sinhvienitalia
+                </a>
+              </span>
+            </p>
+          </div>
         </div>
       `
     },
