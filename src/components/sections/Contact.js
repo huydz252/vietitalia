@@ -27,7 +27,7 @@ export function renderContact(container) {
   section.innerHTML = `
     <section class="banner-image bg-cover text-white py-20"
       style="
-        height: 400px;
+        height: 300px;
         background-position: center bottom;
         background-image:
           linear-gradient(

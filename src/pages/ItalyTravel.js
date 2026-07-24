@@ -26,7 +26,7 @@ export default function ItalyTravel(container) {
           height: 300px;
           background-image:
             linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-            url('/images/travel/val-venosta/anh-bia.jpg');
+            url('/images/italy/Colosseum.jpg');
         "
       >
          <p class="text-label-sm uppercase tracking-widest">${uiText.tag}</p>
