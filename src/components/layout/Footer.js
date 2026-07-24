@@ -47,7 +47,7 @@ export function renderFooter(container) {
         </a>
 
         <!-- Logo Gimmy -->
-        <a href="https://link-cong-ty-1.com" target="_blank" rel="noopener noreferrer" 
+        <a href="https://www.facebook.com/gelateriagimmy" target="_blank" rel="noopener noreferrer" 
           class="transition-transform duration-300 hover:scale-110">
           <img src="/images/logos/logo_Gimmy-removebg-preview.png" alt="Gimmy" 
             class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
@@ -75,7 +75,7 @@ export function renderFooter(container) {
         </a>
 
         <!-- Logo Telebelluno
-        <a href="https://link-cong-ty-3.com" target="_blank" rel="noopener noreferrer" 
+        <a href="https://www.telebelluno.it/" target="_blank" rel="noopener noreferrer" 
           class="transition-transform duration-300 hover:scale-110">
           <img src="/images/logos/LOGO_TELEBELLUNO.png" alt="Telebelluno" 
             class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
