@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/events', eventRoutes);
 app.use('/api/travels', travelRoutes);
 
-// Health check
+// check
 app.get('/', (req, res) => {
     res.json({ message: '🚀 Backend Vietitalia Admin đang hoạt động!' });
 });
