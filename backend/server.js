@@ -1,0 +1,31 @@
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+
+import eventRoutes from './src/routes/eventRoutes.js';
+import travelRoutes from './src/routes/travelRoutes.js';
+
+const app = express();
+
+// Middlewares
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/api/events', eventRoutes);
+app.use('/api/travels', travelRoutes);
+
+// Health check
+app.get('/', (req, res) => {
+    res.json({ message: '🚀 Backend Vietitalia Admin đang hoạt động!' });
+});
+
+// Xử lý route 404
+app.use((req, res) => {
+    res.status(404).json({ success: false, message: 'Route không tồn tại!' });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`🚀 Server đang khởi chạy tại: http://localhost:${PORT}`);
+});
