@@ -2,7 +2,7 @@ import { supabase } from '../config/supabase.js';
 
 export const getTravels = async (req, res) => {
     try {
-        const { lang } = req.query; // Nhận biến lang từ Frontend
+        const { lang } = req.query; 
         
         let query = supabase
             .from('italy_travel')
@@ -24,35 +24,79 @@ export const getTravels = async (req, res) => {
 
 export const createTravel = async (req, res) => {
     try {
-        // Bổ sung thêm biến lang
         const { title, slug, content, category, lang } = req.body; 
-        let thumbnail_url = null;
+        
+        // 1. Quét trực tiếp danh sách các thư mục bên trong thư mục 'travels' trên Storage
+        const { data: folders, error: listError } = await supabase.storage
+            .from('vietitalia_media')
+            .list('travels', {
+                limit: 100,
+                offset: 0
+            });
 
-        if (req.file) {
-            const file = req.file;
-            const fileName = `travels/${Date.now()}_${file.originalname.replace(/\s+/g, '_')}`;
+        if (listError) throw listError;
 
-            const { error: uploadError } = await supabase.storage
-                .from('vietitalia_media')
-                .upload(fileName, file.buffer, { contentType: file.mimetype });
-
-            if (uploadError) throw uploadError;
-
-            const { data: publicUrlData } = supabase.storage
-                .from('vietitalia_media')
-                .getPublicUrl(fileName);
-            
-            thumbnail_url = publicUrlData.publicUrl;
+        // Tìm số thư mục lớn nhất hiện tại (ví dụ: 01, 02...)
+        let maxFolderNumber = 0;
+        if (folders && folders.length > 0) {
+            folders.forEach(item => {
+                const folderNum = parseInt(item.name, 10);
+                if (!isNaN(folderNum) && folderNum > maxFolderNumber) {
+                    maxFolderNumber = folderNum;
+                }
+            });
         }
+
+        // Số thư mục tiếp theo sẽ bằng số lớn nhất hiện tại + 1 (Định dạng: 01, 02, 03...)
+        const nextFolderNumber = String(maxFolderNumber + 1).padStart(2, '0');
+        let uploadedMedia = [];
+
+        if (req.files && req.files.length > 0) {
+            const uploadPromises = req.files.map(async (file) => {
+                // Làm sạch tên file gốc của máy khách
+                const cleanFileName = file.originalname.toLowerCase()
+                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .replace(/\s+/g, '_')
+                    .replace(/[^a-z0-9.-]/g, '');
+
+                // Cấu trúc đường dẫn chuẩn: travels/01/ten_anh.jpg
+                const fileName = `travels/${nextFolderNumber}/${cleanFileName}`;
+
+                const { error: uploadError } = await supabase.storage
+                    .from('vietitalia_media')
+                    .upload(fileName, file.buffer, { 
+                        contentType: file.mimetype,
+                        upsert: true 
+                    });
+
+                if (uploadError) throw uploadError;
+
+                const { data: publicUrlData } = supabase.storage
+                    .from('vietitalia_media')
+                    .getPublicUrl(fileName);
+                
+                const fileType = file.mimetype.startsWith('video') ? 'video' : 'image';
+
+                return {
+                    type: fileType,
+                    url: publicUrlData.publicUrl
+                };
+            });
+
+            uploadedMedia = await Promise.all(uploadPromises);
+        }
+
+        // 2. Lưu chính xác vào trường travel_media dưới dạng chuỗi JSON
+        const travel_media = uploadedMedia.length > 0 ? JSON.stringify(uploadedMedia) : null;
 
         const { data, error } = await supabase
             .from('italy_travel')
-            // Thêm lang vào lệnh insert
-            .insert([{ title, slug, content, thumbnail_url, category, lang }])
+            .insert([{ title, slug, content, travel_media, category, lang }]) // Khớp chuẩn travel_media
             .select();
 
         if (error) throw error;
-        res.status(201).json({ success: true, message: 'Thêm bài viết thành công', data });
+        console.log('Inserted travel data:', data);
+        res.status(201).json({ success: true, message: 'Thêm bài viết và Media thành công', data });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
