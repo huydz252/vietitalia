@@ -4,59 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trang Quản Trị Vietitalia</title>
-    
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    
     <script>
       tailwind.config = {
         darkMode: "class",
         theme: {
-          extend: {
-            colors: {
-              secondary: "#006d34",
-              primary: "#81001d",
-            }
-          }
+          extend: { colors: { secondary: "#006d34", primary: "#81001d" } }
         }
       }
     </script>
-
     <link href="./src/assets/css/style.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 font-sans text-gray-800 p-8">
+<body class="bg-gray-100 font-sans text-gray-800 p-4 md:p-8">
 
     <div class="max-w-7xl mx-auto">
-        <header class="mb-10 text-center">
-            <h1 class="text-4xl font-extrabold text-primary">Trang Quản Trị Vietitalia</h1>
-            <p class="text-gray-500 mt-2">Quản lý nội dung sự kiện và cẩm nang du lịch</p>
-        </header>
+        <!-- TAB NAVIGATION -->
+        <div class="flex space-x-4 mb-6 border-b border-gray-200">
+            <button id="tabEventBtn" class="py-2 px-4 font-bold text-lg text-primary border-b-2 border-primary focus:outline-none">🎉 Quản Lý Sự Kiện</button>
+            <button id="tabTravelBtn" class="py-2 px-4 font-bold text-lg text-gray-500 hover:text-secondary focus:outline-none">✈️ Quản Lý Cẩm Nang Du Lịch</button>
+        </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
-            <!-- KHU VỰC 1: QUẢN LÝ SỰ KIỆN -->
-            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-primary">
-                <h2 class="text-2xl font-bold mb-6 text-gray-700">🎉 Thêm Sự Kiện Mới</h2>
-                
+        <!-- SECTION 1: QUẢN LÝ SỰ KIỆN -->
+        <div id="eventSection" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Form Input -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-primary h-fit">
+                <h2 id="eventFormTitle" class="text-2xl font-bold mb-6 text-gray-700">🎉 Thêm Sự Kiện Mới</h2>
                 <form id="addEventForm" class="space-y-4">
+                    <input type="hidden" id="event_id">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Tên sự kiện <span class="text-red-500">*</span></label>
                         <input type="text" id="event_title" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none">
                     </div>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-bold mb-2" for="lang">Ngôn ngữ bài viết (*)</label>
-                        <select 
-                            id="lang" 
-                            name="lang" 
-                            required
-                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-primary"
-                        >
+                    <div>
+                        <label class="block text-sm font-bold mb-1" for="event_lang">Ngôn ngữ bài viết (*)</label>
+                        <select id="event_lang" name="lang" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-primary">
                             <option value="vi">Tiếng Việt (VI)</option>
                             <option value="it">Tiếng Ý (IT)</option>
                         </select>
                     </div>
-
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Địa điểm</label>
                             <input type="text" id="event_location" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none">
@@ -66,49 +52,70 @@
                             <input type="date" id="event_date" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none">
                         </div>
                     </div>
-
                     <div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Media (Tải lên)</label>
-                            <input type="file" id="event_media_file" name="media" multiple accept="image/*,video/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-white">
-                        </div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Media (Tải lên)</label>
+                        <input type="file" id="event_media_file" name="media" multiple accept="image/*,video/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-white">
+                        <p id="event_media_note" class="text-xs text-gray-400 mt-1 hidden">* Để trống nếu muốn giữ nguyên ảnh cũ khi cập nhật</p>
                     </div>
-
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nội dung bài viết</label>
-                        <textarea id="event_description" rows="3" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"></textarea>
+                        <textarea id="event_description" rows="4" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"></textarea>
                     </div>
-
-                    <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-lg hover:opacity-90 transition duration-300">
-                        Lưu Sự Kiện
-                    </button>
+                    <div class="flex space-x-2">
+                        <button type="submit" id="eventSubmitBtn" class="flex-1 bg-primary text-white font-bold py-3 rounded-lg hover:opacity-90 transition duration-300">Lưu Sự Kiện</button>
+                        <button type="button" id="eventCancelBtn" class="hidden bg-gray-300 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-400 transition">Hủy</button>
+                    </div>
                 </form>
             </div>
+            <!-- Data List Table -->
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6 border-t-4 border-primary">
+                <h2 class="text-2xl font-bold mb-6 text-gray-700">Danh sách Sự Kiện</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full table-auto border-collapse text-left text-sm">
+                        <thead>
+                            <tr class="bg-gray-100 border-b border-gray-200 text-gray-600 font-bold">
+                                <th class="px-4 py-3">Tiêu đề</th>
+                                <th class="px-4 py-3">Ngôn ngữ</th>
+                                <th class="px-4 py-3">Địa điểm</th>
+                                <th class="px-4 py-3 text-center">Thư mục</th> <!-- Thêm cột này -->
+                                <th class="px-4 py-3">Ngày diễn ra</th>
+                                <th class="px-4 py-3 text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventTableBody" class="divide-y divide-gray-100">
+                            <!-- Dữ liệu JS render ở đây -->
+                        </tbody>
+                    </table>
+                    <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                    <span id="eventPageInfo" class="text-sm text-gray-500">Trang 1 / 1</span>
+                    <div class="inline-flex space-x-2">
+                        <button id="eventPrevBtn" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm font-semibold disabled:opacity-50">Trước</button>
+                        <button id="eventNextBtn" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm font-semibold disabled:opacity-50">Sau</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
 
-            <!-- KHU VỰC 2: QUẢN LÝ CẨM NANG DU LỊCH -->
-            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-secondary">
-                <h2 class="text-2xl font-bold mb-6 text-gray-700">✈️ Thêm Bài Du Lịch</h2>
-                
+        <!-- SECTION 2: QUẢN LÝ DU LỊCH (ẨN MẶC ĐỊNH) -->
+        <div id="travelSection" class="grid grid-cols-1 lg:grid-cols-3 gap-8 hidden">
+            <!-- Form Input -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-secondary h-fit">
+                <h2 id="travelFormTitle" class="text-2xl font-bold mb-6 text-gray-700">✈️ Thêm Bài Du Lịch Mới</h2>
                 <form id="addTravelForm" class="space-y-4">
+                    <input type="hidden" id="travel_id">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Tiêu đề bài viết <span class="text-red-500">*</span></label>
                         <input type="text" id="travel_title" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none">
                     </div>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-bold mb-2" for="lang">Ngôn ngữ bài viết (*)</label>
-                        <select 
-                            id="lang" 
-                            name="lang" 
-                            required
-                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-primary"
-                        >
+                    <div>
+                        <label class="block text-sm font-bold mb-1" for="travel_lang">Ngôn ngữ bài viết (*)</label>
+                        <select id="travel_lang" name="lang" required class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-secondary">
                             <option value="vi">Tiếng Việt (VI)</option>
                             <option value="it">Tiếng Ý (IT)</option>
                         </select>
                     </div>
-
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Đường dẫn tĩnh (Slug)</label>
                             <input type="text" id="travel_slug" placeholder="vd: du-lich-rome" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none">
@@ -118,24 +125,49 @@
                             <input type="text" id="travel_category" placeholder="vd: Miền Nam" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none">
                         </div>
                     </div>
-
                     <div>
-                        <!-- ĐÃ SỬA LẠI TÊN VÀ ID CHO ĐÚNG -->
                         <label class="block text-sm font-medium text-gray-700 mb-1">Media (Tải lên)</label>
-                        <input type="file" id="travel_media_file" name="media" multiple accept="image/*,video/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-white">
+                        <input type="file" id="travel_media_file" name="media" multiple accept="image/*,video/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none bg-white">
+                        <p id="travel_media_note" class="text-xs text-gray-400 mt-1 hidden">* Để trống nếu muốn giữ nguyên ảnh cũ khi cập nhật</p>
                     </div>
-
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nội dung bài viết</label>
-                        <textarea id="travel_content" rows="3" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"></textarea>
+                        <textarea id="travel_content" rows="4" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-secondary focus:outline-none"></textarea>
                     </div>
-
-                    <button type="submit" class="w-full bg-secondary text-white font-bold py-3 rounded-lg hover:opacity-90 transition duration-300">
-                        Lưu Bài Viết
-                    </button>
+                    <div class="flex space-x-2">
+                        <button type="submit" id="travelSubmitBtn" class="flex-1 bg-secondary text-white font-bold py-3 rounded-lg hover:opacity-90 transition duration-300">Lưu Bài Viết</button>
+                        <button type="button" id="travelCancelBtn" class="hidden bg-gray-300 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-400 transition">Hủy</button>
+                    </div>
                 </form>
             </div>
-
+            <!-- Data List Table -->
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6 border-t-4 border-secondary">
+                <h2 class="text-2xl font-bold mb-6 text-gray-700">Danh sách Cẩm Nang</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full table-auto border-collapse text-left text-sm">
+                        <thead>
+                            <tr class="bg-gray-100 border-b border-gray-200 text-gray-600 font-bold">
+                                <th class="px-4 py-3">Tiêu đề</th>
+                                <th class="px-4 py-3">Ngôn ngữ</th>
+                                <th class="px-4 py-3">Danh mục</th>
+                                <th class="px-4 py-3 text-center">Thư mục</th> <!-- Thêm cột này -->
+                                <th class="px-4 py-3">Slug</th>
+                                <th class="px-4 py-3 text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="travelTableBody" class="divide-y divide-gray-100">
+                            <!-- Dữ liệu JS render ở đây -->
+                        </tbody>
+                    </table>
+                    <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                    <span id="travelPageInfo" class="text-sm text-gray-500">Trang 1 / 1</span>
+                    <div class="inline-flex space-x-2">
+                        <button id="travelPrevBtn" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm font-semibold disabled:opacity-50">Trước</button>
+                        <button id="travelNextBtn" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm font-semibold disabled:opacity-50">Sau</button>
+                    </div>
+                </div>
+                </div>
+            </div>
         </div>
     </div>
 
