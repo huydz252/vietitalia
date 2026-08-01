@@ -26,17 +26,13 @@ export const createTravel = async (req, res) => {
     try {
         const { title, slug, content, category, lang } = req.body; 
         
-        // 1. Quét trực tiếp danh sách các thư mục bên trong thư mục 'travels' trên Storage
+        // 1. Quét danh sách các thư mục hiện tại để tính toán số folder
         const { data: folders, error: listError } = await supabase.storage
             .from('vietitalia_media')
-            .list('travels', {
-                limit: 100,
-                offset: 0
-            });
+            .list('travels', { limit: 100, offset: 0 });
 
         if (listError) throw listError;
 
-        // Tìm số thư mục lớn nhất hiện tại trong folder travels
         let maxFolderNumber = 0;
         if (folders && folders.length > 0) {
             folders.forEach(item => {
@@ -47,27 +43,30 @@ export const createTravel = async (req, res) => {
             });
         }
 
-        // Số thư mục tiếp theo = số lớn nhất + 1
-        const nextFolderNumber = String(maxFolderNumber + 1).padStart(2, '0');
+        let targetFolderNumber;
+        const hasFiles = req.files && req.files.length > 0;
+
+        if (hasFiles) {
+            targetFolderNumber = String(maxFolderNumber + 1).padStart(2, '0');
+        } else {
+            targetFolderNumber = maxFolderNumber > 0 ? String(maxFolderNumber).padStart(2, '0') : '01';
+        }
+
         let uploadedMedia = [];
 
-        if (req.files && req.files.length > 0) {
+        if (hasFiles) {
+            // TRƯỜNG HỢP 1: BÀI GỐC (CÓ FILE UP LÊN)
             const uploadPromises = req.files.map(async (file) => {
-                // Làm sạch tên file gốc
                 const cleanFileName = file.originalname.toLowerCase()
                     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                     .replace(/\s+/g, '_')
                     .replace(/[^a-z0-9.-]/g, '');
 
-                // Cấu trúc đường dẫn chuẩn: travels/01/ten_anh.jpg
-                const fileName = `travels/${nextFolderNumber}/${cleanFileName}`;
+                const fileName = `travels/${targetFolderNumber}/${cleanFileName}`;
 
                 const { error: uploadError } = await supabase.storage
                     .from('vietitalia_media')
-                    .upload(fileName, file.buffer, { 
-                        contentType: file.mimetype,
-                        upsert: true 
-                    });
+                    .upload(fileName, file.buffer, { contentType: file.mimetype, upsert: true });
 
                 if (uploadError) throw uploadError;
 
@@ -75,27 +74,44 @@ export const createTravel = async (req, res) => {
                     .from('vietitalia_media')
                     .getPublicUrl(fileName);
                 
-                const fileType = file.mimetype.startsWith('video') ? 'video' : 'image';
-
                 return {
-                    type: fileType,
+                    type: file.mimetype.startsWith('video') ? 'video' : 'image',
                     url: publicUrlData.publicUrl
                 };
             });
 
             uploadedMedia = await Promise.all(uploadPromises);
+        } else {
+            // TRƯỜNG HỢP 2: BÀI DỊCH (KHÔNG FILE) -> Lấy danh sách file trong folder dùng chung
+            const { data: existingFiles } = await supabase.storage
+                .from('vietitalia_media')
+                .list(`travels/${targetFolderNumber}`, { limit: 100 });
+
+            if (existingFiles && existingFiles.length > 0) {
+                uploadedMedia = existingFiles
+                    .filter(file => file.name !== '.emptyFolderPlaceholder')
+                    .map(file => {
+                        const fileName = `travels/${targetFolderNumber}/${file.name}`;
+                        const { data: publicUrlData } = supabase.storage
+                            .from('vietitalia_media')
+                            .getPublicUrl(fileName);
+
+                        return {
+                            type: file.name.match(/\.(mp4|webm|avi|mov)$/i) ? 'video' : 'image',
+                            url: publicUrlData.publicUrl
+                        };
+                    });
+            }
         }
 
         const travel_media = uploadedMedia.length > 0 ? JSON.stringify(uploadedMedia) : null;
 
-        // Lưu thông tin kèm theo trường media_folder vào bảng italy_travel
         const { data, error } = await supabase
             .from('italy_travel')
-            .insert([{ title, slug, content, travel_media, media_folder: nextFolderNumber, category, lang }])
+            .insert([{ title, slug, content, travel_media, media_folder: targetFolderNumber, category, lang }])
             .select();
 
         if (error) throw error;
-        console.log('Inserted travel data:', data);
         res.status(201).json({ success: true, message: 'Thêm bài viết thành công', data });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
