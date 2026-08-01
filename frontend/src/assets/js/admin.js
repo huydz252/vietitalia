@@ -1,11 +1,14 @@
 import '../css/style.css'; 
 
-const API_URL = 'https://vietitalia.onrender.com/api'; 
+const API_URL = 'http://localhost:5000/api'; 
 
+// --- FORM SỰ KIỆN ---
 const eventForm = document.getElementById('addEventForm'); 
 
 eventForm.addEventListener('submit', async (e) => { 
     e.preventDefault(); 
+
+    console.log('check form submission');
 
     const formData = new FormData();
     formData.append('title', document.getElementById('event_title').value); 
@@ -19,10 +22,11 @@ eventForm.addEventListener('submit', async (e) => {
     const langVal = eventForm.querySelector('[name="lang"]').value;
     formData.append('lang', langVal);
 
-    const fileInput = document.getElementById('event_media_file'); // hoặc travel_media_file
+    const fileInput = document.getElementById('event_media_file'); 
     if (fileInput && fileInput.files.length > 0) {
         for (let i = 0; i < fileInput.files.length; i++) {
-            formData.append('media', fileInput.files[i]); // Tên 'media' sẽ khớp với Backend
+            // Đổi thành 'media' để trùng khớp với cấu hình upload.array('media') ở Route
+            formData.append('media', fileInput.files[i]); 
         }
     }
 
@@ -45,14 +49,15 @@ eventForm.addEventListener('submit', async (e) => {
     }
 });
 
+// --- FORM DU LỊCH ---
 const travelForm = document.getElementById('addTravelForm'); 
 
 travelForm.addEventListener('submit', async (e) => { 
     e.preventDefault(); 
 
     const titleVal = document.getElementById('travel_title').value; 
-    let slugVal = document.getElementById('travel_slug').value; 
-    
+    let slugVal = document.getElementById('travel_slug').value;
+     
     if (!slugVal) { 
         slugVal = titleVal.toLowerCase() 
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "") 
@@ -70,10 +75,11 @@ travelForm.addEventListener('submit', async (e) => {
     const langVal = travelForm.querySelector('[name="lang"]').value;
     formData.append('lang', langVal);
 
-    const fileInput = document.getElementById('travel_media_file'); // hoặc travel_media_file
-    if (fileInput && fileInput.files.length > 0) {
-        for (let i = 0; i < fileInput.files.length; i++) {
-            formData.append('media', fileInput.files[i]); // Tên 'media' sẽ khớp với Backend
+    // Bỏ khai báo thừa ở phía trên, chỉ giữ lại một chỗ gọn gàng ở đây
+    const travelFileInput = document.getElementById('travel_media_file'); 
+    if (travelFileInput && travelFileInput.files.length > 0) {
+        for (let i = 0; i < travelFileInput.files.length; i++) {
+            formData.append('media', travelFileInput.files[i]); 
         }
     }
 

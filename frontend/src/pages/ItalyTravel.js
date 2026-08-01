@@ -1,13 +1,13 @@
 import { getLocale } from "../i18n/i18n.js";
 
-// Khai báo API URL
-const API_URL = 'https://vietitalia.onrender.com/api';
+// const API_URL = 'https://vietitalia.onrender.com/api'; 
+const API_URL = 'http://localhost:5000/api'; 
 
 export default function ItalyTravel(container) {
   async function render() {
     const lang = getLocale();
 
-    // Ngôn ngữ cho giao diện[cite: 11]
+    // Ngôn ngữ cho giao diện
     const uiText = {
       tag: lang === "vi" ? "Trải nghiệm Ý" : "Esperienza in Italia",
       title: lang === "vi" ? "Du Lịch & Khám Phá" : "Viaggi e Scoperte",

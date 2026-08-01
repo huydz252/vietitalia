@@ -49,7 +49,7 @@ npm install
 npm run dev
 ```
 
-Sau khi chạy, mở địa chỉ do Vite hiển thị trong terminal (thường là `http://localhost:5173`).
+Sau khi chạy, mở địa chỉ do Vite hiển thị trong terminal (`http://localhost:5173`).
 
 ## Các lệnh có sẵn
 
