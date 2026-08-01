@@ -1,16 +1,15 @@
-import '../css/style.css'; // Giữ lại dòng này nếu cậu đang dùng cách nạp CSS qua JS
+import '../css/style.css'; 
 
 const API_URL = 'http://localhost:5000/api'; 
 
-// ==========================================
-// 1. XỬ LÝ FORM SỰ KIỆN (Đã nâng cấp Upload File)
-// ==========================================
+// --- FORM SỰ KIỆN ---
 const eventForm = document.getElementById('addEventForm'); 
 
 eventForm.addEventListener('submit', async (e) => { 
     e.preventDefault(); 
 
-    // Khởi tạo FormData thay cho JSON object để chứa được file
+    console.log('check form submission');
+
     const formData = new FormData();
     formData.append('title', document.getElementById('event_title').value); 
     formData.append('location', document.getElementById('event_location').value); 
@@ -20,9 +19,15 @@ eventForm.addEventListener('submit', async (e) => {
     formData.append('description', document.getElementById('event_description').value); 
     formData.append('status', 'upcoming'); 
 
-    const fileInput = document.getElementById('event_image_file'); 
+    const langVal = eventForm.querySelector('[name="lang"]').value;
+    formData.append('lang', langVal);
+
+    const fileInput = document.getElementById('event_media_file'); 
     if (fileInput && fileInput.files.length > 0) {
-        formData.append('image', fileInput.files[0]); // Tên biến 'image' phải khớp với upload.single('image') ở Backend
+        for (let i = 0; i < fileInput.files.length; i++) {
+            // Đổi thành 'media' để trùng khớp với cấu hình upload.array('media') ở Route
+            formData.append('media', fileInput.files[i]); 
+        }
     }
 
     try {
@@ -35,7 +40,6 @@ eventForm.addEventListener('submit', async (e) => {
 
         if (result.success) { 
             alert('🎉 Đã thêm SỰ KIỆN và TẢI MEDIA thành công!');
-            eventForm.reset();  
         } else {
             alert('❌ Lỗi lưu sự kiện: ' + result.message); 
         }
@@ -45,14 +49,15 @@ eventForm.addEventListener('submit', async (e) => {
     }
 });
 
+// --- FORM DU LỊCH ---
 const travelForm = document.getElementById('addTravelForm'); 
 
 travelForm.addEventListener('submit', async (e) => { 
     e.preventDefault(); 
 
     const titleVal = document.getElementById('travel_title').value; 
-    let slugVal = document.getElementById('travel_slug').value; 
-    
+    let slugVal = document.getElementById('travel_slug').value;
+     
     if (!slugVal) { 
         slugVal = titleVal.toLowerCase() 
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "") 
@@ -61,18 +66,21 @@ travelForm.addEventListener('submit', async (e) => {
             .replace(/-+/g, '-'); 
     }
 
-    // Sử dụng FormData để gom cả chữ lẫn file ảnh gửi đi
     const formData = new FormData();
     formData.append('title', titleVal);
     formData.append('slug', slugVal);
     formData.append('category', document.getElementById('travel_category').value);
     formData.append('content', document.getElementById('travel_content').value);
 
-    // Bắt đúng file từ ô input của phần du lịch
-    const fileInput = document.getElementById('travel_thumbnail_file');
-    if (fileInput && fileInput.files.length > 0) {
-        // Tên 'thumbnail' phải khớp với upload.single('thumbnail') ở Backend/travelRoutes.js
-        formData.append('thumbnail', fileInput.files[0]); 
+    const langVal = travelForm.querySelector('[name="lang"]').value;
+    formData.append('lang', langVal);
+
+    // Bỏ khai báo thừa ở phía trên, chỉ giữ lại một chỗ gọn gàng ở đây
+    const travelFileInput = document.getElementById('travel_media_file'); 
+    if (travelFileInput && travelFileInput.files.length > 0) {
+        for (let i = 0; i < travelFileInput.files.length; i++) {
+            formData.append('media', travelFileInput.files[i]); 
+        }
     }
 
     try {
@@ -85,7 +93,6 @@ travelForm.addEventListener('submit', async (e) => {
 
         if (result.success) { 
             alert('✈️ Đã thêm BÀI DU LỊCH và TẢI ẢNH thành công!'); 
-            travelForm.reset();  
         } else {
             alert('❌ Lỗi lưu bài viết: ' + result.message); 
         }
