@@ -47,23 +47,33 @@ export const createEvent = async (req, res) => {
             });
         }
 
-        // Số thư mục tiếp theo = số lớn nhất + 1 (Định dạng chuẩn 2 chữ số)
-        const nextFolderNumber = String(maxFolderNumber + 1).padStart(2, '0');
+        // --- ĐOẠN ĐỔI LOGIC: Quyết định số thư mục dựa trên việc có ảnh gửi lên hay không ---
+        let targetFolderNumber;
+        const hasFiles = req.files && req.files.length > 0;
+
+        if (hasFiles) {
+            // Nếu có tệp mới: Tạo thư mục mới tiếp theo (Lớn nhất + 1)
+            targetFolderNumber = String(maxFolderNumber + 1).padStart(2, '0');
+        } else {
+            // Nếu không chọn tệp: Dùng chung thư mục lớn nhất hiện tại. 
+            // Nếu chưa từng có thư mục nào (max = 0) thì mặc định là '01'
+            targetFolderNumber = maxFolderNumber > 0 
+                ? String(maxFolderNumber).padStart(2, '0') 
+                : '01';
+        }
 
         let uploadedMedia = []; 
 
-        if (req.files && req.files.length > 0) {
+        if (hasFiles) {
             const uploadPromises = req.files.map(async (file) => {
-                // Làm sạch tên file gốc (Chuyển chữ thường, xóa dấu tiếng Việt/khoảng trắng)
                 const cleanFileName = file.originalname.toLowerCase()
                     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                     .replace(/\s+/g, '_')
                     .replace(/[^a-z0-9.-]/g, '');
 
-                // Cấu trúc đường dẫn chuẩn: events/01/ten_anh.jpg
-                const fileName = `events/${nextFolderNumber}/${cleanFileName}`; 
+                // Sử dụng targetFolderNumber đã xác định ở trên
+                const fileName = `events/${targetFolderNumber}/${cleanFileName}`; 
                 
-                // Đẩy lên Supabase (Ghi đè bằng upsert nếu người dùng đã tạo folder sẵn)
                 const { error: uploadError } = await supabase.storage
                     .from('vietitalia_media')
                     .upload(fileName, file.buffer, { 
@@ -90,10 +100,10 @@ export const createEvent = async (req, res) => {
 
         const event_media = uploadedMedia.length > 0 ? JSON.stringify(uploadedMedia) : null;
 
-        // Lưu thông tin kèm theo trường media_folder vào bảng events
+        // Lưu thông tin kèm theo trường media_folder chính xác vào bảng events
         const { data, error } = await supabase
             .from('events')
-            .insert([{ title, description, event_date, location, event_media, media_folder: nextFolderNumber, status, lang }]) 
+            .insert([{ title, description, event_date, location, event_media, media_folder: targetFolderNumber, status, lang }]) 
             .select();
 
         if (error) throw error;
