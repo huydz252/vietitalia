@@ -1,6 +1,7 @@
 import '../css/style.css'; 
 
-const API_URL = 'http://localhost:5000/api'; 
+// const API_URL = 'http://localhost:5000/api'; 
+const API_URL = 'https://vietitalia.onrender.com/api'; 
 
 // --- FORM SỰ KIỆN ---
 const eventForm = document.getElementById('addEventForm'); 

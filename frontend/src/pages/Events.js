@@ -1,7 +1,7 @@
 import { getLocale } from '../i18n/i18n.js'; 
 
-// const API_URL = 'https://vietitalia.onrender.com/api'; 
-const API_URL = 'http://localhost:5000/api'; 
+const API_URL = 'https://vietitalia.onrender.com/api'; 
+// const API_URL = 'http://localhost:5000/api'; 
 
 // Hàm bổ trợ: Xử lý linh hoạt cả ngày Database chuẩn ISO và ngày file tĩnh "DD.MM.YYYY"[cite: 12]
 function parseDate(dateStr) {
