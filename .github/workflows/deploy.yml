@@ -37,5 +37,9 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./frontend/dist/
         server-dir: /public_html/
+        
+        # Cấu hình tối ưu để tránh lỗi Timeout
         protocol: ftp
         port: 21
+        port-strict: false
+        passive: true
