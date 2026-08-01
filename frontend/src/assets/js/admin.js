@@ -1,64 +1,287 @@
 import '../css/style.css'; 
 
-// const API_URL = 'http://localhost:5000/api'; 
 const API_URL = 'https://vietitalia.onrender.com/api'; 
+// const API_URL = 'http://localhost:5000/api'; 
 
-// --- FORM SỰ KIỆN ---
+const ITEMS_PER_PAGE = 5; 
+let currentEventPage = 1;
+let currentTravelPage = 1;
+
+let localEvents = []; 
+let localTravels = []; 
+
+const tabEventBtn = document.getElementById('tabEventBtn'); 
+const tabTravelBtn = document.getElementById('tabTravelBtn'); 
+const eventSection = document.getElementById('eventSection'); 
+const travelSection = document.getElementById('travelSection'); 
+
+tabEventBtn.addEventListener('click', () => { 
+    tabEventBtn.className = "py-2 px-4 font-bold text-lg text-primary border-b-2 border-primary focus:outline-none"; 
+    tabTravelBtn.className = "py-2 px-4 font-bold text-lg text-gray-500 hover:text-secondary focus:outline-none"; 
+    eventSection.classList.remove('hidden'); 
+    travelSection.classList.add('hidden'); 
+});
+
+tabTravelBtn.addEventListener('click', () => { 
+    tabTravelBtn.className = "py-2 px-4 font-bold text-lg text-secondary border-b-2 border-secondary focus:outline-none"; 
+    tabEventBtn.className = "py-2 px-4 font-bold text-lg text-gray-500 hover:text-primary focus:outline-none"; 
+    travelSection.classList.remove('hidden'); 
+    eventSection.classList.add('hidden'); 
+});
+
+
+// QUẢN LÝ SỰ KIỆN (EVENTS CRUD)
 const eventForm = document.getElementById('addEventForm'); 
+const eventTableBody = document.getElementById('eventTableBody'); 
 
+// Các DOM phục vụ điều hướng phân trang Event
+const eventPageInfo = document.getElementById('eventPageInfo');
+const eventPrevBtn = document.getElementById('eventPrevBtn');
+const eventNextBtn = document.getElementById('eventNextBtn');
+
+async function fetchEvents() { 
+    try {
+        const response = await fetch(`${API_URL}/events`); 
+        const result = await response.json(); 
+        if (result.success) { 
+            localEvents = result.data; 
+            currentEventPage = 1; // Reset về trang 1 khi lấy dữ liệu mới thành công
+            renderEvents();
+        }
+    } catch (error) {
+        console.error('Lỗi lấy danh sách sự kiện:', error); 
+    }
+}
+
+function renderEvents() {
+    const totalPages = Math.ceil(localEvents.length / ITEMS_PER_PAGE) || 1;
+    
+    // Giữ an toàn cho biến theo dõi số trang hiện tại
+    if (currentEventPage > totalPages) currentEventPage = totalPages;
+    if (currentEventPage < 1) currentEventPage = 1;
+
+    // Cắt mảng dữ liệu phục vụ hiển thị theo trang hiện tại
+    const startIndex = (currentEventPage - 1) * ITEMS_PER_PAGE;
+    const paginatedEvents = localEvents.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    // Cập nhật trạng thái và text hiển thị thanh điều khiển phân trang
+    eventPageInfo.innerText = `Trang ${currentEventPage} / ${totalPages} (Tổng số: ${localEvents.length})`;
+    eventPrevBtn.disabled = currentEventPage === 1;
+    eventNextBtn.disabled = currentEventPage === totalPages;
+
+    eventTableBody.innerHTML = paginatedEvents.map(ev => `
+        <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3 font-medium text-gray-900">${ev.title}</td>
+            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded font-bold ${ev.lang === 'vi' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">${ev.lang.toUpperCase()}</span></td>
+            <td class="px-4 py-3 text-gray-500">${ev.location || '-'}</td>
+            
+            <!-- Hiển thị nhãn Thư mục: Nếu null hoặc trống thì báo màu cam nổi bật -->
+            <td class="px-4 py-3 text-center">
+                ${ev.media_folder 
+                    ? `<span class="px-2 py-1 text-xs font-mono font-bold bg-blue-50 text-blue-700 rounded border border-blue-200">${ev.media_folder}</span>` 
+                    : `<span class="px-2 py-1 text-xs font-bold bg-amber-50 text-amber-600 rounded border border-amber-200">Trống</span>`
+                }
+            </td>
+            
+            <td class="px-4 py-3 text-gray-500">${ev.event_date ? ev.event_date.split('T')[0] : '-'}</td>
+            <td class="px-4 py-3 text-center space-x-2">
+                <button onclick="editEvent(${ev.id})" class="text-blue-600 hover:text-blue-900 font-semibold">Sửa</button>
+                <button onclick="deleteEvent(${ev.id})" class="text-red-600 hover:text-red-900 font-semibold">Xóa</button>
+            </td>
+        </tr>
+    `).join(''); 
+}
+
+// Lắng nghe sự kiện bấm nút điều hướng phân trang Event
+eventPrevBtn.addEventListener('click', () => {
+    if (currentEventPage > 1) {
+        currentEventPage--;
+        renderEvents();
+    }
+});
+
+eventNextBtn.addEventListener('click', () => {
+    const totalPages = Math.ceil(localEvents.length / ITEMS_PER_PAGE);
+    if (currentEventPage < totalPages) {
+        currentEventPage++;
+        renderEvents();
+    }
+});
+
+// CREATE & UPDATE: Xử lý Submit Form Event
 eventForm.addEventListener('submit', async (e) => { 
     e.preventDefault(); 
-
-    console.log('check form submission');
-
-    const formData = new FormData();
+    const eventId = document.getElementById('event_id').value; 
+    
+    const formData = new FormData(); 
     formData.append('title', document.getElementById('event_title').value); 
     formData.append('location', document.getElementById('event_location').value); 
+    
     const dateVal = document.getElementById('event_date').value; 
-    if (dateVal) formData.append('event_date', dateVal);
+    if (dateVal) formData.append('event_date', dateVal); 
     
     formData.append('description', document.getElementById('event_description').value); 
     formData.append('status', 'upcoming'); 
-
-    const langVal = eventForm.querySelector('[name="lang"]').value;
-    formData.append('lang', langVal);
+    formData.append('lang', document.getElementById('event_lang').value); 
 
     const fileInput = document.getElementById('event_media_file'); 
-    if (fileInput && fileInput.files.length > 0) {
-        for (let i = 0; i < fileInput.files.length; i++) {
-            // Đổi thành 'media' để trùng khớp với cấu hình upload.array('media') ở Route
+    if (fileInput && fileInput.files.length > 0) { 
+        for (let i = 0; i < fileInput.files.length; i++) { 
             formData.append('media', fileInput.files[i]); 
         }
     }
 
-    try {
-        const response = await fetch(`${API_URL}/events`, { 
-            method: 'POST', 
-            body: formData
-        });
+    const url = eventId ? `${API_URL}/events/${eventId}` : `${API_URL}/events`; 
+    const method = eventId ? 'PUT' : 'POST'; 
 
+    try {
+        const response = await fetch(url, { method, body: formData }); 
         const result = await response.json(); 
 
         if (result.success) { 
-            alert('🎉 Đã thêm SỰ KIỆN và TẢI MEDIA thành công!');
+            alert(eventId ? '🎉 Cập nhật sự kiện thành công!' : '🎉 Thêm sự kiện thành công!'); 
+            resetEventForm(); 
+            fetchEvents(); 
         } else {
-            alert('❌ Lỗi lưu sự kiện: ' + result.message); 
+            alert('❌ Thất bại: ' + result.message); 
         }
-    } catch (error) { 
-        console.error('Lỗi API:', error); 
-        alert('❌ Không thể kết nối tới Server!'); 
+    } catch (error) {
+        console.error(error); 
+        alert('❌ Lỗi kết nối server!'); 
     }
 });
 
-// --- FORM DU LỊCH ---
-const travelForm = document.getElementById('addTravelForm'); 
+// Chuyển Form sang trạng thái UPDATE dữ liệu Event
+window.editEvent = function(id) { 
+    const ev = localEvents.find(item => item.id === id); 
+    if (!ev) return; 
 
+    document.getElementById('event_id').value = ev.id; 
+    document.getElementById('event_title').value = ev.title; 
+    document.getElementById('event_location').value = ev.location || ''; 
+    document.getElementById('event_date').value = ev.event_date ? ev.event_date.split('T')[0] : ''; 
+    document.getElementById('event_description').value = ev.description || ''; 
+    document.getElementById('event_lang').value = ev.lang; 
+
+    document.getElementById('eventFormTitle').innerText = "📝 Chỉnh Sửa Sự Kiện"; 
+    document.getElementById('eventSubmitBtn').innerText = "Cập Nhật Sự Kiện"; 
+    document.getElementById('eventCancelBtn').classList.remove('hidden'); 
+    document.getElementById('event_media_note').classList.remove('hidden'); 
+    
+    tabEventBtn.click(); 
+}
+
+// DELETE: Xóa phần tử sự kiện
+window.deleteEvent = async function(id) { 
+    if (!confirm('Bạn có chắc chắn muốn xóa sự kiện này không?')) return; 
+    try {
+        const response = await fetch(`${API_URL}/events/${id}`, { method: 'DELETE' }); 
+        const result = await response.json(); 
+        if (result.success) { 
+            alert('🗑️ Đã xóa sự kiện thành công!'); 
+            fetchEvents(); 
+        } else {
+            alert('❌ Lỗi xóa: ' + result.message); 
+        }
+    } catch (error) {
+        alert('❌ Không thể kết nối tới Server!'); 
+    }
+}
+
+function resetEventForm() { 
+    eventForm.reset(); 
+    document.getElementById('event_id').value = ''; 
+    document.getElementById('eventFormTitle').innerText = "🎉 Thêm Sự Kiện Mới"; 
+    document.getElementById('eventSubmitBtn').innerText = "Lưu Sự Kiện"; 
+    document.getElementById('eventCancelBtn').classList.add('hidden'); 
+    document.getElementById('event_media_note').classList.add('hidden'); 
+}
+document.getElementById('eventCancelBtn').addEventListener('click', resetEventForm); 
+
+
+// CẨM NANG DU LỊCH (TRAVELS CRUD)
+
+const travelForm = document.getElementById('addTravelForm'); 
+const travelTableBody = document.getElementById('travelTableBody'); 
+
+// Các DOM phục vụ điều hướng phân trang Travel
+const travelPageInfo = document.getElementById('travelPageInfo');
+const travelPrevBtn = document.getElementById('travelPrevBtn');
+const travelNextBtn = document.getElementById('travelNextBtn');
+
+async function fetchTravels() { 
+    try {
+        const response = await fetch(`${API_URL}/travels`); 
+        const result = await response.json(); 
+        if (result.success) { 
+            localTravels = result.data; 
+            currentTravelPage = 1; // Reset về trang 1 khi lấy dữ liệu mới thành công
+            renderTravels();
+        }
+    } catch (error) {
+        console.error('Lỗi lấy danh sách du lịch:', error); 
+    }
+}
+
+function renderTravels() {
+    const totalPages = Math.ceil(localTravels.length / ITEMS_PER_PAGE) || 1;
+    
+    if (currentTravelPage > totalPages) currentTravelPage = totalPages;
+    if (currentTravelPage < 1) currentTravelPage = 1;
+
+    const startIndex = (currentTravelPage - 1) * ITEMS_PER_PAGE;
+    const paginatedTravels = localTravels.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    travelPageInfo.innerText = `Trang ${currentTravelPage} / ${totalPages} (Tổng số: ${localTravels.length})`;
+    travelPrevBtn.disabled = currentTravelPage === 1;
+    travelNextBtn.disabled = currentTravelPage === totalPages;
+
+    travelTableBody.innerHTML = paginatedTravels.map(tv => `
+        <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3 font-medium text-gray-900">${tv.title}</td>
+            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded font-bold ${tv.lang === 'vi' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">${tv.lang.toUpperCase()}</span></td>
+            <td class="px-4 py-3 text-gray-500">${tv.category || '-'}</td>
+            
+            <!-- Hiển thị nhãn Thư mục tương tự như của Event -->
+            <td class="px-4 py-3 text-center">
+                ${tv.media_folder 
+                    ? `<span class="px-2 py-1 text-xs font-mono font-bold bg-green-50 text-green-700 rounded border border-green-200">${tv.media_folder}</span>` 
+                    : `<span class="px-2 py-1 text-xs font-bold bg-amber-50 text-amber-600 rounded border border-amber-200">Trống</span>`
+                }
+            </td>
+            
+            <td class="px-4 py-3 text-xs text-gray-400 font-mono">${tv.slug}</td>
+            <td class="px-4 py-3 text-center space-x-2">
+                <button onclick="editTravel(${tv.id})" class="text-blue-600 hover:text-blue-900 font-semibold">Sửa</button>
+                <button onclick="deleteTravel(${tv.id})" class="text-red-600 hover:text-red-900 font-semibold">Xóa</button>
+            </td>
+        </tr>
+    `).join(''); 
+}
+
+// Lắng nghe sự kiện bấm nút điều hướng phân trang Travel
+travelPrevBtn.addEventListener('click', () => {
+    if (currentTravelPage > 1) {
+        currentTravelPage--;
+        renderTravels();
+    }
+});
+
+travelNextBtn.addEventListener('click', () => {
+    const totalPages = Math.ceil(localTravels.length / ITEMS_PER_PAGE);
+    if (currentTravelPage < totalPages) {
+        currentTravelPage++;
+        renderTravels();
+    }
+});
+
+// CREATE & UPDATE: Xử lý Submit Form Travel
 travelForm.addEventListener('submit', async (e) => { 
     e.preventDefault(); 
-
+    const travelId = document.getElementById('travel_id').value; 
     const titleVal = document.getElementById('travel_title').value; 
-    let slugVal = document.getElementById('travel_slug').value;
-     
+    let slugVal = document.getElementById('travel_slug').value; 
+
     if (!slugVal) { 
         slugVal = titleVal.toLowerCase() 
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "") 
@@ -67,38 +290,87 @@ travelForm.addEventListener('submit', async (e) => {
             .replace(/-+/g, '-'); 
     }
 
-    const formData = new FormData();
-    formData.append('title', titleVal);
-    formData.append('slug', slugVal);
-    formData.append('category', document.getElementById('travel_category').value);
-    formData.append('content', document.getElementById('travel_content').value);
+    const formData = new FormData(); 
+    formData.append('title', titleVal); 
+    formData.append('slug', slugVal); 
+    formData.append('category', document.getElementById('travel_category').value); 
+    formData.append('content', document.getElementById('travel_content').value); 
+    formData.append('lang', document.getElementById('travel_lang').value); 
 
-    const langVal = travelForm.querySelector('[name="lang"]').value;
-    formData.append('lang', langVal);
-
-    // Bỏ khai báo thừa ở phía trên, chỉ giữ lại một chỗ gọn gàng ở đây
     const travelFileInput = document.getElementById('travel_media_file'); 
-    if (travelFileInput && travelFileInput.files.length > 0) {
-        for (let i = 0; i < travelFileInput.files.length; i++) {
+    if (travelFileInput && travelFileInput.files.length > 0) { 
+        for (let i = 0; i < travelFileInput.files.length; i++) { 
             formData.append('media', travelFileInput.files[i]); 
         }
     }
 
-    try {
-        const response = await fetch(`${API_URL}/travels`, { 
-            method: 'POST', 
-            body: formData 
-        });
+    const url = travelId ? `${API_URL}/travels/${travelId}` : `${API_URL}/travels`; 
+    const method = travelId ? 'PUT' : 'POST'; 
 
+    try {
+        const response = await fetch(url, { method, body: formData }); 
         const result = await response.json(); 
 
         if (result.success) { 
-            alert('✈️ Đã thêm BÀI DU LỊCH và TẢI ẢNH thành công!'); 
+            alert(travelId ? '✈️ Cập nhật bài viết thành công!' : '✈️ Thêm bài viết thành công!'); 
+            resetTravelForm(); 
+            fetchTravels(); 
         } else {
-            alert('❌ Lỗi lưu bài viết: ' + result.message); 
+            alert('❌ Lỗi: ' + result.message); 
         }
-    } catch (error) { 
-        console.error('Lỗi API:', error); 
-        alert('❌ Không thể kết nối tới Server!'); 
+    } catch (error) {
+        console.error(error); 
+        alert('❌ Lỗi kết nối Server!'); 
     }
 });
+
+// Chuyển Form sang trạng thái UPDATE dữ liệu Travel
+window.editTravel = function(id) { 
+    const tv = localTravels.find(item => item.id === id); 
+    if (!tv) return; 
+
+    document.getElementById('travel_id').value = tv.id; 
+    document.getElementById('travel_title').value = tv.title; 
+    document.getElementById('travel_slug').value = tv.slug; 
+    document.getElementById('travel_category').value = tv.category || ''; 
+    document.getElementById('travel_content').value = tv.content || ''; 
+    document.getElementById('travel_lang').value = tv.lang; 
+
+    document.getElementById('travelFormTitle').innerText = "📝 Chỉnh Sửa Bài Du Lịch"; 
+    document.getElementById('travelSubmitBtn').innerText = "Cập Nhật Bài Viết"; 
+    document.getElementById('travelCancelBtn').classList.remove('hidden'); 
+    document.getElementById('travel_media_note').classList.remove('hidden'); 
+
+    tabTravelBtn.click(); 
+}
+
+// DELETE: Xóa phần tử cẩm nang du lịch
+window.deleteTravel = async function(id) { 
+    if (!confirm('Bạn có chắc muốn xóa bài viết cẩm nang này không?')) return; 
+    try {
+        const response = await fetch(`${API_URL}/travels/${id}`, { method: 'DELETE' }); 
+        const result = await response.json(); 
+        if (result.success) { 
+            alert('🗑️ Đã xóa bài viết thành công!'); 
+            fetchTravels(); 
+        } else {
+            alert('❌ Lỗi xóa: ' + result.message); 
+        }
+    } catch (error) {
+        alert('❌ Không thể kết nối tới Server!'); 
+    }
+}
+
+function resetTravelForm() { 
+    travelForm.reset(); 
+    document.getElementById('travel_id').value = ''; 
+    document.getElementById('travelFormTitle').innerText = "✈️ Thêm Bài Du Lịch Mới"; 
+    document.getElementById('travelSubmitBtn').innerText = "Lưu Bài Viết"; 
+    document.getElementById('travelCancelBtn').classList.add('hidden'); 
+    document.getElementById('travel_media_note').classList.add('hidden'); 
+}
+document.getElementById('travelCancelBtn').addEventListener('click', resetTravelForm); 
+
+// --- KHỞI CHẠY KHI ĐẦU TRANG ĐƯỢC LOAD ---
+fetchEvents(); 
+fetchTravels(); 
