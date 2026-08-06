@@ -1,24 +1,33 @@
 import { supabase } from '../config/supabase.js';
 
+// GET ALL COURSES (Có hỗ trợ lọc theo ngôn ngữ lang)
 export const getCourses = async (req, res) => {
     try {
-        const { data, error } = await supabase
+        const { lang } = req.query;
+
+        let query = supabase
             .from('courses')
             .select('*')
             .order('id', { ascending: false });
 
+        if (lang) {
+            query = query.eq('lang', lang);
+        }
+
+        const { data, error } = await query;
         if (error) throw error;
+
         res.status(200).json({ success: true, data });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
+// CREATE COURSE
 export const createCourse = async (req, res) => {
     try {
         const { title, slug, description, content, duration, fee, lang } = req.body;
 
-        // Quét danh sách các thư mục hiện có trong bucket 'vietitalia_media/courses'
         const { data: folders, error: listError } = await supabase.storage
             .from('vietitalia_media')
             .list('courses', { limit: 100, offset: 0 });
@@ -44,12 +53,10 @@ export const createCourse = async (req, res) => {
             targetFolderNumber = maxFolderNumber > 0 ? maxFolderNumber : 1;
         }
 
-        // Đảm bảo dạng chuỗi 2 chữ số (01, 02...) để tạo đường dẫn Storage chuẩn
         const folderString = String(targetFolderNumber).padStart(2, '0');
         let uploadedMedia = [];
 
         if (hasFiles) {
-            // TRƯỜNG HỢP 1: CÓ FILE TẢI LÊN -> Upload lên Storage
             const uploadPromises = req.files.map(async (file) => {
                 const cleanFileName = file.originalname.toLowerCase()
                     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -76,7 +83,6 @@ export const createCourse = async (req, res) => {
 
             uploadedMedia = await Promise.all(uploadPromises);
         } else {
-            // TRƯỜNG HỢP 2: KHÔNG FILE (Bài tiếng Ý dùng chung) -> Quét file có sẵn trong folder cũ
             const { data: existingFiles } = await supabase.storage
                 .from('vietitalia_media')
                 .list(`courses/${folderString}`, { limit: 100 });
@@ -101,7 +107,6 @@ export const createCourse = async (req, res) => {
         const course_media = uploadedMedia.length > 0 ? JSON.stringify(uploadedMedia) : null;
         const parsedFee = fee ? parseInt(fee, 10) : 0;
 
-        // Chèn bản ghi vào bảng courses
         const { data, error } = await supabase
             .from('courses')
             .insert([{ 
@@ -124,20 +129,19 @@ export const createCourse = async (req, res) => {
     }
 };
 
+// UPDATE COURSE
 export const updateCourse = async (req, res) => {
     try {
         const { id } = req.params;
         const { title, slug, description, content, duration, fee, lang } = req.body;
 
-        // Cũng sửa ở đây sang maybeSingle()
         const { data: oldCourse, error: fetchError } = await supabase
             .from('courses')
             .select('*')
             .eq('id', id)
             .maybeSingle();
 
-        if (fetchError) throw fetchError;
-        if (!oldCourse) {
+        if (fetchError || !oldCourse) {
             return res.status(404).json({ success: false, message: 'Không tìm thấy khóa học cần sửa' });
         }
 
@@ -217,6 +221,7 @@ export const updateCourse = async (req, res) => {
     }
 };
 
+// DELETE COURSE
 export const deleteCourse = async (req, res) => {
     try {
         const { id } = req.params;
