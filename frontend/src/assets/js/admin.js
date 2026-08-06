@@ -1,7 +1,7 @@
 import '../css/style.css'; 
 
-const API_URL = 'https://vietitalia.onrender.com/api'; 
-// const API_URL = 'http://localhost:5000/api'; 
+//const API_URL = 'https://vietitalia.onrender.com/api'; 
+const API_URL = 'http://localhost:5000/api'; 
 
 const ITEMS_PER_PAGE = 5; 
 let currentEventPage = 1;
@@ -46,11 +46,12 @@ tabTravelBtn.addEventListener('click', () => showTab('travel'));
 tabTrainingBtn.addEventListener('click', () => showTab('training'));
 
 
-// QUẢN LÝ SỰ KIỆN (EVENTS CRUD)
+// ==========================================
+// 1. QUẢN LÝ SỰ KIỆN (EVENTS CRUD)
+// ==========================================
 const eventForm = document.getElementById('addEventForm'); 
 const eventTableBody = document.getElementById('eventTableBody'); 
 
-// Các DOM phục vụ điều hướng phân trang Event
 const eventPageInfo = document.getElementById('eventPageInfo');
 const eventPrevBtn = document.getElementById('eventPrevBtn');
 const eventNextBtn = document.getElementById('eventNextBtn');
@@ -61,7 +62,7 @@ async function fetchEvents() {
         const result = await response.json(); 
         if (result.success) { 
             localEvents = result.data; 
-            currentEventPage = 1; // Reset về trang 1 khi lấy dữ liệu mới thành công
+            currentEventPage = 1;
             renderEvents();
         }
     } catch (error) {
@@ -72,15 +73,12 @@ async function fetchEvents() {
 function renderEvents() {
     const totalPages = Math.ceil(localEvents.length / ITEMS_PER_PAGE) || 1;
     
-    // Giữ an toàn cho biến theo dõi số trang hiện tại
     if (currentEventPage > totalPages) currentEventPage = totalPages;
     if (currentEventPage < 1) currentEventPage = 1;
 
-    // Cắt mảng dữ liệu phục vụ hiển thị theo trang hiện tại
     const startIndex = (currentEventPage - 1) * ITEMS_PER_PAGE;
     const paginatedEvents = localEvents.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-    // Cập nhật trạng thái và text hiển thị thanh điều khiển phân trang
     eventPageInfo.innerText = `Trang ${currentEventPage} / ${totalPages} (Tổng số: ${localEvents.length})`;
     eventPrevBtn.disabled = currentEventPage === 1;
     eventNextBtn.disabled = currentEventPage === totalPages;
@@ -88,10 +86,9 @@ function renderEvents() {
     eventTableBody.innerHTML = paginatedEvents.map(ev => `
         <tr class="hover:bg-gray-50">
             <td class="px-4 py-3 font-medium text-gray-900">${ev.title}</td>
-            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded font-bold ${ev.lang === 'vi' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">${ev.lang.toUpperCase()}</span></td>
+            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded font-bold ${ev.lang === 'vi' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">${ev.lang ? ev.lang.toUpperCase() : 'VI'}</span></td>
             <td class="px-4 py-3 text-gray-500">${ev.location || '-'}</td>
             
-            <!-- Hiển thị nhãn Thư mục: Nếu null hoặc trống thì báo màu cam nổi bật -->
             <td class="px-4 py-3 text-center">
                 ${ev.media_folder 
                     ? `<span class="px-2 py-1 text-xs font-mono font-bold bg-blue-50 text-blue-700 rounded border border-blue-200">${ev.media_folder}</span>` 
@@ -108,7 +105,6 @@ function renderEvents() {
     `).join(''); 
 }
 
-// Lắng nghe sự kiện bấm nút điều hướng phân trang Event
 eventPrevBtn.addEventListener('click', () => {
     if (currentEventPage > 1) {
         currentEventPage--;
@@ -124,7 +120,6 @@ eventNextBtn.addEventListener('click', () => {
     }
 });
 
-// CREATE & UPDATE: Xử lý Submit Form Event
 eventForm.addEventListener('submit', async (e) => { 
     e.preventDefault(); 
     const eventId = document.getElementById('event_id').value; 
@@ -167,7 +162,6 @@ eventForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Chuyển Form sang trạng thái UPDATE dữ liệu Event
 window.editEvent = function(id) { 
     const ev = localEvents.find(item => item.id === id); 
     if (!ev) return; 
@@ -177,7 +171,7 @@ window.editEvent = function(id) {
     document.getElementById('event_location').value = ev.location || ''; 
     document.getElementById('event_date').value = ev.event_date ? ev.event_date.split('T')[0] : ''; 
     document.getElementById('event_description').value = ev.description || ''; 
-    document.getElementById('event_lang').value = ev.lang; 
+    document.getElementById('event_lang').value = ev.lang || 'vi'; 
 
     document.getElementById('eventFormTitle').innerText = "📝 Chỉnh Sửa Sự Kiện"; 
     document.getElementById('eventSubmitBtn').innerText = "Cập Nhật Sự Kiện"; 
@@ -187,7 +181,6 @@ window.editEvent = function(id) {
     showTab('event');
 }
 
-// DELETE: Xóa phần tử sự kiện
 window.deleteEvent = async function(id) { 
     if (!confirm('Bạn có chắc chắn muốn xóa sự kiện này không?')) return; 
     try {
@@ -215,12 +208,12 @@ function resetEventForm() {
 document.getElementById('eventCancelBtn').addEventListener('click', resetEventForm); 
 
 
-// CẨM NANG DU LỊCH (TRAVELS CRUD)
-
+// ==========================================
+// 2. CẨM NANG DU LỊCH (TRAVELS CRUD)
+// ==========================================
 const travelForm = document.getElementById('addTravelForm'); 
 const travelTableBody = document.getElementById('travelTableBody'); 
 
-// Các DOM phục vụ điều hướng phân trang Travel
 const travelPageInfo = document.getElementById('travelPageInfo');
 const travelPrevBtn = document.getElementById('travelPrevBtn');
 const travelNextBtn = document.getElementById('travelNextBtn');
@@ -231,7 +224,7 @@ async function fetchTravels() {
         const result = await response.json(); 
         if (result.success) { 
             localTravels = result.data; 
-            currentTravelPage = 1; // Reset về trang 1 khi lấy dữ liệu mới thành công
+            currentTravelPage = 1; 
             renderTravels();
         }
     } catch (error) {
@@ -255,10 +248,9 @@ function renderTravels() {
     travelTableBody.innerHTML = paginatedTravels.map(tv => `
         <tr class="hover:bg-gray-50">
             <td class="px-4 py-3 font-medium text-gray-900">${tv.title}</td>
-            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded font-bold ${tv.lang === 'vi' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">${tv.lang.toUpperCase()}</span></td>
+            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded font-bold ${tv.lang === 'vi' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">${tv.lang ? tv.lang.toUpperCase() : 'VI'}</span></td>
             <td class="px-4 py-3 text-gray-500">${tv.category || '-'}</td>
             
-            <!-- Hiển thị nhãn Thư mục tương tự như của Event -->
             <td class="px-4 py-3 text-center">
                 ${tv.media_folder 
                     ? `<span class="px-2 py-1 text-xs font-mono font-bold bg-green-50 text-green-700 rounded border border-green-200">${tv.media_folder}</span>` 
@@ -275,7 +267,6 @@ function renderTravels() {
     `).join(''); 
 }
 
-// Lắng nghe sự kiện bấm nút điều hướng phân trang Travel
 travelPrevBtn.addEventListener('click', () => {
     if (currentTravelPage > 1) {
         currentTravelPage--;
@@ -291,7 +282,6 @@ travelNextBtn.addEventListener('click', () => {
     }
 });
 
-// CREATE & UPDATE: Xử lý Submit Form Travel
 travelForm.addEventListener('submit', async (e) => { 
     e.preventDefault(); 
     const travelId = document.getElementById('travel_id').value; 
@@ -340,7 +330,6 @@ travelForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Chuyển Form sang trạng thái UPDATE dữ liệu Travel
 window.editTravel = function(id) { 
     const tv = localTravels.find(item => item.id === id); 
     if (!tv) return; 
@@ -350,7 +339,7 @@ window.editTravel = function(id) {
     document.getElementById('travel_slug').value = tv.slug; 
     document.getElementById('travel_category').value = tv.category || ''; 
     document.getElementById('travel_content').value = tv.content || ''; 
-    document.getElementById('travel_lang').value = tv.lang; 
+    document.getElementById('travel_lang').value = tv.lang || 'vi'; 
 
     document.getElementById('travelFormTitle').innerText = "📝 Chỉnh Sửa Bài Du Lịch"; 
     document.getElementById('travelSubmitBtn').innerText = "Cập Nhật Bài Viết"; 
@@ -360,7 +349,6 @@ window.editTravel = function(id) {
     showTab('travel');
 }
 
-// DELETE: Xóa phần tử cẩm nang du lịch
 window.deleteTravel = async function(id) { 
     if (!confirm('Bạn có chắc muốn xóa bài viết cẩm nang này không?')) return; 
     try {
@@ -388,10 +376,9 @@ function resetTravelForm() {
 document.getElementById('travelCancelBtn').addEventListener('click', resetTravelForm); 
 
 
-// QUẢN LÝ ĐÀO TẠO QUỐC TẾ (TRAININGS CRUD)
-// Khớp đúng schema bảng: id, created_at, title, slug, description, content,
-// duration, fee, course_media, media_folder, lang
-
+// ==========================================
+// 3. QUẢN LÝ ĐÀO TẠO QUỐC TẾ (COURSES CRUD)
+// ==========================================
 const trainingForm = document.getElementById('addTrainingForm');
 const trainingTableBody = document.getElementById('trainingTableBody');
 
@@ -401,7 +388,7 @@ const trainingNextBtn = document.getElementById('trainingNextBtn');
 
 async function fetchTrainings() {
     try {
-        const response = await fetch(`${API_URL}/trainings`);
+        const response = await fetch(`${API_URL}/courses`);
         const result = await response.json();
         if (result.success) {
             localTrainings = result.data;
@@ -429,11 +416,10 @@ function renderTrainings() {
     trainingTableBody.innerHTML = paginatedTrainings.map(tr => `
         <tr class="hover:bg-gray-50">
             <td class="px-4 py-3 font-medium text-gray-900">${tr.title}</td>
-            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded font-bold ${tr.lang === 'vi' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">${tr.lang.toUpperCase()}</span></td>
+            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded font-bold ${tr.lang === 'vi' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">${tr.lang ? tr.lang.toUpperCase() : 'VI'}</span></td>
             <td class="px-4 py-3 text-gray-500">${tr.duration || '-'}</td>
             <td class="px-4 py-3 text-gray-500">${tr.fee != null && tr.fee !== '' ? `€${tr.fee}` : '-'}</td>
 
-            <!-- Hiển thị nhãn Thư mục tương tự Event/Travel -->
             <td class="px-4 py-3 text-center">
                 ${tr.media_folder 
                     ? `<span class="px-2 py-1 text-xs font-mono font-bold bg-amber-50 text-amber-700 rounded border border-amber-200">${tr.media_folder}</span>` 
@@ -465,7 +451,6 @@ trainingNextBtn.addEventListener('click', () => {
     }
 });
 
-// CREATE & UPDATE: Xử lý Submit Form Training
 trainingForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const trainingId = document.getElementById('training_id').value;
@@ -496,7 +481,7 @@ trainingForm.addEventListener('submit', async (e) => {
         }
     }
 
-    const url = trainingId ? `${API_URL}/trainings/${trainingId}` : `${API_URL}/trainings`;
+    const url = trainingId ? `${API_URL}/courses/${trainingId}` : `${API_URL}/courses`;
     const method = trainingId ? 'PUT' : 'POST';
 
     try {
@@ -516,7 +501,6 @@ trainingForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Chuyển Form sang trạng thái UPDATE dữ liệu Training
 window.editTraining = function(id) {
     const tr = localTrainings.find(item => item.id === id);
     if (!tr) return;
@@ -528,7 +512,7 @@ window.editTraining = function(id) {
     document.getElementById('training_fee').value = tr.fee != null ? tr.fee : '';
     document.getElementById('training_description').value = tr.description || '';
     document.getElementById('training_content').value = tr.content || '';
-    document.getElementById('training_lang').value = tr.lang;
+    document.getElementById('training_lang').value = tr.lang || 'vi';
 
     document.getElementById('trainingFormTitle').innerText = "📝 Chỉnh Sửa Chương Trình Đào Tạo";
     document.getElementById('trainingSubmitBtn').innerText = "Cập Nhật Chương Trình";
@@ -538,11 +522,11 @@ window.editTraining = function(id) {
     showTab('training');
 }
 
-// DELETE: Xóa chương trình đào tạo
+// DELETE: Sử dụng chính xác endpoint /courses/:id[cite: 5]
 window.deleteTraining = async function(id) {
     if (!confirm('Bạn có chắc muốn xóa chương trình đào tạo này không?')) return;
     try {
-        const response = await fetch(`${API_URL}/trainings/${id}`, { method: 'DELETE' });
+        const response = await fetch(`${API_URL}/courses/${id}`, { method: 'DELETE' });
         const result = await response.json();
         if (result.success) {
             alert('🗑️ Đã xóa chương trình thành công!');
@@ -566,7 +550,7 @@ function resetTrainingForm() {
 document.getElementById('trainingCancelBtn').addEventListener('click', resetTrainingForm);
 
 
-// --- KHỞI CHẠY KHI ĐẦU TRANG ĐƯỢC LOAD ---
+// KHỞI CHẠY LẤY DỮ LIỆU BAN ĐẦU
 fetchEvents(); 
 fetchTravels(); 
 fetchTrainings();
