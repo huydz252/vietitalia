@@ -6,28 +6,44 @@ const API_URL = 'https://vietitalia.onrender.com/api';
 const ITEMS_PER_PAGE = 5; 
 let currentEventPage = 1;
 let currentTravelPage = 1;
+let currentTrainingPage = 1;
 
 let localEvents = []; 
 let localTravels = []; 
+let localTrainings = [];
 
 const tabEventBtn = document.getElementById('tabEventBtn'); 
 const tabTravelBtn = document.getElementById('tabTravelBtn'); 
+const tabTrainingBtn = document.getElementById('tabTrainingBtn');
 const eventSection = document.getElementById('eventSection'); 
 const travelSection = document.getElementById('travelSection'); 
+const trainingSection = document.getElementById('trainingSection');
 
-tabEventBtn.addEventListener('click', () => { 
-    tabEventBtn.className = "py-2 px-4 font-bold text-lg text-primary border-b-2 border-primary focus:outline-none"; 
-    tabTravelBtn.className = "py-2 px-4 font-bold text-lg text-gray-500 hover:text-secondary focus:outline-none"; 
-    eventSection.classList.remove('hidden'); 
-    travelSection.classList.add('hidden'); 
-});
+// --- Class helpers cho từng nút tab (active / inactive) ---
+const activeClass = {
+    event: "py-2 px-4 font-bold text-lg text-primary border-b-2 border-primary focus:outline-none",
+    travel: "py-2 px-4 font-bold text-lg text-secondary border-b-2 border-secondary focus:outline-none",
+    training: "py-2 px-4 font-bold text-lg text-amber-600 border-b-2 border-amber-600 focus:outline-none",
+};
+const inactiveClass = {
+    event: "py-2 px-4 font-bold text-lg text-gray-500 hover:text-primary focus:outline-none",
+    travel: "py-2 px-4 font-bold text-lg text-gray-500 hover:text-secondary focus:outline-none",
+    training: "py-2 px-4 font-bold text-lg text-gray-500 hover:text-amber-600 focus:outline-none",
+};
 
-tabTravelBtn.addEventListener('click', () => { 
-    tabTravelBtn.className = "py-2 px-4 font-bold text-lg text-secondary border-b-2 border-secondary focus:outline-none"; 
-    tabEventBtn.className = "py-2 px-4 font-bold text-lg text-gray-500 hover:text-primary focus:outline-none"; 
-    travelSection.classList.remove('hidden'); 
-    eventSection.classList.add('hidden'); 
-});
+function showTab(tab) {
+    tabEventBtn.className = tab === 'event' ? activeClass.event : inactiveClass.event;
+    tabTravelBtn.className = tab === 'travel' ? activeClass.travel : inactiveClass.travel;
+    tabTrainingBtn.className = tab === 'training' ? activeClass.training : inactiveClass.training;
+
+    eventSection.classList.toggle('hidden', tab !== 'event');
+    travelSection.classList.toggle('hidden', tab !== 'travel');
+    trainingSection.classList.toggle('hidden', tab !== 'training');
+}
+
+tabEventBtn.addEventListener('click', () => showTab('event'));
+tabTravelBtn.addEventListener('click', () => showTab('travel'));
+tabTrainingBtn.addEventListener('click', () => showTab('training'));
 
 
 // QUẢN LÝ SỰ KIỆN (EVENTS CRUD)
@@ -168,7 +184,7 @@ window.editEvent = function(id) {
     document.getElementById('eventCancelBtn').classList.remove('hidden'); 
     document.getElementById('event_media_note').classList.remove('hidden'); 
     
-    tabEventBtn.click(); 
+    showTab('event');
 }
 
 // DELETE: Xóa phần tử sự kiện
@@ -341,7 +357,7 @@ window.editTravel = function(id) {
     document.getElementById('travelCancelBtn').classList.remove('hidden'); 
     document.getElementById('travel_media_note').classList.remove('hidden'); 
 
-    tabTravelBtn.click(); 
+    showTab('travel');
 }
 
 // DELETE: Xóa phần tử cẩm nang du lịch
@@ -371,6 +387,186 @@ function resetTravelForm() {
 }
 document.getElementById('travelCancelBtn').addEventListener('click', resetTravelForm); 
 
+
+// QUẢN LÝ ĐÀO TẠO QUỐC TẾ (TRAININGS CRUD)
+// Khớp đúng schema bảng: id, created_at, title, slug, description, content,
+// duration, fee, course_media, media_folder, lang
+
+const trainingForm = document.getElementById('addTrainingForm');
+const trainingTableBody = document.getElementById('trainingTableBody');
+
+const trainingPageInfo = document.getElementById('trainingPageInfo');
+const trainingPrevBtn = document.getElementById('trainingPrevBtn');
+const trainingNextBtn = document.getElementById('trainingNextBtn');
+
+async function fetchTrainings() {
+    try {
+        const response = await fetch(`${API_URL}/trainings`);
+        const result = await response.json();
+        if (result.success) {
+            localTrainings = result.data;
+            currentTrainingPage = 1;
+            renderTrainings();
+        }
+    } catch (error) {
+        console.error('Lỗi lấy danh sách đào tạo:', error);
+    }
+}
+
+function renderTrainings() {
+    const totalPages = Math.ceil(localTrainings.length / ITEMS_PER_PAGE) || 1;
+
+    if (currentTrainingPage > totalPages) currentTrainingPage = totalPages;
+    if (currentTrainingPage < 1) currentTrainingPage = 1;
+
+    const startIndex = (currentTrainingPage - 1) * ITEMS_PER_PAGE;
+    const paginatedTrainings = localTrainings.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    trainingPageInfo.innerText = `Trang ${currentTrainingPage} / ${totalPages} (Tổng số: ${localTrainings.length})`;
+    trainingPrevBtn.disabled = currentTrainingPage === 1;
+    trainingNextBtn.disabled = currentTrainingPage === totalPages;
+
+    trainingTableBody.innerHTML = paginatedTrainings.map(tr => `
+        <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3 font-medium text-gray-900">${tr.title}</td>
+            <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded font-bold ${tr.lang === 'vi' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}">${tr.lang.toUpperCase()}</span></td>
+            <td class="px-4 py-3 text-gray-500">${tr.duration || '-'}</td>
+            <td class="px-4 py-3 text-gray-500">${tr.fee != null && tr.fee !== '' ? `€${tr.fee}` : '-'}</td>
+
+            <!-- Hiển thị nhãn Thư mục tương tự Event/Travel -->
+            <td class="px-4 py-3 text-center">
+                ${tr.media_folder 
+                    ? `<span class="px-2 py-1 text-xs font-mono font-bold bg-amber-50 text-amber-700 rounded border border-amber-200">${tr.media_folder}</span>` 
+                    : `<span class="px-2 py-1 text-xs font-bold bg-amber-50 text-amber-600 rounded border border-amber-200">Trống</span>`
+                }
+            </td>
+
+            <td class="px-4 py-3 text-xs text-gray-400 font-mono">${tr.slug}</td>
+            <td class="px-4 py-3 text-center space-x-2">
+                <button onclick="editTraining(${tr.id})" class="text-blue-600 hover:text-blue-900 font-semibold">Sửa</button>
+                <button onclick="deleteTraining(${tr.id})" class="text-red-600 hover:text-red-900 font-semibold">Xóa</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+trainingPrevBtn.addEventListener('click', () => {
+    if (currentTrainingPage > 1) {
+        currentTrainingPage--;
+        renderTrainings();
+    }
+});
+
+trainingNextBtn.addEventListener('click', () => {
+    const totalPages = Math.ceil(localTrainings.length / ITEMS_PER_PAGE);
+    if (currentTrainingPage < totalPages) {
+        currentTrainingPage++;
+        renderTrainings();
+    }
+});
+
+// CREATE & UPDATE: Xử lý Submit Form Training
+trainingForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const trainingId = document.getElementById('training_id').value;
+    const titleVal = document.getElementById('training_title').value;
+    let slugVal = document.getElementById('training_slug').value;
+
+    if (!slugVal) {
+        slugVal = titleVal.toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9 -]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+    }
+
+    const formData = new FormData();
+    formData.append('title', titleVal);
+    formData.append('slug', slugVal);
+    formData.append('duration', document.getElementById('training_duration').value);
+    formData.append('fee', document.getElementById('training_fee').value);
+    formData.append('description', document.getElementById('training_description').value);
+    formData.append('content', document.getElementById('training_content').value);
+    formData.append('lang', document.getElementById('training_lang').value);
+
+    const trainingFileInput = document.getElementById('training_media_file');
+    if (trainingFileInput && trainingFileInput.files.length > 0) {
+        for (let i = 0; i < trainingFileInput.files.length; i++) {
+            formData.append('media', trainingFileInput.files[i]);
+        }
+    }
+
+    const url = trainingId ? `${API_URL}/trainings/${trainingId}` : `${API_URL}/trainings`;
+    const method = trainingId ? 'PUT' : 'POST';
+
+    try {
+        const response = await fetch(url, { method, body: formData });
+        const result = await response.json();
+
+        if (result.success) {
+            alert(trainingId ? '🎓 Cập nhật chương trình thành công!' : '🎓 Thêm chương trình thành công!');
+            resetTrainingForm();
+            fetchTrainings();
+        } else {
+            alert('❌ Lỗi: ' + result.message);
+        }
+    } catch (error) {
+        console.error(error);
+        alert('❌ Lỗi kết nối Server!');
+    }
+});
+
+// Chuyển Form sang trạng thái UPDATE dữ liệu Training
+window.editTraining = function(id) {
+    const tr = localTrainings.find(item => item.id === id);
+    if (!tr) return;
+
+    document.getElementById('training_id').value = tr.id;
+    document.getElementById('training_title').value = tr.title;
+    document.getElementById('training_slug').value = tr.slug;
+    document.getElementById('training_duration').value = tr.duration || '';
+    document.getElementById('training_fee').value = tr.fee != null ? tr.fee : '';
+    document.getElementById('training_description').value = tr.description || '';
+    document.getElementById('training_content').value = tr.content || '';
+    document.getElementById('training_lang').value = tr.lang;
+
+    document.getElementById('trainingFormTitle').innerText = "📝 Chỉnh Sửa Chương Trình Đào Tạo";
+    document.getElementById('trainingSubmitBtn').innerText = "Cập Nhật Chương Trình";
+    document.getElementById('trainingCancelBtn').classList.remove('hidden');
+    document.getElementById('training_media_note').classList.remove('hidden');
+
+    showTab('training');
+}
+
+// DELETE: Xóa chương trình đào tạo
+window.deleteTraining = async function(id) {
+    if (!confirm('Bạn có chắc muốn xóa chương trình đào tạo này không?')) return;
+    try {
+        const response = await fetch(`${API_URL}/trainings/${id}`, { method: 'DELETE' });
+        const result = await response.json();
+        if (result.success) {
+            alert('🗑️ Đã xóa chương trình thành công!');
+            fetchTrainings();
+        } else {
+            alert('❌ Lỗi xóa: ' + result.message);
+        }
+    } catch (error) {
+        alert('❌ Không thể kết nối tới Server!');
+    }
+}
+
+function resetTrainingForm() {
+    trainingForm.reset();
+    document.getElementById('training_id').value = '';
+    document.getElementById('trainingFormTitle').innerText = "🎓 Thêm Chương Trình Đào Tạo Mới";
+    document.getElementById('trainingSubmitBtn').innerText = "Lưu Chương Trình";
+    document.getElementById('trainingCancelBtn').classList.add('hidden');
+    document.getElementById('training_media_note').classList.add('hidden');
+}
+document.getElementById('trainingCancelBtn').addEventListener('click', resetTrainingForm);
+
+
 // --- KHỞI CHẠY KHI ĐẦU TRANG ĐƯỢC LOAD ---
 fetchEvents(); 
 fetchTravels(); 
+fetchTrainings();
