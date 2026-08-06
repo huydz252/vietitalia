@@ -11,7 +11,8 @@ import JobMarket from "./pages/JobMarket.js";
 import VietnamMarket from "./pages/VietnamMarket.js";
 import BusinessMatching from "./pages/BusinessMatching.js";
 import { renderContact } from "./components/sections/Contact.js";
-import ItalyTravel from "./pages/ItalyTravel.js"; 
+import ItalyTravel from "./pages/ItalyTravel.js";
+import InternationalTraining from "./pages/InternationalTraining.js"; // MỚI THÊM
 
 import { initFlagEffect } from "./components/sections/SnowEffect.js";
 
@@ -27,6 +28,7 @@ const routes = {
   "/business-matching": BusinessMatching,
   "/contact": (container) => renderContact(container),
   "/italy-travel": ItalyTravel,
+  "/international-training": InternationalTraining, // MỚI THÊM
 };
 const root = document.querySelector("#app-root");
 const headerRoot = document.querySelector("#app-header");
