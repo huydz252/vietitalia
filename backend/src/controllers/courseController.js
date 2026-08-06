@@ -14,24 +14,6 @@ export const getCourses = async (req, res) => {
     }
 };
 
-export const getCourseById = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { data, error } = await supabase
-            .from('courses')
-            .select('*')
-            .eq('id', id)
-            .single();
-
-        if (error) throw error;
-        if (!data) return res.status(404).json({ success: false, message: 'Không tìm thấy khóa học' });
-
-        res.status(200).json({ success: true, data });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
-};
-
 export const createCourse = async (req, res) => {
     try {
         const { title, slug, description, content, duration, fee, lang } = req.body;
@@ -130,7 +112,7 @@ export const createCourse = async (req, res) => {
                 duration, 
                 fee: parsedFee, 
                 course_media, 
-                media_folder: targetFolderNumber, // Ép kiểu int4 theo schema DB
+                media_folder: targetFolderNumber, 
                 lang 
             }])
             .select();
@@ -147,13 +129,15 @@ export const updateCourse = async (req, res) => {
         const { id } = req.params;
         const { title, slug, description, content, duration, fee, lang } = req.body;
 
+        // Cũng sửa ở đây sang maybeSingle()
         const { data: oldCourse, error: fetchError } = await supabase
             .from('courses')
             .select('*')
             .eq('id', id)
-            .single();
+            .maybeSingle();
 
-        if (fetchError || !oldCourse) {
+        if (fetchError) throw fetchError;
+        if (!oldCourse) {
             return res.status(404).json({ success: false, message: 'Không tìm thấy khóa học cần sửa' });
         }
 
@@ -161,7 +145,6 @@ export const updateCourse = async (req, res) => {
         let currentFolder = oldCourse.media_folder;
 
         if (req.files && req.files.length > 0) {
-            // Nếu chưa có media_folder thì mới tiến hành quét tìm folder tiếp theo
             if (!currentFolder) {
                 const { data: folders } = await supabase.storage
                     .from('vietitalia_media')
