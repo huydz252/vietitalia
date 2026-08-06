@@ -5,6 +5,7 @@ const mainLinks = [
   ["/about", "nav.about"],
   ["/ambassador", "nav.ambassador"],
   ["/events", "nav.events"],
+  ["/international-training", "nav.internationalTraining"],
   ["/contact", "nav.contact"],
 ];
 

@@ -85,6 +85,7 @@ export function renderHeader(container) {
     ["/about", "nav.about"],
     ["/ambassador", "nav.ambassador"],
     ["/events", "nav.events"],
+    ["/international-training", "nav.internationalTraining"],
   ];
 
   mobileMenus.forEach(([path, key]) => {
