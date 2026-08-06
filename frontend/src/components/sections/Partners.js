@@ -15,7 +15,7 @@ export function renderPartners(container, { compact = false } = {}) {
     ],
     [
       isVi ? "Đối tác truyền thông" : "Partner media",
-      ["Kiwi Media", "Gimmy"]
+      ["Kiwi Media", "Gimmy", "MVC Group", "Telebelluno"]
     ]
   ];
 
