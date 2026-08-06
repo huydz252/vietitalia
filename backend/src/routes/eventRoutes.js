@@ -4,12 +4,11 @@ import { getEvents, createEvent, updateEvent, deleteEvent } from '../controllers
 
 const router = express.Router();
 
-// Cấu hình multer lưu file vào RAM tạm thời
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/', getEvents);
 router.post('/', upload.array('media', 50), createEvent); 
-router.put('/:id', upload.array('media', 10), updateEvent);
+router.put('/:id', upload.array('media', 50), updateEvent);
 router.delete('/:id', deleteEvent);
 
 export default router;
