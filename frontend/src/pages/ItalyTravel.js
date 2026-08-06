@@ -7,7 +7,6 @@ export default function ItalyTravel(container) {
   async function render() {
     const lang = getLocale();
 
-    // Ngôn ngữ cho giao diện
     const uiText = {
       tag: lang === "vi" ? "Trải nghiệm Ý" : "Esperienza in Italia",
       title: lang === "vi" ? "Du Lịch & Khám Phá" : "Viaggi e Scoperte",
