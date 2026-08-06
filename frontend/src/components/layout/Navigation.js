@@ -6,7 +6,7 @@ const mainLinks = [
   ["/ambassador", "nav.ambassador"],
   ["/events", "nav.events"],
   ["/international-training", "nav.internationalTraining"],
-  ["/contact", "nav.contact"],
+  ["/italy-travel", "nav.italyTravel"]
 ];
 
 const newsLinks = [
@@ -14,7 +14,7 @@ const newsLinks = [
   ["/italy-market", "nav.italyMarket"],
   ["/vietnam-market", "nav.vietnamMarket"],
   ["/business-matching", "nav.businessMatching"],
-  ["/italy-travel", "nav.italyTravel"] // Đã bổ sung trang Du lịch
+  ["/contact", "nav.contact"],
 ];
 
 export function getNavigationLinks() {

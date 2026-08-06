@@ -1,25 +1,122 @@
 import { renderPartners } from "../components/sections/Partners.js";
-import { t } from "../i18n/i18n.js";
-
-const advisors = [
-  "Thạc sĩ Lê Thị Kim Lệ",
-  "Marco Bianchi",
-  "Nguyễn Minh Anh",
-];
+import { t, getLocale } from "../i18n/i18n.js";
+import { advisorsData } from "../data/advisorsData.js";
 
 export default function About(container) {
+  const lang = getLocale();
+  const currentAdvisorsData = advisorsData[lang] ? advisorsData[lang] : advisorsData.vi;
+
   container.innerHTML = `
+      <!-- HERO BANNER -->
       <section
-        class="bg-cover bg-center bg-no-repeat text-white py-10 flex flex-col "
+        class="bg-cover bg-center bg-no-repeat text-white py-10 flex flex-col"
         style="height: 300px; background-image: linear-gradient(rgba(240, 93, 132, 0.75), rgba(51, 141, 112, 0.65)), url('/images/italy/Rome.jpg');"
       >
         <div class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop w-full mt-10">
           <p class="uppercase text-sm tracking-[0.2em] font-bold mb-2 shadow-sm">${t("about.bannerEyebrow")}</p>
-          <h1 class="font-display-lg text-6xl font-bold mt-2 text-white drop-shadow-md">${t("about.bannerTitle")}</h1>
-          <p class="italic mt-4 text-xl drop-shadow-md">${t("about.subtitle")}</p>
+          <h1 class="font-display-lg text-5xl md:text-6xl font-bold mt-2 text-white drop-shadow-md">${t("about.bannerTitle")}</h1>
+          <p class="italic mt-4 text-lg md:text-xl drop-shadow-md">${t("about.subtitle")}</p>
         </div>
       </section>
 
+      <!-- SECTION BAN CỐ VẤN - BỐ CỤC SPLIT CÓ ẢNH CHI TIẾT KHỔ LỚN -->
+      <section class="py-16 bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            
+            <!-- CỘT TRÁI (COL-5): Danh sách chọn Cố Vấn -->
+            <div class="lg:col-span-5 space-y-6">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-md border border-emerald-200">
+                  VietItalia Advisory Board
+                </span>
+                <h2 class="text-3xl font-extrabold text-primary tracking-tight mt-3">
+                  ${currentAdvisorsData.sectionTitle}
+                </h2>
+              </div>
+
+              <!-- List Cố Vấn bên trái (Thumbnails nhỏ) -->
+              <div class="space-y-3">
+                ${currentAdvisorsData.advisors.map((adv, index) => `
+                  <div 
+                    id="advisor-item-${adv.id}"
+                    onclick="selectAdvisor('${adv.id}')"
+                    class="advisor-card cursor-pointer p-3.5 rounded-2xl transition-all duration-300 flex items-center space-x-4 border ${index === 0 ? 'bg-emerald-50/50 border-emerald-300 shadow-sm opacity-100' : 'bg-transparent border-transparent opacity-60 hover:opacity-100'}"
+                  >
+                    <img 
+                      src="${adv.avatar}" 
+                      alt="${adv.name}" 
+                      class="w-14 h-14 rounded-xl object-cover object-top shadow-sm shrink-0 border border-gray-200"
+                      onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(adv.name)}&background=81001d&color=fff'"
+                    />
+                    
+                    <div>
+                      <h3 class="text-base font-bold text-gray-900 leading-snug">${adv.name}</h3>
+                      <p class="text-xs font-bold text-emerald-700 uppercase tracking-wide mt-0.5">${adv.role}</p>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- CỘT PHẢI (COL-7): Chi tiết Cố Vấn với ẢNH TẬP TRUNG KHỔ LỚN -->
+            <div class="lg:col-span-7 lg:border-l lg:border-gray-200 lg:pl-10 pt-4 lg:pt-0">
+              
+              <p class="text-sm text-gray-600 mb-6 leading-relaxed font-medium pb-4 border-b border-gray-100">
+                ${currentAdvisorsData.sectionSub}
+              </p>
+
+              ${currentAdvisorsData.advisors.map((adv, index) => `
+                <div 
+                  id="advisor-detail-${adv.id}"
+                  class="advisor-detail-content ${index === 0 ? 'block' : 'hidden'} space-y-6 animate-fadeIn"
+                >
+                  <!-- Block Cố vấn: Ảnh Chân dung To & Rõ ràng -->
+                  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 pb-6 border-b border-gray-100 bg-gray-50/60 p-5 rounded-2xl border border-gray-100">
+                    
+                    <!-- 📸 KHUNG ẢNH CỐ VẤN KHỔ LỚN (w-36 h-48 ~ 144x192px) -->
+                    <div class="w-36 h-48 sm:w-40 sm:h-52 shrink-0 rounded-2xl overflow-hidden shadow-md border-2 border-white ring-1 ring-gray-200 bg-gray-200">
+                      <img 
+                        src="${adv.avatar}" 
+                        alt="${adv.name}" 
+                        class="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300"
+                        onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(adv.name)}&background=81001d&color=fff'"
+                      />
+                    </div>
+
+                    <div class="space-y-1.5">
+                      <h3 class="text-2xl sm:text-3xl font-extrabold text-primary leading-tight">${adv.name}</h3>
+                      <span class="inline-block text-xs font-bold text-emerald-800 bg-emerald-100/70 border border-emerald-300/60 uppercase tracking-wider px-3 py-1 rounded-md">
+                        ${adv.role}
+                      </span>
+                      <p class="text-xs sm:text-sm text-gray-600 italic pt-1">${adv.title}</p>
+                    </div>
+                  </div>
+
+                  <!-- Danh sách Chức vụ & Thành tựu -->
+                  <div class="pt-2">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Chức vụ & Bằng cấp / Roles & Experience</h4>
+                    <ul class="text-sm text-gray-700 space-y-3">
+                      ${adv.highlights.map(h => `
+                        <li class="flex items-start">
+                          <span class="inline-flex items-center justify-center w-5 h-5 mr-3 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs shrink-0 mt-0.5">✓</span>
+                          <span class="leading-relaxed">${h}</span>
+                        </li>
+                      `).join('')}
+                    </ul>
+                  </div>
+                </div>
+              `).join('')}
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- NỘI DUNG GIỚI THIỆU HIỆP HỘI HIỆN CÓ -->
       <section class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop py-16">
         <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <div class="flex flex-col justify-center bg-gray-50 p-8 rounded-xl border border-outline-variant shadow-sm h-full">
@@ -94,4 +191,27 @@ export default function About(container) {
     </div>
   `;
   container.append(c);
+
+  // JS TƯƠNG TÁC CHỌN CỐ VẤN
+  window.selectAdvisor = function(id) {
+    document.querySelectorAll('.advisor-card').forEach(card => {
+      card.className = "advisor-card cursor-pointer p-3.5 rounded-2xl transition-all duration-300 flex items-center space-x-4 border bg-transparent border-transparent opacity-60 hover:opacity-100";
+    });
+
+    const activeCard = document.getElementById('advisor-item-' + id);
+    if (activeCard) {
+      activeCard.className = "advisor-card cursor-pointer p-3.5 rounded-2xl transition-all duration-300 flex items-center space-x-4 border bg-emerald-50/50 border-emerald-300 shadow-sm opacity-100";
+    }
+
+    document.querySelectorAll('.advisor-detail-content').forEach(detail => {
+      detail.classList.add('hidden');
+      detail.classList.remove('block');
+    });
+
+    const activeDetail = document.getElementById('advisor-detail-' + id);
+    if (activeDetail) {
+      activeDetail.classList.remove('hidden');
+      activeDetail.classList.add('block');
+    }
+  };
 }
