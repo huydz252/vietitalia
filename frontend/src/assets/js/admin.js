@@ -19,7 +19,6 @@ const eventSection = document.getElementById('eventSection');
 const travelSection = document.getElementById('travelSection'); 
 const trainingSection = document.getElementById('trainingSection');
 
-// --- Class helpers cho từng nút tab (active / inactive) ---
 const activeClass = {
     event: "py-2 px-4 font-bold text-lg text-primary border-b-2 border-primary focus:outline-none",
     travel: "py-2 px-4 font-bold text-lg text-secondary border-b-2 border-secondary focus:outline-none",
