@@ -1,215 +1,146 @@
-import { supabase } from '../config/supabase.js';
+import { getLocale } from '../i18n/i18n.js'; 
 
-export const getEvents = async (req, res) => {
+const API_URL = 'https://vietitalia.onrender.com/api'; 
+//const API_URL = 'http://localhost:5000/api'; 
+
+// Hàm bổ trợ: Xử lý linh hoạt cả ngày Database chuẩn ISO và ngày file tĩnh "DD.MM.YYYY"
+function parseDate(dateStr) {
+  if (!dateStr) return new Date(0);
+  
+  // Nếu là ngày từ Database (ví dụ: 2026-07-15T00:00:00Z)
+  if (dateStr.includes('-')) return new Date(dateStr);
+  
+  // Nếu là ngày từ cấu trúc tĩnh cũ (DD.MM.YYYY)
+  const parts = dateStr.split('.');
+  if (parts.length === 3) {
+    const [day, month, year] = parts.map(Number);
+    return new Date(year, month - 1, day);
+  }
+  
+  return new Date(dateStr);
+}
+
+export default function Events(container) {
+  async function render() {
+    const lang = getLocale();
+    console.log("Ngôn ngữ hiện tại:", lang);
+    
+    const uiText = {
+      tag: lang === "vi" ? "Sự kiện" : "Eventi",
+      title: lang === "vi" ? "Tin tức & Sự kiện" : "Notizie ed Eventi",
+      dateLabel: lang === "vi" ? "Ngày đăng:" : "Data di pubblicazione:",
+      otherEvents: lang === "vi" ? "Sự kiện khác" : "Altri eventi",
+      loading: lang === "vi" ? "Đang tải sự kiện..." : "Caricamento...",
+      error: lang === "vi" ? "Chưa có sự kiện nào." : "Nessun evento trovato."
+    };
+
+    container.innerHTML = `
+      <div class="flex justify-center items-center py-32">
+        <p class="text-lg text-secondary animate-pulse">${uiText.loading}</p>
+      </div>
+    `;
+
     try {
-        const { lang } = req.query; 
+      const response = await fetch(`${API_URL}/events?lang=${lang}`);
+      const result = await response.json();
+      
+      const rawData = result.success && result.data.length > 0 ? result.data : [];
 
-        let query = supabase
-            .from('events')
-            .select('*')
-            .order('id', { ascending: false }); 
+      if (rawData.length === 0) {
+        container.innerHTML = `
+          <section class="bg-cover bg-center bg-no-repeat text-white p-20 flex flex-col justify-center items-center text-center" style="height: 300px; background-image: linear-gradient(rgba(240, 93, 132, 0.65), rgba(51, 141, 112, 0.55)), url('/images/italy/riomaggiore-shutterstock_1195849822_1118a4b73d.jpg');">
+             <p class="text-label-sm uppercase tracking-widest">${uiText.tag}</p>
+             <h1 class="font-display-lg text-display-lg mt-3">${uiText.title}</h1>
+          </section>
+          <section class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop py-24 text-center">
+            <p class="text-xl text-on-surface-variant">${uiText.error}</p>
+          </section>
+        `;
+        return;
+      }
 
-        if (lang) {
-            query = query.eq('lang', lang);
-        }
+      // Sắp xếp theo ngày mới nhất lên đầu dựa vào hàm parseDate
+      const currentData = [...rawData].sort((a, b) => 
+        parseDate(b.event_date || b.date) - parseDate(a.event_date || a.date)
+      );
 
-        const { data, error } = await query;
-        if (error) throw error;
+      // Lấy hash từ URL và decode mã hoá ký tự UTF-8 (nếu có)
+      const rawHash = window.location.hash.substring(1);
+      const hashSlug = decodeURIComponent(rawHash);
 
-        res.status(200).json({ success: true, data: data });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
-};
+      // Tìm bài viết theo slug, nếu không có slug tương ứng thì mặc định lấy bài mới nhất (currentData[0])
+      const currentPost = hashSlug 
+        ? (currentData.find(p => p.slug === hashSlug) || currentData[0])
+        : currentData[0];
 
-export const createEvent = async (req, res) => {
-    try {
-        const { title, description, event_date, location, status, lang } = req.body;
-        
-        // 1. Quét trực tiếp danh sách các thư mục bên trong thư mục 'events' trên Storage
-        const { data: folders, error: listError } = await supabase.storage
-            .from('vietitalia_media')
-            .list('events', {
-                limit: 100,
-                offset: 0
-            });
+      // Đảm bảo hiển thị đúng định dạng ngày (lấy từ cột event_date hoặc date dự phòng)
+      const displayDate = currentPost.event_date 
+        ? new Date(currentPost.event_date).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'it-IT')
+        : currentPost.date;
 
-        if (listError) throw listError;
+      container.innerHTML = `
+        <!-- Hero Banner -->
+        <section 
+          class="bg-cover bg-center bg-no-repeat text-white p-20 flex flex-col justify-center items-center text-center"
+          style="
+            height: 300px;
+            background-image:
+              linear-gradient(rgba(240, 93, 132, 0.65), rgba(51, 141, 112, 0.55)),
+              url('/images/italy/riomaggiore-shutterstock_1195849822_1118a4b73d.jpg');
+          "
+        >
+           <p class="text-label-sm uppercase tracking-widest">${uiText.tag}</p>
+           <h1 class="font-display-lg text-display-lg mt-3">${uiText.title}</h1>
+        </section>
 
-        // Tìm số thư mục lớn nhất hiện tại dựa trên tên dạng số (01, 02, 03...)
-        let maxFolderNumber = 0;
-        if (folders && folders.length > 0) {
-            folders.forEach(item => {
-                const folderNum = parseInt(item.name, 10);
-                if (!isNaN(folderNum) && folderNum > maxFolderNumber) {
-                    maxFolderNumber = folderNum;
-                }
-            });
-        }
+        <!-- Bố cục 80/20 -->
+        <section class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop py-16 grid grid-cols-1 lg:grid-cols-12 gap-12">
+          
+          <!-- Cột chính 80% -->
+          <article class="lg:col-span-9">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-primary leading-tight mb-2">${currentPost.title}</h1>
+            <p class="text-sm text-secondary italic mb-6">${uiText.dateLabel} ${displayDate || ''}</p>
+            <div class="prose max-w-none text-on-surface-variant text-justify">
+              ${currentPost.content || currentPost.description}
+            </div>
+          </article>
 
-        // --- ĐOẠN ĐỔI LOGIC: Quyết định số thư mục dựa trên việc có ảnh gửi lên hay không ---
-        let targetFolderNumber;
-        const hasFiles = req.files && req.files.length > 0;
-
-        if (hasFiles) {
-            // Nếu có tệp mới: Tạo thư mục mới tiếp theo (Lớn nhất + 1)
-            targetFolderNumber = String(maxFolderNumber + 1).padStart(2, '0');
-        } else {
-            // Nếu không chọn tệp: Dùng chung thư mục lớn nhất hiện tại. 
-            // Nếu chưa từng có thư mục nào (max = 0) thì mặc định là '01'
-            targetFolderNumber = maxFolderNumber > 0 
-                ? String(maxFolderNumber).padStart(2, '0') 
-                : '01';
-        }
-
-        let uploadedMedia = []; 
-
-        if (hasFiles) {
-            const uploadPromises = req.files.map(async (file) => {
-                const cleanFileName = file.originalname.toLowerCase()
-                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                    .replace(/\s+/g, '_')
-                    .replace(/[^a-z0-9.-]/g, '');
-
-                // Sử dụng targetFolderNumber đã xác định ở trên
-                const fileName = `events/${targetFolderNumber}/${cleanFileName}`; 
-                
-                const { error: uploadError } = await supabase.storage
-                    .from('vietitalia_media')
-                    .upload(fileName, file.buffer, { 
-                        contentType: file.mimetype,
-                        upsert: true 
-                    });
-
-                if (uploadError) throw uploadError;
-
-                const { data: publicUrlData } = supabase.storage
-                    .from('vietitalia_media')
-                    .getPublicUrl(fileName);
-                
-                const fileType = file.mimetype.startsWith('video') ? 'video' : 'image';
-
-                return {
-                    type: fileType,
-                    url: publicUrlData.publicUrl
-                };
-            });
-
-            uploadedMedia = await Promise.all(uploadPromises);
-        }
-
-        const event_media = uploadedMedia.length > 0 ? JSON.stringify(uploadedMedia) : null;
-
-        // Lưu thông tin kèm theo trường media_folder chính xác vào bảng events
-        const { data, error } = await supabase
-            .from('events')
-            .insert([{ title, description, event_date, location, event_media, media_folder: targetFolderNumber, status, lang }]) 
-            .select();
-
-        if (error) throw error;
-        res.status(201).json({ success: true, message: 'Thêm sự kiện thành công', data });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
-};
-
-// UPDATE: Cập nhật Sự Kiện
-export const updateEvent = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { title, description, event_date, location, status, lang } = req.body;
-
-        const { data: oldEvent, error: fetchError } = await supabase
-            .from('events')
-            .select('*')
-            .eq('id', id)
-            .single();
-
-        if (fetchError || !oldEvent) {
-            return res.status(404).json({ success: false, message: 'Không tìm thấy sự kiện cần sửa' });
-        }
-
-        let event_media = oldEvent.event_media;
-        let currentFolder = oldEvent.media_folder; // Giữ nguyên giá trị cũ (có thể là null)
-
-        // Chỉ khi người dùng chọn tải ảnh/video mới lên thì mới xử lý folder
-        if (req.files && req.files.length > 0) {
+          <!-- Sidebar 20% -->
+          <aside class="lg:col-span-3 border-l border-outline-variant pl-8 sticky top-24 self-start">
+            <h3 class="font-headline-sm mb-6 pb-2 border-b">${uiText.otherEvents}</h3>
             
-            // Nếu trước đó chưa có folder (null), tiến hành quét Storage để lấy số tiếp theo
-            if (!currentFolder) {
-                const { data: folders } = await supabase.storage
-                    .from('vietitalia_media')
-                    .list('events', { limit: 100 });
-
-                let maxFolderNumber = 0;
-                if (folders && folders.length > 0) {
-                    folders.forEach(item => {
-                        const folderNum = parseInt(item.name, 10);
-                        if (!isNaN(folderNum) && folderNum > maxFolderNumber) {
-                            maxFolderNumber = folderNum;
-                        }
-                    });
-                }
-                currentFolder = String(maxFolderNumber + 1).padStart(2, '0');
-            }
-
-            const uploadPromises = req.files.map(async (file) => {
-                const cleanFileName = file.originalname.toLowerCase()
-                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                    .replace(/\s+/g, '_')
-                    .replace(/[^a-z0-9.-]/g, '');
-
-                const fileName = `events/${currentFolder}/${cleanFileName}`;
-
-                const { error: uploadError } = await supabase.storage
-                    .from('vietitalia_media')
-                    .upload(fileName, file.buffer, { contentType: file.mimetype, upsert: true });
-
-                if (uploadError) throw uploadError;
-
-                const { data: publicUrlData } = supabase.storage
-                    .from('vietitalia_media')
-                    .getPublicUrl(fileName);
-
-                return {
-                    type: file.mimetype.startsWith('video') ? 'video' : 'image',
-                    url: publicUrlData.publicUrl
-                };
-            });
-
-            const uploadedMedia = await Promise.all(uploadPromises);
-            event_media = JSON.stringify(uploadedMedia);
-        }
-
-        // Cập nhật Database (nếu currentFolder vẫn null thì ghi nhận null)
-        const { data, error } = await supabase
-            .from('events')
-            .update({ title, description, event_date, location, event_media, media_folder: currentFolder, status, lang })
-            .eq('id', id)
-            .select();
-
-        if (error) throw error;
-        res.status(200).json({ success: true, message: 'Cập nhật sự kiện thành công', data });
+            <!-- Bọc danh sách bằng div giới hạn chiều cao và cho phép cuộn -->
+            <div class="max-h-[500px] overflow-y-auto pr-2 scrollbar-thin">
+              <ul class="space-y-6">
+                ${currentData.map(post => {
+                  const itemDate = post.event_date 
+                    ? new Date(post.event_date).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'it-IT')
+                    : post.date;
+                  // Dự phòng trường hợp bài viết cũ trong DB chưa có slug thì dùng id
+                  const itemSlug = post.slug || post.id;
+                  
+                  return `
+                  <li>
+                    <a href="#${itemSlug}" class="block group">
+                      <span class="text-xs text-primary font-bold">${itemDate || ''}</span>
+                      <h4 class="font-semibold text-on-surface-variant group-hover:text-primary transition">${post.title}</h4>
+                    </a>
+                  </li>
+                `}).join("")}
+              </ul>
+            </div>
+          </aside>
+        </section>
+      `;
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+      console.error("Lỗi khi tải sự kiện:", error);
+      container.innerHTML = `<p class="text-center py-32 text-red-500">Lỗi kết nối máy chủ.</p>`;
     }
-};
+  }
 
-// DELETE: Xóa Sự Kiện
-export const deleteEvent = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        // Cậu có thể tùy chọn thêm logic xóa luôn folder ảnh trên Supabase Storage ở đây nếu muốn
-        const { data, error } = await supabase
-            .from('events')
-            .delete()
-            .eq('id', id)
-            .select();
-
-        if (error) throw error;
-        res.status(200).json({ success: true, message: 'Xóa sự kiện thành công', data });
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
-};
+  render();
+  window.addEventListener("hashchange", () => {
+    render();
+    window.scrollTo(0, 0);
+  });
+}
