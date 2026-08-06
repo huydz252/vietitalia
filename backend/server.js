@@ -4,6 +4,7 @@ import cors from 'cors';
 
 import eventRoutes from './src/routes/eventRoutes.js';
 import travelRoutes from './src/routes/travelRoutes.js';
+import trainingRoutes from './src/routes/trainingRoutes.js';
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.urlencoded({limit: '50mb', extended: true }));
 
 app.use('/api/events', eventRoutes);
 app.use('/api/travels', travelRoutes);
+app.use('/api/trainings', trainingRoutes);
 
 // check
 app.get('/', (req, res) => {
