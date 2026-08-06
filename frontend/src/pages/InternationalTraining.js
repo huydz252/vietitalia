@@ -1,37 +1,36 @@
 import { getLocale } from '../i18n/i18n.js';
 
-const API_URL = 'https://vietitalia.onrender.com/api';
-//const API_URL = 'http://localhost:5000/api';
+// const API_URL = 'https://vietitalia.onrender.com/api';
+const API_URL = 'http://localhost:5000/api';
 
-// Hàm bổ trợ: Xử lý linh hoạt cả ngày Database chuẩn ISO và ngày file tĩnh "DD.MM.YYYY"
+// Hàm bổ trợ: Parse ngày chuẩn ISO từ database
 function parseDate(dateStr) {
   if (!dateStr) return new Date(0);
-
-  // Nếu là ngày từ Database (ví dụ: 2026-07-15T00:00:00Z)
-  if (dateStr.includes('-')) return new Date(dateStr);
-
-  // Nếu là ngày từ cấu trúc tĩnh cũ (DD.MM.YYYY)
-  const parts = dateStr.split('.');
-  if (parts.length === 3) {
-    const [day, month, year] = parts.map(Number);
-    return new Date(year, month - 1, day);
-  }
-
   return new Date(dateStr);
+}
+
+// Hàm hỗ trợ format tiền tệ (Học phí)
+function formatFee(amount, lang) {
+  if (!amount || amount === 0) return lang === 'vi' ? 'Miễn phí' : 'Gratuito';
+  return new Intl.NumberFormat(lang === 'vi' ? 'vi-VN' : 'it-IT', {
+    style: 'currency',
+    currency: 'VND'
+  }).format(amount);
 }
 
 export default function InternationalTraining(container) {
   async function render() {
     const lang = getLocale();
-    console.log("Ngôn ngữ hiện tại:", lang);
 
     const uiText = {
       tag: lang === "vi" ? "Đào tạo" : "Formazione",
       title: lang === "vi" ? "Đào Tạo Quốc Tế" : "Formazione Internazionale",
       dateLabel: lang === "vi" ? "Ngày đăng:" : "Data di pubblicazione:",
-      otherEvents: lang === "vi" ? "Chương trình khác" : "Altri programmi",
+      durationLabel: lang === "vi" ? "Thời lượng:" : "Durata:",
+      feeLabel: lang === "vi" ? "Học phí:" : "Tassa di iscrizione:",
+      otherCourses: lang === "vi" ? "Khóa học khác" : "Altri corsi",
       loading: lang === "vi" ? "Đang tải chương trình..." : "Caricamento...",
-      error: lang === "vi" ? "Chưa có chương trình đào tạo nào." : "Nessun programma trovato."
+      error: lang === "vi" ? "Chưa có chương trình đào tạo nào." : "Nessun corso trovato."
     };
 
     container.innerHTML = `
@@ -41,10 +40,14 @@ export default function InternationalTraining(container) {
     `;
 
     try {
-      const response = await fetch(`${API_URL}/trainings?lang=${lang}`);
+      // 1. GỌI API COURSES
+      const response = await fetch(`${API_URL}/courses`);
       const result = await response.json();
 
-      const rawData = result.success && result.data.length > 0 ? result.data : [];
+      let rawData = result.success && result.data.length > 0 ? result.data : [];
+
+      // Lọc dữ liệu theo ngôn ngữ (vi/it)
+      rawData = rawData.filter(course => course.lang === lang);
 
       if (rawData.length === 0) {
         container.innerHTML = `
@@ -59,21 +62,28 @@ export default function InternationalTraining(container) {
         return;
       }
 
-      // Sắp xếp theo ngày mới nhất lên đầu dựa vào hàm parseDate
+      // Sắp xếp khóa học mới nhất lên đầu dựa vào id hoặc created_at
       const currentData = [...rawData].sort((a, b) =>
-        parseDate(b.event_date || b.date) - parseDate(a.event_date || a.date)
+        parseDate(b.created_at) - parseDate(a.created_at)
       );
 
-      // Nếu không có hash, lấy bài có ngày mới nhất
+      // Định tuyến bằng hash (#id)
       const hash = window.location.hash.substring(1);
-      const currentPost = hash
+      const currentCourse = hash
         ? (currentData.find(p => p.id == hash) || currentData[0])
         : currentData[0];
 
-      // Đảm bảo hiển thị đúng định dạng ngày (lấy từ cột event_date hoặc date dự phòng)
-      const displayDate = currentPost.event_date
-        ? new Date(currentPost.event_date).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'it-IT')
-        : currentPost.date;
+      const displayDate = new Date(currentCourse.created_at).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'it-IT');
+
+      // Giải mã danh sách hình ảnh/video từ cột course_media
+      let mediaList = [];
+      if (currentCourse.course_media) {
+        try {
+          mediaList = JSON.parse(currentCourse.course_media);
+        } catch (e) {
+          console.error("Lỗi parse JSON course_media:", e);
+        }
+      }
 
       container.innerHTML = `
         <!-- Hero Banner -->
@@ -90,34 +100,60 @@ export default function InternationalTraining(container) {
            <h1 class="font-display-lg text-display-lg mt-3">${uiText.title}</h1>
         </section>
 
-        <!-- Bố cục 80/20 -->
+        <!-- Bố cục Main/Sidebar -->
         <section class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop py-16 grid grid-cols-1 lg:grid-cols-12 gap-12">
           
-          <!-- Cột chính 80% -->
+          <!-- Cột nội dung chính (Col 80%) -->
           <article class="lg:col-span-9">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-primary leading-tight mb-2">${currentPost.title}</h1>
-            <p class="text-sm text-secondary italic mb-6">${uiText.dateLabel} ${displayDate || ''}</p>
-            <div class="prose max-w-none text-on-surface-variant text-justify">
-              ${currentPost.content || currentPost.description}
+            <h1 class="text-3xl md:text-4xl font-extrabold text-primary leading-tight mb-3">${currentCourse.title}</h1>
+            
+            <!-- Metadata: Ngày đăng, Thời lượng, Học phí -->
+            <div class="flex flex-wrap gap-4 text-sm text-gray-600 border-y border-gray-200 py-3 mb-6">
+              <span>📅 <strong>${uiText.dateLabel}</strong> ${displayDate}</span>
+              ${currentCourse.duration ? `<span>⏱️ <strong>${uiText.durationLabel}</strong> ${currentCourse.duration}</span>` : ''}
+              ${currentCourse.fee !== null ? `<span>💳 <strong>${uiText.feeLabel}</strong> ${formatFee(currentCourse.fee, lang)}</span>` : ''}
+            </div>
+
+            <!-- Mô tả ngắn nếu có -->
+            ${currentCourse.description ? `
+              <div class="bg-emerald-50 border-l-4 border-emerald-600 p-4 rounded mb-6 text-gray-700 italic">
+                ${currentCourse.description}
+              </div>
+            ` : ''}
+
+            <!-- Render Media (Ảnh/Video) -->
+            ${mediaList.length > 0 ? `
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                ${mediaList.map(item => item.type === 'video' ? `
+                  <video controls class="w-full rounded-lg shadow h-64 object-cover">
+                    <source src="${item.url}" type="video/mp4">
+                  </video>
+                ` : `
+                  <img src="${item.url}" alt="${currentCourse.title}" class="w-full rounded-lg shadow h-64 object-cover hover:opacity-95 transition">
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <!-- Nội dung chi tiết khóa học -->
+            <div class="prose max-w-none text-on-surface-variant text-justify leading-relaxed space-y-4">
+              ${currentCourse.content || '<p class="text-gray-400">Đang cập nhật nội dung...</p>'}
             </div>
           </article>
 
-          <!-- Sidebar 20% -->
+          <!-- Sidebar (Col 20%) -->
           <aside class="lg:col-span-3 border-l border-outline-variant pl-8 sticky top-24 self-start">
-            <h3 class="font-headline-sm mb-6 pb-2 border-b">${uiText.otherEvents}</h3>
+            <h3 class="font-bold text-xl mb-6 pb-2 border-b text-gray-800">${uiText.otherCourses}</h3>
             
-            <!-- Bọc danh sách bằng div giới hạn chiều cao và cho phép cuộn -->
             <div class="max-h-[500px] overflow-y-auto pr-2 scrollbar-thin">
               <ul class="space-y-6">
-                ${currentData.map(post => {
-                  const itemDate = post.event_date
-                    ? new Date(post.event_date).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'it-IT')
-                    : post.date;
+                ${currentData.map(item => {
+                  const itemDate = new Date(item.created_at).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'it-IT');
+                  const isActive = item.id == currentCourse.id;
                   return `
                   <li>
-                    <a href="#${post.id}" class="block group">
-                      <span class="text-xs text-primary font-bold">${itemDate || ''}</span>
-                      <h4 class="font-semibold text-on-surface-variant group-hover:text-primary transition">${post.title}</h4>
+                    <a href="#${item.id}" class="block group p-2 rounded transition ${isActive ? 'bg-primary/10 border-l-2 border-primary' : ''}">
+                      <span class="text-xs text-primary font-bold">${itemDate}</span>
+                      <h4 class="font-semibold text-sm text-on-surface-variant group-hover:text-primary transition line-clamp-2 mt-1">${item.title}</h4>
                     </a>
                   </li>
                 `}).join("")}

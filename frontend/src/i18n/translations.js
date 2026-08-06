@@ -97,7 +97,6 @@ export const translations = {
       ctaTitle: "Costruiamo insieme un nuovo ponte",
       ctaAmbassador: "Diventa Ambasciatore",
       ctaContact: "Contattaci",
-      // Thêm mới cho trang About (Ý)
       bannerEyebrow: "CHI SIAMO",
       bannerTitle: "Associazione Culturale VietItalia",
       orgName: "Associazione Culturale VietItalia",
