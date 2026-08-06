@@ -3,7 +3,6 @@ import { getLocale } from '../i18n/i18n.js';
 const API_URL = 'https://vietitalia.onrender.com/api'; 
 //const API_URL = 'http://localhost:5000/api'; 
 
-// Hàm bổ trợ: Xử lý linh hoạt cả ngày Database chuẩn ISO và ngày file tĩnh "DD.MM.YYYY"[cite: 12]
 function parseDate(dateStr) {
   if (!dateStr) return new Date(0);
   
@@ -59,12 +58,12 @@ export default function Events(container) {
         return;
       }
 
-      // Sắp xếp theo ngày mới nhất lên đầu dựa vào hàm parseDate[cite: 12]
+      // Sắp xếp theo ngày mới nhất lên đầu 
       const currentData = [...rawData].sort((a, b) => 
         parseDate(b.event_date || b.date) - parseDate(a.event_date || a.date)
       );
 
-      // Nếu không có hash, lấy bài có ngày mới nhất[cite: 12]
+      // Nếu không có hash, lấy bài có ngày mới nhất
       const hash = window.location.hash.substring(1);
       const currentPost = hash 
         ? (currentData.find(p => p.id == hash) || currentData[0])
@@ -106,7 +105,7 @@ export default function Events(container) {
           <aside class="lg:col-span-3 border-l border-outline-variant pl-8 sticky top-24 self-start">
             <h3 class="font-headline-sm mb-6 pb-2 border-b">${uiText.otherEvents}</h3>
             
-            <!-- Bọc danh sách bằng div giới hạn chiều cao và cho phép cuộn[cite: 12] -->
+            <!-- Bọc danh sách bằng div giới hạn chiều cao và cho phép cuộn -->
             <div class="max-h-[500px] overflow-y-auto pr-2 scrollbar-thin">
               <ul class="space-y-6">
                 ${currentData.map(post => {
@@ -115,7 +114,7 @@ export default function Events(container) {
                     : post.date;
                   return `
                   <li>
-                    <a href="#${post.id}" class="block group">
+                    <a href="#${post.slug}" class="block group">
                       <span class="text-xs text-primary font-bold">${itemDate || ''}</span>
                       <h4 class="font-semibold text-on-surface-variant group-hover:text-primary transition">${post.title}</h4>
                     </a>
