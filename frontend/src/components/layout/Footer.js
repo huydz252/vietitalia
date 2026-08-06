@@ -74,12 +74,12 @@ export function renderFooter(container) {
             class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
         </a>
 
-        <!-- Logo Telebelluno
+        <!-- Logo Telebelluno -->
         <a href="https://www.telebelluno.it/" target="_blank" rel="noopener noreferrer" 
           class="transition-transform duration-300 hover:scale-110">
           <img src="/images/logos/LOGO_TELEBELLUNO.png" alt="Telebelluno" 
             class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
-        </a>  -->
+        </a>  
 
         <!-- Logo Vietnam Airlines -->
         <a href="https://www.vietnamairlines.com" target="_blank" rel="noopener noreferrer" 
@@ -87,6 +87,14 @@ export function renderFooter(container) {
           <img src="/images/logos/LOGO_VIETNAMAIRLINES.png" alt="Vietnam Airlines" 
            class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
         </a>
+
+        <!-- Logo MCV Group -->
+        <a href="https://mcv.com.vn/" target="_blank" rel="noopener noreferrer" 
+          class="transition-transform duration-300 hover:scale-110">
+          <img src="/images/logos/MVC.png" alt="MCV Group" 
+           class="h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300" />
+        </a>
+
 
       </div>
     </div>
