@@ -1,4 +1,4 @@
-import supabase from '../config/supabaseClient.js'; // Điều chỉnh path trỏ tới file cấu hình Supabase của cậu
+import supabase from '../config/supabase.js'; 
 
 export const getCourses = async (req, res) => {
     try {

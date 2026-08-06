@@ -6,7 +6,6 @@ import {
     updateCourse, 
     deleteCourse 
 } from '../controllers/courseController.js';
-import upload from '../middlewares/uploadMiddleware.js'; // Middleware upload multer hiện tại của cậu
 
 const router = express.Router();
 
@@ -14,7 +13,7 @@ const router = express.Router();
 router.get('/', getCourses);
 router.get('/:id', getCourseById);
 
-// Thêm mới, Cập nhật (Hỗ trợ upload tối đa 10 file media) & Xóa
+// Thêm mới, Cập nhật (Hỗ trợ upload tối đa 50 file media) & Xóa
 router.post('/', upload.array('media', 50), createCourse);
 router.put('/:id', upload.array('media', 50), updateCourse);
 router.delete('/:id', deleteCourse);
