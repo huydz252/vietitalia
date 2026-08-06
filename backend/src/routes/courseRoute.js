@@ -1,19 +1,12 @@
-    import express from 'express';
-import { 
-    getCourses, 
-    getCourseById, 
-    createCourse, 
-    updateCourse, 
-    deleteCourse 
-} from '../controllers/courseController.js';
+import express from 'express';
+import multer from 'multer';
+import { getCourses, createCourse, updateCourse, deleteCourse } from '../controllers/courseController.js';
 
 const router = express.Router();
 
-// Lấy danh sách & Chi tiết
-router.get('/', getCourses);
-router.get('/:id', getCourseById);
+const upload = multer({ storage: multer.memoryStorage() });
 
-// Thêm mới, Cập nhật (Hỗ trợ upload tối đa 50 file media) & Xóa
+router.get('/', getCourses);
 router.post('/', upload.array('media', 50), createCourse);
 router.put('/:id', upload.array('media', 50), updateCourse);
 router.delete('/:id', deleteCourse);
