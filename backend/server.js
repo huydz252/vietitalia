@@ -4,14 +4,14 @@ import cors from 'cors';
 
 import eventRoutes from './src/routes/eventRoutes.js';
 import travelRoutes from './src/routes/travelRoutes.js';
-import courseRoutes from './routes/courseRoutes.js';
+import courseRoutes from './src/routes/courseRoute.js';
 
 const app = express();
 
 // Middlewares
 app.use(cors());
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb', extended: true }));
+app.use(express.json({limit: '100mb'}));
+app.use(express.urlencoded({limit: '100mb', extended: true }));
 
 app.use('/api/events', eventRoutes);
 app.use('/api/travels', travelRoutes);
