@@ -18,17 +18,14 @@ jobs:
       with:
         node-version: '20'
 
-    # Chỉ định chạy npm install bên trong thư mục frontend
     - name: Cài đặt thư viện (Dependencies)
       working-directory: ./frontend
       run: npm install
 
-    # Chỉ định build Vite bên trong thư mục frontend
     - name: Build Project bằng Vite
       working-directory: ./frontend
       run: npm run build
 
-    # Đồng bộ thư mục frontend/dist lên cPanel thông qua FTP
     - name: Đồng bộ file lên cPanel
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
@@ -38,7 +35,6 @@ jobs:
         local-dir: ./frontend/dist/
         server-dir: /public_html/
         
-        # Cấu hình tối ưu để tránh lỗi Timeout
         protocol: ftp
         port: 21
         port-strict: false
