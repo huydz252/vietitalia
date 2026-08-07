@@ -1,15 +1,12 @@
 import { getLocale } from '../i18n/i18n.js';
 
 const API_URL = 'https://vietitalia.onrender.com/api';
-// const API_URL = 'http://localhost:5000/api';
 
-// Hàm bổ trợ: Parse ngày chuẩn ISO từ database
 function parseDate(dateStr) {
   if (!dateStr) return new Date(0);
   return new Date(dateStr);
 }
 
-// Hàm hỗ trợ format tiền tệ (Học phí)
 function formatFee(amount, lang) {
   if (!amount || amount === 0) return lang === 'vi' ? 'Miễn phí' : 'Gratuito';
   return new Intl.NumberFormat(lang === 'vi' ? 'vi-VN' : 'it-IT', {
