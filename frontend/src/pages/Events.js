@@ -6,10 +6,8 @@ const API_URL = 'https://vietitalia.onrender.com/api';
 function parseDate(dateStr) {
   if (!dateStr) return new Date(0);
   
-  // Nếu là ngày từ Database (ví dụ: 2026-07-15T00:00:00Z)
   if (dateStr.includes('-')) return new Date(dateStr);
   
-  // Nếu là ngày từ cấu trúc tĩnh cũ (DD.MM.YYYY)
   const parts = dateStr.split('.');
   if (parts.length === 3) {
     const [day, month, year] = parts.map(Number);
@@ -22,7 +20,6 @@ function parseDate(dateStr) {
 export default function Events(container) {
   async function render() {
     const lang = getLocale();
-    console.log("Ngôn ngữ hiện tại:", lang);
     
     const uiText = {
       tag: lang === "vi" ? "Sự kiện" : "Eventi",
@@ -58,18 +55,20 @@ export default function Events(container) {
         return;
       }
 
-      // Sắp xếp theo ngày mới nhất lên đầu 
+      // Sắp xếp ngày mới nhất lên đầu 
       const currentData = [...rawData].sort((a, b) => 
         parseDate(b.event_date || b.date) - parseDate(a.event_date || a.date)
       );
 
-      // Nếu không có hash, lấy bài có ngày mới nhất
-      const hash = window.location.hash.substring(1);
+      // Giải mã hash để so sánh được cả slug tiếng Việt có dấu/gạch nối
+      const rawHash = window.location.hash.substring(1);
+      const hash = decodeURIComponent(rawHash);
+
+      // Tìm kiếm theo slug hoặc id
       const currentPost = hash 
-        ? (currentData.find(p => p.id == hash) || currentData[0])
+        ? (currentData.find(p => p.slug === hash || p.id == hash) || currentData[0])
         : currentData[0];
 
-      // Đảm bảo hiển thị đúng định dạng ngày (lấy từ cột event_date hoặc date dự phòng)
       const displayDate = currentPost.event_date 
         ? new Date(currentPost.event_date).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'it-IT')
         : currentPost.date;
@@ -89,7 +88,7 @@ export default function Events(container) {
            <h1 class="font-display-lg text-display-lg mt-3">${uiText.title}</h1>
         </section>
 
-        <!-- Bố cục 80/20 -->
+        <!-- Bố cục Main / Sidebar -->
         <section class="max-w-container-max mx-auto px-margin-mobile xl:px-margin-desktop py-16 grid grid-cols-1 lg:grid-cols-12 gap-12">
           
           <!-- Cột chính 80% -->
@@ -101,22 +100,28 @@ export default function Events(container) {
             </div>
           </article>
 
-          <!-- Sidebar 20% -->
+          <!-- Sidebar 20%  -->
           <aside class="lg:col-span-3 border-l border-outline-variant pl-8 sticky top-24 self-start">
             <h3 class="font-headline-sm mb-6 pb-2 border-b">${uiText.otherEvents}</h3>
             
-            <!-- Bọc danh sách bằng div giới hạn chiều cao và cho phép cuộn -->
             <div class="max-h-[500px] overflow-y-auto pr-2 scrollbar-thin">
-              <ul class="space-y-6">
+              <ul class="space-y-3">
                 ${currentData.map(post => {
                   const itemDate = post.event_date 
                     ? new Date(post.event_date).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'it-IT')
                     : post.date;
+                  
+                  // Kiểm tra xem item này có phải là bài đang được chọn không
+                  const isActive = (currentPost.slug && post.slug === currentPost.slug) || (post.id == currentPost.id);
+
                   return `
                   <li>
-                    <a href="#${post.slug}" class="block group">
-                      <span class="text-xs text-primary font-bold">${itemDate || ''}</span>
-                      <h4 class="font-semibold text-on-surface-variant group-hover:text-primary transition">${post.title}</h4>
+                    <a 
+                      href="#${post.slug || post.id}" 
+                      class="block p-3 transition rounded ${isActive ? 'bg-[#f3e8eb] border-l-2 border-primary' : 'hover:opacity-80'}"
+                    >
+                      <span class="text-xs text-primary font-bold block mb-1">${itemDate || ''}</span>
+                      <h4 class="font-semibold text-on-surface-variant line-clamp-3 leading-snug">${post.title}</h4>
                     </a>
                   </li>
                 `}).join("")}
