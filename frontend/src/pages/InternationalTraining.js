@@ -8,10 +8,15 @@ function parseDate(dateStr) {
 }
 
 function formatFee(amount, lang) {
-  if (!amount || amount === 0) return lang === 'vi' ? 'Miễn phí' : 'Gratuito';
+  if (amount === null || amount === undefined || amount === 0) {
+    return lang === 'vi' ? 'Miễn phí' : 'Gratuito';
+  }
+  if (amount < 1000) {
+    return `€${amount}`;
+  }
   return new Intl.NumberFormat(lang === 'vi' ? 'vi-VN' : 'it-IT', {
     style: 'currency',
-    currency: 'VND'
+    currency: 'Euro'
   }).format(amount);
 }
 
@@ -37,14 +42,12 @@ export default function InternationalTraining(container) {
     `;
 
     try {
-      // 1. GỌI API COURSES
-      const response = await fetch(`${API_URL}/courses`);
+      // Gọi API COURSES
+      const response = await fetch(`${API_URL}/courses?lang=${lang}`);
       const result = await response.json();
 
       let rawData = result.success && result.data.length > 0 ? result.data : [];
-
-      // Lọc dữ liệu theo ngôn ngữ (vi/it)
-      rawData = rawData.filter(course => course.lang === lang);
+      rawData = rawData.filter(course => !course.lang || course.lang === lang);
 
       if (rawData.length === 0) {
         container.innerHTML = `
@@ -59,28 +62,20 @@ export default function InternationalTraining(container) {
         return;
       }
 
-      // Sắp xếp khóa học mới nhất lên đầu dựa vào id hoặc created_at
       const currentData = [...rawData].sort((a, b) =>
-        parseDate(b.created_at) - parseDate(a.created_at)
+        parseDate(b.created_at || b.id) - parseDate(a.created_at || a.id)
       );
 
-      // Định tuyến bằng hash (#id)
-      const hash = window.location.hash.substring(1);
+      const rawHash = window.location.hash.substring(1);
+      const hash = decodeURIComponent(rawHash);
+
       const currentCourse = hash
-        ? (currentData.find(p => p.id == hash) || currentData[0])
+        ? (currentData.find(p => p.slug === hash || p.id == hash) || currentData[0])
         : currentData[0];
 
-      const displayDate = new Date(currentCourse.created_at).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'it-IT');
-
-      // Giải mã danh sách hình ảnh/video từ cột course_media
-      let mediaList = [];
-      if (currentCourse.course_media) {
-        try {
-          mediaList = JSON.parse(currentCourse.course_media);
-        } catch (e) {
-          console.error("Lỗi parse JSON course_media:", e);
-        }
-      }
+      const displayDate = currentCourse.created_at 
+        ? new Date(currentCourse.created_at).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'it-IT')
+        : '';
 
       container.innerHTML = `
         <!-- Hero Banner -->
@@ -105,10 +100,10 @@ export default function InternationalTraining(container) {
             <h1 class="text-3xl md:text-4xl font-extrabold text-primary leading-tight mb-3">${currentCourse.title}</h1>
             
             <!-- Metadata: Ngày đăng, Thời lượng, Học phí -->
-            <div class="flex flex-wrap gap-4 text-sm text-gray-600 border-y border-gray-200 py-3 mb-6">
-              <span>📅 <strong>${uiText.dateLabel}</strong> ${displayDate}</span>
+            <div class="flex flex-wrap gap-6 text-sm text-gray-600 border-y border-gray-200 py-3 mb-6">
+              ${displayDate ? `<span>📅 <strong>${uiText.dateLabel}</strong> ${displayDate}</span>` : ''}
               ${currentCourse.duration ? `<span>⏱️ <strong>${uiText.durationLabel}</strong> ${currentCourse.duration}</span>` : ''}
-              ${currentCourse.fee !== null ? `<span>💳 <strong>${uiText.feeLabel}</strong> ${formatFee(currentCourse.fee, lang)}</span>` : ''}
+              ${currentCourse.fee !== null && currentCourse.fee !== undefined ? `<span>💳 <strong>${uiText.feeLabel}</strong> ${formatFee(currentCourse.fee, lang)}</span>` : ''}
             </div>
 
             <!-- Mô tả ngắn nếu có -->
@@ -118,20 +113,7 @@ export default function InternationalTraining(container) {
               </div>
             ` : ''}
 
-            <!-- Render Media (Ảnh/Video) -->
-            ${mediaList.length > 0 ? `
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                ${mediaList.map(item => item.type === 'video' ? `
-                  <video controls class="w-full rounded-lg shadow h-64 object-cover">
-                    <source src="${item.url}" type="video/mp4">
-                  </video>
-                ` : `
-                  <img src="${item.url}" alt="${currentCourse.title}" class="w-full rounded-lg shadow h-64 object-cover hover:opacity-95 transition">
-                `).join('')}
-              </div>
-            ` : ''}
-
-            <!-- Nội dung chi tiết khóa học -->
+            <!-- CHỈ RENDER DUY NHẤT CONTENT TỪ DATABASE -->
             <div class="prose max-w-none text-on-surface-variant text-justify leading-relaxed space-y-4">
               ${currentCourse.content || '<p class="text-gray-400">Đang cập nhật nội dung...</p>'}
             </div>
@@ -139,18 +121,24 @@ export default function InternationalTraining(container) {
 
           <!-- Sidebar (Col 20%) -->
           <aside class="lg:col-span-3 border-l border-outline-variant pl-8 sticky top-24 self-start">
-            <h3 class="font-bold text-xl mb-6 pb-2 border-b text-gray-800">${uiText.otherCourses}</h3>
+            <h3 class="font-headline-sm mb-6 pb-2 border-b">${uiText.otherCourses}</h3>
             
             <div class="max-h-[500px] overflow-y-auto pr-2 scrollbar-thin">
               <ul class="space-y-6">
                 ${currentData.map(item => {
-                  const itemDate = new Date(item.created_at).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'it-IT');
-                  const isActive = item.id == currentCourse.id;
+                  const itemDate = item.created_at 
+                    ? new Date(item.created_at).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'it-IT')
+                    : '';
+                  const isActive = (currentCourse.slug && item.slug === currentCourse.slug) || (item.id == currentCourse.id);
+                  
                   return `
                   <li>
-                    <a href="#${item.id}" class="block group p-2 rounded transition ${isActive ? 'bg-primary/10 border-l-2 border-primary' : ''}">
-                      <span class="text-xs text-primary font-bold">${itemDate}</span>
-                      <h4 class="font-semibold text-sm text-on-surface-variant group-hover:text-primary transition line-clamp-2 mt-1">${item.title}</h4>
+                    <a 
+                      href="#${item.slug || item.id}" 
+                      class="block p-3 transition rounded ${isActive ? 'bg-[#f3e8eb] border-l-2 border-primary' : 'hover:opacity-80'}"
+                    >
+                      ${itemDate ? `<span class="text-xs text-primary font-bold block mb-1">${itemDate}</span>` : ''}
+                      <h4 class="font-semibold text-on-surface-variant line-clamp-3 leading-snug">${item.title}</h4>
                     </a>
                   </li>
                 `}).join("")}
