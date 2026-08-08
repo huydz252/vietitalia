@@ -69,7 +69,7 @@ export const createCourse = async (req, res) => {
                     .from('vietitalia_media')
                     .upload(fileName, file.buffer, { contentType: file.mimetype, upsert: true });
 
-                if (uploadError) throw uploadError;
+                if (uploadError) throw uploadError; 
 
                 const { data: publicUrlData } = supabase.storage
                     .from('vietitalia_media')

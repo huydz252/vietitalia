@@ -53,6 +53,7 @@ const eventTableBody = document.getElementById('eventTableBody');
 
 const eventPageInfo = document.getElementById('eventPageInfo');
 const eventPrevBtn = document.getElementById('eventPrevBtn');
+eventPageInfo; // Nút phân trang giữ nguyên
 const eventNextBtn = document.getElementById('eventNextBtn');
 
 async function fetchEvents() { 
@@ -69,6 +70,7 @@ async function fetchEvents() {
     }
 }
 
+// 1. RENDER BẢNG (Thêm hiển thị ev.slug)
 function renderEvents() {
     const totalPages = Math.ceil(localEvents.length / ITEMS_PER_PAGE) || 1;
     
@@ -95,6 +97,8 @@ function renderEvents() {
                 }
             </td>
             
+            <!-- CỘT SLUG MỚI -->
+            <td class="px-4 py-3 text-xs text-gray-400 font-mono">${ev.slug || '-'}</td>
             <td class="px-4 py-3 text-gray-500">${ev.event_date ? ev.event_date.split('T')[0] : '-'}</td>
             <td class="px-4 py-3 text-center space-x-2">
                 <button onclick="editEvent(${ev.id})" class="text-blue-600 hover:text-blue-900 font-semibold">Sửa</button>
@@ -105,26 +109,33 @@ function renderEvents() {
 }
 
 eventPrevBtn.addEventListener('click', () => {
-    if (currentEventPage > 1) {
-        currentEventPage--;
-        renderEvents();
-    }
+    if (currentEventPage > 1) { currentEventPage--; renderEvents(); }
 });
 
 eventNextBtn.addEventListener('click', () => {
     const totalPages = Math.ceil(localEvents.length / ITEMS_PER_PAGE);
-    if (currentEventPage < totalPages) {
-        currentEventPage++;
-        renderEvents();
-    }
+    if (currentEventPage < totalPages) { currentEventPage++; renderEvents(); }
 });
 
+// 2. FORM SUBMIT (Lấy giá trị event_slug gửi lên Server)
 eventForm.addEventListener('submit', async (e) => { 
     e.preventDefault(); 
     const eventId = document.getElementById('event_id').value; 
+    const titleVal = document.getElementById('event_title').value;
+    let slugVal = document.getElementById('event_slug').value;
+
+    // Nếu người dùng không nhập slug, tự động tạo từ tiêu đề
+    if (!slugVal) {
+        slugVal = titleVal.toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9 -]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+    }
     
     const formData = new FormData(); 
-    formData.append('title', document.getElementById('event_title').value); 
+    formData.append('title', titleVal); 
+    formData.append('slug', slugVal); // Thêm slug vào FormData
     formData.append('location', document.getElementById('event_location').value); 
     
     const dateVal = document.getElementById('event_date').value; 
@@ -161,12 +172,14 @@ eventForm.addEventListener('submit', async (e) => {
     }
 });
 
+// 3. EDIT EVENT (Đổ giá trị ev.slug vào ô input khi ấn Sửa)
 window.editEvent = function(id) { 
     const ev = localEvents.find(item => item.id === id); 
     if (!ev) return; 
 
     document.getElementById('event_id').value = ev.id; 
     document.getElementById('event_title').value = ev.title; 
+    document.getElementById('event_slug').value = ev.slug || ''; // Đổ slug ra ô input
     document.getElementById('event_location').value = ev.location || ''; 
     document.getElementById('event_date').value = ev.event_date ? ev.event_date.split('T')[0] : ''; 
     document.getElementById('event_description').value = ev.description || ''; 
@@ -204,8 +217,7 @@ function resetEventForm() {
     document.getElementById('eventCancelBtn').classList.add('hidden'); 
     document.getElementById('event_media_note').classList.add('hidden'); 
 }
-document.getElementById('eventCancelBtn').addEventListener('click', resetEventForm); 
-
+document.getElementById('eventCancelBtn').addEventListener('click', resetEventForm);
 
 // ==========================================
 // 2. CẨM NANG DU LỊCH (TRAVELS CRUD)

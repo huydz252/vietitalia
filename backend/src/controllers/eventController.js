@@ -1,5 +1,6 @@
 import { supabase } from '../config/supabase.js';
 
+// GET: Lấy danh sách sự kiện
 export const getEvents = async (req, res) => {
     try {
         const { lang } = req.query; 
@@ -22,21 +23,19 @@ export const getEvents = async (req, res) => {
     }
 };
 
+// CREATE: Thêm Sự Kiện Mới (Đã đón slug)
 export const createEvent = async (req, res) => {
     try {
-        const { title, description, event_date, location, status, lang } = req.body;
+        // 1. Nhận thêm `slug` từ FormData
+        const { title, slug, description, event_date, location, status, lang } = req.body;
         
-        // 1. Quét trực tiếp danh sách các thư mục bên trong thư mục 'events' trên Storage
+        // Quét lấy danh sách thư mục trong 'events'
         const { data: folders, error: listError } = await supabase.storage
             .from('vietitalia_media')
-            .list('events', {
-                limit: 100,
-                offset: 0
-            });
+            .list('events', { limit: 100, offset: 0 });
 
         if (listError) throw listError;
 
-        // Tìm số thư mục lớn nhất hiện tại dựa trên tên dạng số (01, 02, 03...)
         let maxFolderNumber = 0;
         if (folders && folders.length > 0) {
             folders.forEach(item => {
@@ -47,16 +46,12 @@ export const createEvent = async (req, res) => {
             });
         }
 
-        // --- ĐOẠN ĐỔI LOGIC: Quyết định số thư mục dựa trên việc có ảnh gửi lên hay không ---
         let targetFolderNumber;
         const hasFiles = req.files && req.files.length > 0;
 
         if (hasFiles) {
-            // Nếu có tệp mới: Tạo thư mục mới tiếp theo (Lớn nhất + 1)
             targetFolderNumber = String(maxFolderNumber + 1).padStart(2, '0');
         } else {
-            // Nếu không chọn tệp: Dùng chung thư mục lớn nhất hiện tại. 
-            // Nếu chưa từng có thư mục nào (max = 0) thì mặc định là '01'
             targetFolderNumber = maxFolderNumber > 0 
                 ? String(maxFolderNumber).padStart(2, '0') 
                 : '01';
@@ -71,7 +66,6 @@ export const createEvent = async (req, res) => {
                     .replace(/\s+/g, '_')
                     .replace(/[^a-z0-9.-]/g, '');
 
-                // Sử dụng targetFolderNumber đã xác định ở trên
                 const fileName = `events/${targetFolderNumber}/${cleanFileName}`; 
                 
                 const { error: uploadError } = await supabase.storage
@@ -87,10 +81,8 @@ export const createEvent = async (req, res) => {
                     .from('vietitalia_media')
                     .getPublicUrl(fileName);
                 
-                const fileType = file.mimetype.startsWith('video') ? 'video' : 'image';
-
                 return {
-                    type: fileType,
+                    type: file.mimetype.startsWith('video') ? 'video' : 'image',
                     url: publicUrlData.publicUrl
                 };
             });
@@ -100,10 +92,10 @@ export const createEvent = async (req, res) => {
 
         const event_media = uploadedMedia.length > 0 ? JSON.stringify(uploadedMedia) : null;
 
-        // Lưu thông tin kèm theo trường media_folder chính xác vào bảng events
+        // 2. Insert bao gồm cả trường `slug` vào DB
         const { data, error } = await supabase
             .from('events')
-            .insert([{ title, description, event_date, location, event_media, media_folder: targetFolderNumber, status, lang }]) 
+            .insert([{ title, slug, description, event_date, location, event_media, media_folder: targetFolderNumber, status, lang }]) 
             .select();
 
         if (error) throw error;
@@ -113,11 +105,12 @@ export const createEvent = async (req, res) => {
     }
 };
 
-// UPDATE: Cập nhật Sự Kiện
+// UPDATE: Cập nhật Sự Kiện (Đã đón slug)
 export const updateEvent = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, event_date, location, status, lang } = req.body;
+        // 1. Nhận thêm `slug` từ FormData
+        const { title, slug, description, event_date, location, status, lang } = req.body;
 
         const { data: oldEvent, error: fetchError } = await supabase
             .from('events')
@@ -130,12 +123,9 @@ export const updateEvent = async (req, res) => {
         }
 
         let event_media = oldEvent.event_media;
-        let currentFolder = oldEvent.media_folder; // Giữ nguyên giá trị cũ (có thể là null)
+        let currentFolder = oldEvent.media_folder;
 
-        // Chỉ khi người dùng chọn tải ảnh/video mới lên thì mới xử lý folder
         if (req.files && req.files.length > 0) {
-            
-            // Nếu trước đó chưa có folder (null), tiến hành quét Storage để lấy số tiếp theo
             if (!currentFolder) {
                 const { data: folders } = await supabase.storage
                     .from('vietitalia_media')
@@ -181,10 +171,10 @@ export const updateEvent = async (req, res) => {
             event_media = JSON.stringify(uploadedMedia);
         }
 
-        // Cập nhật Database (nếu currentFolder vẫn null thì ghi nhận null)
+        // 2. Update bao gồm cả trường `slug` vào DB
         const { data, error } = await supabase
             .from('events')
-            .update({ title, description, event_date, location, event_media, media_folder: currentFolder, status, lang })
+            .update({ title, slug, description, event_date, location, event_media, media_folder: currentFolder, status, lang })
             .eq('id', id)
             .select();
 
@@ -200,7 +190,6 @@ export const deleteEvent = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Cậu có thể tùy chọn thêm logic xóa luôn folder ảnh trên Supabase Storage ở đây nếu muốn
         const { data, error } = await supabase
             .from('events')
             .delete()
