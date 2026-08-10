@@ -12,6 +12,89 @@ let localEvents = [];
 let localTravels = []; 
 let localTrainings = [];
 
+async function fetchWithAuth(url, options = {}) {
+    const token = localStorage.getItem('admin_token');
+    
+    options.headers = options.headers || {};
+    
+    if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(url, options);
+    
+    // Nếu hết hạn token hoặc không hợp lệ -> Bắt đăng nhập lại
+    if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem('admin_token');
+        alert('🔒 Phiên đăng nhập đã hết hạn hoặc không hợp lệ. Vui lòng đăng nhập lại!');
+        location.reload();
+    }
+    
+    return response;
+}
+// XỬ LÝ ĐĂNG NHẬP / ĐĂNG XUẤT VÀ HIỂN 
+function checkAuthAndInit() {
+    const token = localStorage.getItem('admin_token');
+    const loginSection = document.getElementById('loginSection');
+    const adminDashboard = document.getElementById('adminDashboard');
+
+    if (!token) {
+        if (loginSection) loginSection.classList.remove('hidden');
+        if (adminDashboard) adminDashboard.classList.add('hidden');
+    } else {
+        if (loginSection) loginSection.classList.add('hidden');
+        if (adminDashboard) adminDashboard.classList.remove('hidden');
+
+        // Tải dữ liệu khi đã xác thực
+        fetchEvents(); 
+        fetchTravels(); 
+        fetchTrainings();
+    }
+}
+
+// Xử lý Submit Form Đăng nhập
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('login_username').value.trim();
+        const password = document.getElementById('login_password').value.trim();
+
+        try {
+            const response = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+
+            if (result.success && result.token) {
+                localStorage.setItem('admin_token', result.token);
+                alert('🎉 ' + (result.message || 'Đăng nhập thành công!'));
+                checkAuthAndInit();
+            } else {
+                alert('❌ ' + (result.message || 'Đăng nhập thất bại!'));
+            }
+        } catch (error) {
+            console.error('Lỗi đăng nhập:', error);
+            alert('❌ Lỗi kết nối tới Server!');
+        }
+    });
+}
+
+// Nút Đăng xuất
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        if (confirm('Bạn có chắc chắn muốn đăng xuất không?')) {
+            localStorage.removeItem('admin_token');
+            location.reload();
+        }
+    });
+}
+
+// CHUYỂN TAB CẤU 
 const tabEventBtn = document.getElementById('tabEventBtn'); 
 const tabTravelBtn = document.getElementById('tabTravelBtn'); 
 const tabTrainingBtn = document.getElementById('tabTrainingBtn');
@@ -31,29 +114,25 @@ const inactiveClass = {
 };
 
 function showTab(tab) {
-    tabEventBtn.className = tab === 'event' ? activeClass.event : inactiveClass.event;
-    tabTravelBtn.className = tab === 'travel' ? activeClass.travel : inactiveClass.travel;
-    tabTrainingBtn.className = tab === 'training' ? activeClass.training : inactiveClass.training;
+    if (tabEventBtn) tabEventBtn.className = tab === 'event' ? activeClass.event : inactiveClass.event;
+    if (tabTravelBtn) tabTravelBtn.className = tab === 'travel' ? activeClass.travel : inactiveClass.travel;
+    if (tabTrainingBtn) tabTrainingBtn.className = tab === 'training' ? activeClass.training : inactiveClass.training;
 
-    eventSection.classList.toggle('hidden', tab !== 'event');
-    travelSection.classList.toggle('hidden', tab !== 'travel');
-    trainingSection.classList.toggle('hidden', tab !== 'training');
+    if (eventSection) eventSection.classList.toggle('hidden', tab !== 'event');
+    if (travelSection) travelSection.classList.toggle('hidden', tab !== 'travel');
+    if (trainingSection) trainingSection.classList.toggle('hidden', tab !== 'training');
 }
 
-tabEventBtn.addEventListener('click', () => showTab('event'));
-tabTravelBtn.addEventListener('click', () => showTab('travel'));
-tabTrainingBtn.addEventListener('click', () => showTab('training'));
+if (tabEventBtn) tabEventBtn.addEventListener('click', () => showTab('event'));
+if (tabTravelBtn) tabTravelBtn.addEventListener('click', () => showTab('travel'));
+if (tabTrainingBtn) tabTrainingBtn.addEventListener('click', () => showTab('training'));
 
-
-// ==========================================
-// 1. QUẢN LÝ SỰ KIỆN (EVENTS CRUD)
-// ==========================================
+// 1. QUẢN LÝ SỰ KIỆN (EVENTS CRUD
 const eventForm = document.getElementById('addEventForm'); 
 const eventTableBody = document.getElementById('eventTableBody'); 
 
 const eventPageInfo = document.getElementById('eventPageInfo');
 const eventPrevBtn = document.getElementById('eventPrevBtn');
-eventPageInfo; // Nút phân trang giữ nguyên
 const eventNextBtn = document.getElementById('eventNextBtn');
 
 async function fetchEvents() { 
@@ -70,8 +149,8 @@ async function fetchEvents() {
     }
 }
 
-// 1. RENDER BẢNG (Thêm hiển thị ev.slug)
 function renderEvents() {
+    if (!eventTableBody) return;
     const totalPages = Math.ceil(localEvents.length / ITEMS_PER_PAGE) || 1;
     
     if (currentEventPage > totalPages) currentEventPage = totalPages;
@@ -80,9 +159,9 @@ function renderEvents() {
     const startIndex = (currentEventPage - 1) * ITEMS_PER_PAGE;
     const paginatedEvents = localEvents.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-    eventPageInfo.innerText = `Trang ${currentEventPage} / ${totalPages} (Tổng số: ${localEvents.length})`;
-    eventPrevBtn.disabled = currentEventPage === 1;
-    eventNextBtn.disabled = currentEventPage === totalPages;
+    if (eventPageInfo) eventPageInfo.innerText = `Trang ${currentEventPage} / ${totalPages} (Tổng số: ${localEvents.length})`;
+    if (eventPrevBtn) eventPrevBtn.disabled = currentEventPage === 1;
+    if (eventNextBtn) eventNextBtn.disabled = currentEventPage === totalPages;
 
     eventTableBody.innerHTML = paginatedEvents.map(ev => `
         <tr class="hover:bg-gray-50">
@@ -97,7 +176,6 @@ function renderEvents() {
                 }
             </td>
             
-            <!-- CỘT SLUG MỚI -->
             <td class="px-4 py-3 text-xs text-gray-400 font-mono">${ev.slug || '-'}</td>
             <td class="px-4 py-3 text-gray-500">${ev.event_date ? ev.event_date.split('T')[0] : '-'}</td>
             <td class="px-4 py-3 text-center space-x-2">
@@ -108,78 +186,82 @@ function renderEvents() {
     `).join(''); 
 }
 
-eventPrevBtn.addEventListener('click', () => {
-    if (currentEventPage > 1) { currentEventPage--; renderEvents(); }
-});
+if (eventPrevBtn) {
+    eventPrevBtn.addEventListener('click', () => {
+        if (currentEventPage > 1) { currentEventPage--; renderEvents(); }
+    });
+}
 
-eventNextBtn.addEventListener('click', () => {
-    const totalPages = Math.ceil(localEvents.length / ITEMS_PER_PAGE);
-    if (currentEventPage < totalPages) { currentEventPage++; renderEvents(); }
-});
+if (eventNextBtn) {
+    eventNextBtn.addEventListener('click', () => {
+        const totalPages = Math.ceil(localEvents.length / ITEMS_PER_PAGE);
+        if (currentEventPage < totalPages) { currentEventPage++; renderEvents(); }
+    });
+}
 
-// 2. FORM SUBMIT (Lấy giá trị event_slug gửi lên Server)
-eventForm.addEventListener('submit', async (e) => { 
-    e.preventDefault(); 
-    const eventId = document.getElementById('event_id').value; 
-    const titleVal = document.getElementById('event_title').value;
-    let slugVal = document.getElementById('event_slug').value;
+if (eventForm) {
+    eventForm.addEventListener('submit', async (e) => { 
+        e.preventDefault(); 
+        const eventId = document.getElementById('event_id').value; 
+        const titleVal = document.getElementById('event_title').value;
+        let slugVal = document.getElementById('event_slug').value;
 
-    // Nếu người dùng không nhập slug, tự động tạo từ tiêu đề
-    if (!slugVal) {
-        slugVal = titleVal.toLowerCase()
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-            .replace(/[^a-z0-9 -]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-');
-    }
-    
-    const formData = new FormData(); 
-    formData.append('title', titleVal); 
-    formData.append('slug', slugVal); // Thêm slug vào FormData
-    formData.append('location', document.getElementById('event_location').value); 
-    
-    const dateVal = document.getElementById('event_date').value; 
-    if (dateVal) formData.append('event_date', dateVal); 
-    
-    formData.append('description', document.getElementById('event_description').value); 
-    formData.append('status', 'upcoming'); 
-    formData.append('lang', document.getElementById('event_lang').value); 
-
-    const fileInput = document.getElementById('event_media_file'); 
-    if (fileInput && fileInput.files.length > 0) { 
-        for (let i = 0; i < fileInput.files.length; i++) { 
-            formData.append('media', fileInput.files[i]); 
+        if (!slugVal) {
+            slugVal = titleVal.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9 -]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
         }
-    }
+        
+        const formData = new FormData(); 
+        formData.append('title', titleVal); 
+        formData.append('slug', slugVal); 
+        formData.append('location', document.getElementById('event_location').value); 
+        
+        const dateVal = document.getElementById('event_date').value; 
+        if (dateVal) formData.append('event_date', dateVal); 
+        
+        formData.append('description', document.getElementById('event_description').value); 
+        formData.append('status', 'upcoming'); 
+        formData.append('lang', document.getElementById('event_lang').value); 
 
-    const url = eventId ? `${API_URL}/events/${eventId}` : `${API_URL}/events`; 
-    const method = eventId ? 'PUT' : 'POST'; 
-
-    try {
-        const response = await fetch(url, { method, body: formData }); 
-        const result = await response.json(); 
-
-        if (result.success) { 
-            alert(eventId ? '🎉 Cập nhật sự kiện thành công!' : '🎉 Thêm sự kiện thành công!'); 
-            resetEventForm(); 
-            fetchEvents(); 
-        } else {
-            alert('❌ Thất bại: ' + result.message); 
+        const fileInput = document.getElementById('event_media_file'); 
+        if (fileInput && fileInput.files.length > 0) { 
+            for (let i = 0; i < fileInput.files.length; i++) { 
+                formData.append('media', fileInput.files[i]); 
+            }
         }
-    } catch (error) {
-        console.error(error); 
-        alert('❌ Lỗi kết nối server!'); 
-    }
-});
 
-// 3. EDIT EVENT (Đổ giá trị ev.slug vào ô input khi ấn Sửa)
+        const url = eventId ? `${API_URL}/events/${eventId}` : `${API_URL}/events`; 
+        const method = eventId ? 'PUT' : 'POST'; 
+
+        try {
+            // DÙNG fetchWithAuth BẢO VỆ API
+            const response = await fetchWithAuth(url, { method, body: formData }); 
+            const result = await response.json(); 
+
+            if (result.success) { 
+                alert(eventId ? '🎉 Cập nhật sự kiện thành công!' : '🎉 Thêm sự kiện thành công!'); 
+                resetEventForm(); 
+                fetchEvents(); 
+            } else {
+                alert('❌ Thất bại: ' + result.message); 
+            }
+        } catch (error) {
+            console.error(error); 
+            alert('❌ Lỗi kết nối server!'); 
+        }
+    });
+}
+
 window.editEvent = function(id) { 
     const ev = localEvents.find(item => item.id === id); 
     if (!ev) return; 
 
     document.getElementById('event_id').value = ev.id; 
     document.getElementById('event_title').value = ev.title; 
-    document.getElementById('event_slug').value = ev.slug || ''; // Đổ slug ra ô input
+    document.getElementById('event_slug').value = ev.slug || ''; 
     document.getElementById('event_location').value = ev.location || ''; 
     document.getElementById('event_date').value = ev.event_date ? ev.event_date.split('T')[0] : ''; 
     document.getElementById('event_description').value = ev.description || ''; 
@@ -196,20 +278,24 @@ window.editEvent = function(id) {
 window.deleteEvent = async function(id) { 
     if (!confirm('Bạn có chắc chắn muốn xóa sự kiện này không?')) return; 
     try {
-        const response = await fetch(`${API_URL}/events/${id}`, { method: 'DELETE' }); 
+        // DÙNG fetchWithAuth BẢO VỆ API
+        const response = await fetchWithAuth(`${API_URL}/events/${id}`, { 
+            method: 'DELETE' 
+        }); 
         const result = await response.json(); 
         if (result.success) { 
-            alert('🗑️ Đã xóa sự kiện thành công!'); 
+            alert('🗑️ Đã xóa thành công!'); 
             fetchEvents(); 
         } else {
-            alert('❌ Lỗi xóa: ' + result.message); 
+            alert('❌ Lỗi: ' + result.message);
         }
     } catch (error) {
-        alert('❌ Không thể kết nối tới Server!'); 
+        alert('❌ Lỗi kết nối!'); 
     }
 }
 
 function resetEventForm() { 
+    if (!eventForm) return;
     eventForm.reset(); 
     document.getElementById('event_id').value = ''; 
     document.getElementById('eventFormTitle').innerText = "🎉 Thêm Sự Kiện Mới"; 
@@ -217,11 +303,10 @@ function resetEventForm() {
     document.getElementById('eventCancelBtn').classList.add('hidden'); 
     document.getElementById('event_media_note').classList.add('hidden'); 
 }
-document.getElementById('eventCancelBtn').addEventListener('click', resetEventForm);
+const eventCancelBtn = document.getElementById('eventCancelBtn');
+if (eventCancelBtn) eventCancelBtn.addEventListener('click', resetEventForm);
 
-// ==========================================
-// 2. CẨM NANG DU LỊCH (TRAVELS CRUD)
-// ==========================================
+// 2. CẨM NANG DU LỊCH (TRAVELS CRUD
 const travelForm = document.getElementById('addTravelForm'); 
 const travelTableBody = document.getElementById('travelTableBody'); 
 
@@ -244,6 +329,7 @@ async function fetchTravels() {
 }
 
 function renderTravels() {
+    if (!travelTableBody) return;
     const totalPages = Math.ceil(localTravels.length / ITEMS_PER_PAGE) || 1;
     
     if (currentTravelPage > totalPages) currentTravelPage = totalPages;
@@ -252,9 +338,9 @@ function renderTravels() {
     const startIndex = (currentTravelPage - 1) * ITEMS_PER_PAGE;
     const paginatedTravels = localTravels.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-    travelPageInfo.innerText = `Trang ${currentTravelPage} / ${totalPages} (Tổng số: ${localTravels.length})`;
-    travelPrevBtn.disabled = currentTravelPage === 1;
-    travelNextBtn.disabled = currentTravelPage === totalPages;
+    if (travelPageInfo) travelPageInfo.innerText = `Trang ${currentTravelPage} / ${totalPages} (Tổng số: ${localTravels.length})`;
+    if (travelPrevBtn) travelPrevBtn.disabled = currentTravelPage === 1;
+    if (travelNextBtn) travelNextBtn.disabled = currentTravelPage === totalPages;
 
     travelTableBody.innerHTML = paginatedTravels.map(tv => `
         <tr class="hover:bg-gray-50">
@@ -278,68 +364,69 @@ function renderTravels() {
     `).join(''); 
 }
 
-travelPrevBtn.addEventListener('click', () => {
-    if (currentTravelPage > 1) {
-        currentTravelPage--;
-        renderTravels();
-    }
-});
+if (travelPrevBtn) {
+    travelPrevBtn.addEventListener('click', () => {
+        if (currentTravelPage > 1) { currentTravelPage--; renderTravels(); }
+    });
+}
 
-travelNextBtn.addEventListener('click', () => {
-    const totalPages = Math.ceil(localTravels.length / ITEMS_PER_PAGE);
-    if (currentTravelPage < totalPages) {
-        currentTravelPage++;
-        renderTravels();
-    }
-});
+if (travelNextBtn) {
+    travelNextBtn.addEventListener('click', () => {
+        const totalPages = Math.ceil(localTravels.length / ITEMS_PER_PAGE);
+        if (currentTravelPage < totalPages) { currentTravelPage++; renderTravels(); }
+    });
+}
 
-travelForm.addEventListener('submit', async (e) => { 
-    e.preventDefault(); 
-    const travelId = document.getElementById('travel_id').value; 
-    const titleVal = document.getElementById('travel_title').value; 
-    let slugVal = document.getElementById('travel_slug').value; 
+if (travelForm) {
+    travelForm.addEventListener('submit', async (e) => { 
+        e.preventDefault(); 
+        const travelId = document.getElementById('travel_id').value; 
+        const titleVal = document.getElementById('travel_title').value; 
+        let slugVal = document.getElementById('travel_slug').value; 
 
-    if (!slugVal) { 
-        slugVal = titleVal.toLowerCase() 
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") 
-            .replace(/[^a-z0-9 -]/g, '') 
-            .replace(/\s+/g, '-') 
-            .replace(/-+/g, '-'); 
-    }
-
-    const formData = new FormData(); 
-    formData.append('title', titleVal); 
-    formData.append('slug', slugVal); 
-    formData.append('category', document.getElementById('travel_category').value); 
-    formData.append('content', document.getElementById('travel_content').value); 
-    formData.append('lang', document.getElementById('travel_lang').value); 
-
-    const travelFileInput = document.getElementById('travel_media_file'); 
-    if (travelFileInput && travelFileInput.files.length > 0) { 
-        for (let i = 0; i < travelFileInput.files.length; i++) { 
-            formData.append('media', travelFileInput.files[i]); 
+        if (!slugVal) { 
+            slugVal = titleVal.toLowerCase() 
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "") 
+                .replace(/[^a-z0-9 -]/g, '') 
+                .replace(/\s+/g, '-') 
+                .replace(/-+/g, '-'); 
         }
-    }
 
-    const url = travelId ? `${API_URL}/travels/${travelId}` : `${API_URL}/travels`; 
-    const method = travelId ? 'PUT' : 'POST'; 
+        const formData = new FormData(); 
+        formData.append('title', titleVal); 
+        formData.append('slug', slugVal); 
+        formData.append('category', document.getElementById('travel_category').value); 
+        formData.append('content', document.getElementById('travel_content').value); 
+        formData.append('lang', document.getElementById('travel_lang').value); 
 
-    try {
-        const response = await fetch(url, { method, body: formData }); 
-        const result = await response.json(); 
-
-        if (result.success) { 
-            alert(travelId ? '✈️ Cập nhật bài viết thành công!' : '✈️ Thêm bài viết thành công!'); 
-            resetTravelForm(); 
-            fetchTravels(); 
-        } else {
-            alert('❌ Lỗi: ' + result.message); 
+        const travelFileInput = document.getElementById('travel_media_file'); 
+        if (travelFileInput && travelFileInput.files.length > 0) { 
+            for (let i = 0; i < travelFileInput.files.length; i++) { 
+                formData.append('media', travelFileInput.files[i]); 
+            }
         }
-    } catch (error) {
-        console.error(error); 
-        alert('❌ Lỗi kết nối Server!'); 
-    }
-});
+
+        const url = travelId ? `${API_URL}/travels/${travelId}` : `${API_URL}/travels`; 
+        const method = travelId ? 'PUT' : 'POST'; 
+
+        try {
+            // DÙNG fetchWithAuth BẢO VỆ API
+            const response = await fetchWithAuth(url, { method, body: formData }); 
+            const result = await response.json(); 
+
+            if (result.success) { 
+                alert(travelId ? '✈️ Cập nhật bài viết thành công!' : '✈️ Thêm bài viết thành công!'); 
+                resetTravelForm(); 
+                fetchTravels(); 
+            } else {
+                alert('❌ Lỗi: ' + result.message); 
+            }
+        } catch (error) {
+            console.error(error); 
+            alert('❌ Lỗi kết nối Server!'); 
+        }
+    });
+}
 
 window.editTravel = function(id) { 
     const tv = localTravels.find(item => item.id === id); 
@@ -363,7 +450,8 @@ window.editTravel = function(id) {
 window.deleteTravel = async function(id) { 
     if (!confirm('Bạn có chắc muốn xóa bài viết cẩm nang này không?')) return; 
     try {
-        const response = await fetch(`${API_URL}/travels/${id}`, { method: 'DELETE' }); 
+        // DÙNG fetchWithAuth BẢO VỆ API
+        const response = await fetchWithAuth(`${API_URL}/travels/${id}`, { method: 'DELETE' }); 
         const result = await response.json(); 
         if (result.success) { 
             alert('🗑️ Đã xóa bài viết thành công!'); 
@@ -377,6 +465,7 @@ window.deleteTravel = async function(id) {
 }
 
 function resetTravelForm() { 
+    if (!travelForm) return;
     travelForm.reset(); 
     document.getElementById('travel_id').value = ''; 
     document.getElementById('travelFormTitle').innerText = "✈️ Thêm Bài Du Lịch Mới"; 
@@ -384,12 +473,10 @@ function resetTravelForm() {
     document.getElementById('travelCancelBtn').classList.add('hidden'); 
     document.getElementById('travel_media_note').classList.add('hidden'); 
 }
-document.getElementById('travelCancelBtn').addEventListener('click', resetTravelForm); 
+const travelCancelBtn = document.getElementById('travelCancelBtn');
+if (travelCancelBtn) travelCancelBtn.addEventListener('click', resetTravelForm); 
 
-
-// ==========================================
-// 3. QUẢN LÝ ĐÀO TẠO QUỐC TẾ (COURSES CRUD)
-// ==========================================
+// 3. QUẢN LÝ ĐÀO TẠO QUỐC TẾ (COURSES CRUD
 const trainingForm = document.getElementById('addTrainingForm');
 const trainingTableBody = document.getElementById('trainingTableBody');
 
@@ -412,6 +499,7 @@ async function fetchTrainings() {
 }
 
 function renderTrainings() {
+    if (!trainingTableBody) return;
     const totalPages = Math.ceil(localTrainings.length / ITEMS_PER_PAGE) || 1;
 
     if (currentTrainingPage > totalPages) currentTrainingPage = totalPages;
@@ -420,9 +508,9 @@ function renderTrainings() {
     const startIndex = (currentTrainingPage - 1) * ITEMS_PER_PAGE;
     const paginatedTrainings = localTrainings.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-    trainingPageInfo.innerText = `Trang ${currentTrainingPage} / ${totalPages} (Tổng số: ${localTrainings.length})`;
-    trainingPrevBtn.disabled = currentTrainingPage === 1;
-    trainingNextBtn.disabled = currentTrainingPage === totalPages;
+    if (trainingPageInfo) trainingPageInfo.innerText = `Trang ${currentTrainingPage} / ${totalPages} (Tổng số: ${localTrainings.length})`;
+    if (trainingPrevBtn) trainingPrevBtn.disabled = currentTrainingPage === 1;
+    if (trainingNextBtn) trainingNextBtn.disabled = currentTrainingPage === totalPages;
 
     trainingTableBody.innerHTML = paginatedTrainings.map(tr => `
         <tr class="hover:bg-gray-50">
@@ -447,70 +535,71 @@ function renderTrainings() {
     `).join('');
 }
 
-trainingPrevBtn.addEventListener('click', () => {
-    if (currentTrainingPage > 1) {
-        currentTrainingPage--;
-        renderTrainings();
-    }
-});
+if (trainingPrevBtn) {
+    trainingPrevBtn.addEventListener('click', () => {
+        if (currentTrainingPage > 1) { currentTrainingPage--; renderTrainings(); }
+    });
+}
 
-trainingNextBtn.addEventListener('click', () => {
-    const totalPages = Math.ceil(localTrainings.length / ITEMS_PER_PAGE);
-    if (currentTrainingPage < totalPages) {
-        currentTrainingPage++;
-        renderTrainings();
-    }
-});
+if (trainingNextBtn) {
+    trainingNextBtn.addEventListener('click', () => {
+        const totalPages = Math.ceil(localTrainings.length / ITEMS_PER_PAGE);
+        if (currentTrainingPage < totalPages) { currentTrainingPage++; renderTrainings(); }
+    });
+}
 
-trainingForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const trainingId = document.getElementById('training_id').value;
-    const titleVal = document.getElementById('training_title').value;
-    let slugVal = document.getElementById('training_slug').value;
+if (trainingForm) {
+    trainingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const trainingId = document.getElementById('training_id').value;
+        const titleVal = document.getElementById('training_title').value;
+        let slugVal = document.getElementById('training_slug').value;
 
-    if (!slugVal) {
-        slugVal = titleVal.toLowerCase()
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-            .replace(/[^a-z0-9 -]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-');
-    }
-
-    const formData = new FormData();
-    formData.append('title', titleVal);
-    formData.append('slug', slugVal);
-    formData.append('duration', document.getElementById('training_duration').value);
-    formData.append('fee', document.getElementById('training_fee').value);
-    formData.append('description', document.getElementById('training_description').value);
-    formData.append('content', document.getElementById('training_content').value);
-    formData.append('lang', document.getElementById('training_lang').value);
-
-    const trainingFileInput = document.getElementById('training_media_file');
-    if (trainingFileInput && trainingFileInput.files.length > 0) {
-        for (let i = 0; i < trainingFileInput.files.length; i++) {
-            formData.append('media', trainingFileInput.files[i]);
+        if (!slugVal) {
+            slugVal = titleVal.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9 -]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
         }
-    }
 
-    const url = trainingId ? `${API_URL}/courses/${trainingId}` : `${API_URL}/courses`;
-    const method = trainingId ? 'PUT' : 'POST';
+        const formData = new FormData();
+        formData.append('title', titleVal);
+        formData.append('slug', slugVal);
+        formData.append('duration', document.getElementById('training_duration').value);
+        formData.append('fee', document.getElementById('training_fee').value);
+        formData.append('description', document.getElementById('training_description').value);
+        formData.append('content', document.getElementById('training_content').value);
+        formData.append('lang', document.getElementById('training_lang').value);
 
-    try {
-        const response = await fetch(url, { method, body: formData });
-        const result = await response.json();
-
-        if (result.success) {
-            alert(trainingId ? '🎓 Cập nhật chương trình thành công!' : '🎓 Thêm chương trình thành công!');
-            resetTrainingForm();
-            fetchTrainings();
-        } else {
-            alert('❌ Lỗi: ' + result.message);
+        const trainingFileInput = document.getElementById('training_media_file');
+        if (trainingFileInput && trainingFileInput.files.length > 0) {
+            for (let i = 0; i < trainingFileInput.files.length; i++) {
+                formData.append('media', trainingFileInput.files[i]);
+            }
         }
-    } catch (error) {
-        console.error(error);
-        alert('❌ Lỗi kết nối Server!');
-    }
-});
+
+        const url = trainingId ? `${API_URL}/courses/${trainingId}` : `${API_URL}/courses`;
+        const method = trainingId ? 'PUT' : 'POST';
+
+        try {
+            // DÙNG fetchWithAuth BẢO VỆ API
+            const response = await fetchWithAuth(url, { method, body: formData });
+            const result = await response.json();
+
+            if (result.success) {
+                alert(trainingId ? '🎓 Cập nhật chương trình thành công!' : '🎓 Thêm chương trình thành công!');
+                resetTrainingForm();
+                fetchTrainings();
+            } else {
+                alert('❌ Lỗi: ' + result.message);
+            }
+        } catch (error) {
+            console.error(error);
+            alert('❌ Lỗi kết nối Server!');
+        }
+    });
+}
 
 window.editTraining = function(id) {
     const tr = localTrainings.find(item => item.id === id);
@@ -533,11 +622,11 @@ window.editTraining = function(id) {
     showTab('training');
 }
 
-// DELETE: Sử dụng chính xác endpoint /courses/:id[cite: 5]
 window.deleteTraining = async function(id) {
     if (!confirm('Bạn có chắc muốn xóa chương trình đào tạo này không?')) return;
     try {
-        const response = await fetch(`${API_URL}/courses/${id}`, { method: 'DELETE' });
+        // DÙNG fetchWithAuth BẢO VỆ API
+        const response = await fetchWithAuth(`${API_URL}/courses/${id}`, { method: 'DELETE' });
         const result = await response.json();
         if (result.success) {
             alert('🗑️ Đã xóa chương trình thành công!');
@@ -551,6 +640,7 @@ window.deleteTraining = async function(id) {
 }
 
 function resetTrainingForm() {
+    if (!trainingForm) return;
     trainingForm.reset();
     document.getElementById('training_id').value = '';
     document.getElementById('trainingFormTitle').innerText = "🎓 Thêm Chương Trình Đào Tạo Mới";
@@ -558,10 +648,7 @@ function resetTrainingForm() {
     document.getElementById('trainingCancelBtn').classList.add('hidden');
     document.getElementById('training_media_note').classList.add('hidden');
 }
-document.getElementById('trainingCancelBtn').addEventListener('click', resetTrainingForm);
+const trainingCancelBtn = document.getElementById('trainingCancelBtn');
+if (trainingCancelBtn) trainingCancelBtn.addEventListener('click', resetTrainingForm);
 
-
-// KHỞI CHẠY LẤY DỮ LIỆU BAN ĐẦU
-fetchEvents(); 
-fetchTravels(); 
-fetchTrainings();
+checkAuthAndInit();

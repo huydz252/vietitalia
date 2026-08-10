@@ -5,6 +5,7 @@ import cors from 'cors';
 import eventRoutes from './src/routes/eventRoutes.js';
 import travelRoutes from './src/routes/travelRoutes.js';
 import courseRoutes from './src/routes/courseRoute.js';
+import adminRoutes from './src/routes/adminRoute.js';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.urlencoded({limit: '100mb', extended: true }));
 app.use('/api/events', eventRoutes);
 app.use('/api/travels', travelRoutes);
 app.use('/api/courses', courseRoutes);
+app.use('/api', adminRoutes);
 
 // check
 app.get('/', (req, res) => {
